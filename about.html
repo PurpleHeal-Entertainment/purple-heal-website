@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Nosotros - Purple Heal Entertainment</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/reset.css?v=1.9">
+    <link rel="stylesheet" href="css/variables.css?v=1.9">
+    <link rel="stylesheet" href="css/global.css?v=1.9">
+    <link rel="stylesheet" href="css/components.css?v=1.9">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/logos/PURPLE HEAL LOGO PURPURA.svg">
+
+    <style>
+        /* About Page Specific Styles */
+        .about-hero {
+            padding-top: 160px;
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, #2a1537 0%, #61397C 50%, #101820 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(97, 57, 124, 0.3), transparent 70%);
+            pointer-events: none;
+        }
+
+        .about-hero__content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            padding: var(--space-2xl);
+        }
+
+        .about-hero__tagline {
+            font-family: var(--font-alt);
+            font-size: var(--fs-xl);
+            font-weight: 800;
+            color: #F8F7F2;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--space-lg);
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            opacity: 0.9;
+        }
+
+        .about-hero__subtitle {
+            font-family: var(--font-alt);
+            font-size: var(--fs-xl);
+            color: #b491cc;
+            font-weight: 300;
+        }
+
+        /* Manifesto Section */
+        .manifesto {
+            max-width: var(--container-narrow);
+            margin: 0 auto;
+            padding: var(--space-4xl) var(--space-2xl);
+        }
+
+        .manifesto__title {
+            font-family: var(--font-primary);
+            font-size: var(--fs-4xl);
+            color: #b491cc;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: var(--space-3xl);
+            letter-spacing: 0.05em;
+        }
+
+        .manifesto__content {
+            font-family: var(--font-alt);
+            font-size: var(--fs-lg);
+            line-height: 1.8;
+            color: #cccccc;
+        }
+
+        .manifesto__content p {
+            margin-bottom: var(--space-xl);
+        }
+
+        .manifesto__content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .manifesto__highlight {
+            color: #b491cc;
+            font-weight: 600;
+        }
+
+        .manifesto__divider {
+            text-align: center;
+            color: #61397C;
+            margin: var(--space-2xl) 0;
+            font-size: var(--fs-2xl);
+        }
+
+        /* Brand Identity Section */
+        .brand-identity {
+            background: #101820;
+            padding: var(--space-5xl) var(--space-2xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decorative geometric shapes removed as requested */
+
+
+        .brand-identity__container {
+            max-width: var(--container-max);
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-identity__title {
+            font-family: var(--font-primary);
+            font-size: var(--fs-4xl);
+            color: #F8F7F2;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: var(--space-4xl);
+            letter-spacing: 0.1em;
+        }
+
+        .brand-section {
+            margin-bottom: var(--space-5xl);
+        }
+
+        .brand-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .brand-section__title {
+            font-family: var(--font-primary);
+            font-size: var(--fs-2xl);
+            color: #b491cc;
+            text-transform: uppercase;
+            margin-bottom: var(--space-2xl);
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: var(--space-md);
+            display: inline-block;
+        }
+
+        .brand-section__description {
+            font-family: var(--font-alt);
+            color: var(--ph-gray-light);
+            margin-bottom: var(--space-xl);
+            max-width: 800px;
+        }
+
+        /* Color Palette */
+        .color-group {
+            margin-bottom: var(--space-xl);
+        }
+
+        .color-group__title {
+            font-family: var(--font-alt);
+            color: #F8F7F2;
+            font-size: var(--fs-lg);
+            margin-bottom: var(--space-md);
+            font-weight: 500;
+        }
+
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: var(--space-xl);
+        }
+
+        .color-swatch {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: transform var(--transition-base);
+        }
+
+        .color-swatch:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .color-swatch__color {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-alt);
+            font-size: var(--fs-sm);
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .color-swatch__info {
+            padding: var(--space-lg);
+        }
+
+        .color-swatch__name {
+            font-family: var(--font-primary);
+            font-size: var(--fs-base);
+            color: #F8F7F2;
+            text-transform: uppercase;
+            margin-bottom: var(--space-sm);
+            letter-spacing: 0.05em;
+        }
+
+        .color-swatch__codes {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: #cccccc;
+            line-height: 1.6;
+        }
+
+        .code-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Typography */
+        .typography-showcase {
+            display: grid;
+            gap: var(--space-2xl);
+        }
+
+        .typeface {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-2xl);
+        }
+
+        .typeface__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: var(--space-lg);
+            flex-wrap: wrap;
+            gap: var(--space-md);
+        }
+
+        .typeface__name {
+            font-family: var(--font-primary);
+            font-size: var(--fs-2xl);
+            color: #61397C;
+            /* Purple brand */
+            text-transform: uppercase;
+            margin: 0;
+            background: linear-gradient(90deg, #61397C, #8b5fb0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .typeface__usage {
+            font-family: var(--font-alt);
+            color: var(--ph-gray-light);
+            text-transform: uppercase;
+            font-size: var(--fs-sm);
+            letter-spacing: 0.1em;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+        }
+
+        .typeface__sample {
+            padding: var(--space-xl) 0;
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            margin: var(--space-lg) 0;
+            overflow-x: auto;
+        }
+
+        .typeface__alphabet {
+            font-size: var(--fs-xl);
+            color: #F8F7F2;
+            margin-bottom: var(--space-md);
+            word-spacing: 5px;
+        }
+
+        .typeface__details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-lg);
+            margin-top: var(--space-lg);
+            font-family: var(--font-alt);
+            font-size: var(--fs-sm);
+            color: var(--ph-gray-lighter);
+        }
+
+        .typeface__detail-item strong {
+            display: block;
+            color: #b491cc;
+            margin-bottom: var(--space-xs);
+        }
+
+        /* Logos */
+        .logo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-3xl);
+        }
+
+        .brand-subsection-title {
+            font-family: var(--font-primary);
+            font-size: var(--fs-xl);
+            color: #b491cc;
+            margin: var(--space-2xl) 0 var(--space-lg);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid rgba(180, 145, 204, 0.2);
+            padding-bottom: var(--space-xs);
+        }
+
+        .logo-showcase {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 3/2;
+            transition: transform var(--transition-base);
+            position: relative;
+        }
+
+        .logo-showcase::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: var(--radius-lg);
+            border: 2px solid transparent;
+            transition: border-color var(--transition-base);
+            pointer-events: none;
+        }
+
+        .logo-showcase:hover::after {
+            border-color: rgba(97, 57, 124, 0.3);
+        }
+
+        .logo-showcase:hover {
+            transform: translateY(-5px);
+        }
+
+        .logo-showcase--dark {
+            background: #101820;
+        }
+
+        .logo-showcase--light {
+            background: #F8F7F2;
+        }
+
+        .logo-showcase__image {
+            max-width: 100%;
+            height: auto;
+            max-height: 100px;
+            /* Reduced to match manual proportions better */
+            object-fit: contain;
+        }
+
+        .logo-showcase__label {
+            font-family: var(--font-alt);
+            font-size: var(--fs-xs);
+            color: var(--ph-gray-light);
+            text-align: center;
+            margin-top: var(--space-lg);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .logo-showcase--light .logo-showcase__label {
+            color: #333;
+        }
+
+        /* Grid system graphic */
+        .grid-graphic {
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            position: absolute;
+            top: var(--space-md);
+            right: var(--space-md);
+            width: 20px;
+            height: 20px;
+            opacity: 0.5;
+        }
+
+        /* Mobile Responsive Adjustments */
+        @media (max-width: 992px) {
+            .about-hero__logo {
+                width: 450px;
+            }
+
+            .logo-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .about-hero__tagline {
+                font-size: var(--fs-base);
+            }
+
+            .manifesto {
+                padding: var(--space-2xl) var(--space-md);
+            }
+
+            .manifesto__title,
+            .brand-identity__title {
+                font-size: var(--fs-2xl);
+                margin-bottom: var(--space-2xl);
+            }
+
+            .manifesto__content {
+                font-size: var(--fs-base);
+                text-align: left;
+            }
+
+            .manifesto__divider {
+                margin: var(--space-xl) 0;
+            }
+
+            .brand-identity {
+                padding: var(--space-3xl) var(--space-md);
+            }
+
+            .brand-section {
+                margin-bottom: var(--space-3xl);
+                text-align: center;
+            }
+
+            .brand-section__title {
+                margin-bottom: var(--space-lg);
+            }
+
+            .brand-graphics {
+                padding: var(--space-lg) !important;
+                margin-top: var(--space-xl) !important;
+            }
+
+            .color-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .logo-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .typeface {
+                padding: var(--space-lg);
+            }
+
+            .typeface__alphabet {
+                font-size: var(--fs-lg);
+                word-break: break-all;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .typeface__header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .manifesto__divider {
+                font-size: var(--fs-xl);
+            }
+        }
+
+        .brand-graphics {
+            margin-top: 40px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="ph-nav" id="navbar">
+        <div class="container ph-nav__container">
+            <a href="index.html">
+                <img src="assets/logos/PURPLE HEAL LOGO TEXTO BLANCO OPCION 2.svg" alt="Purple Heal Logo"
+                    class="ph-nav__logo">
+            </a>
+
+            <div class="ph-nav__menu">
+                <a href="index.html" class="ph-nav__link">Inicio</a>
+                <a href="artists.html" class="ph-nav__link">Artistas</a>
+                <a href="tours.html" class="ph-nav__link">Tours</a>
+                <a href="shop.html" class="ph-nav__link" id="nav-shop" style="display: none;">Tienda</a>
+                <a href="about.html" class="ph-nav__link active">Nosotros</a>
+            </div>
+
+            <div class="ph-nav__toggle" id="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="ph-mobile-menu">
+        <div class="ph-mobile-menu__content">
+            <a href="index.html" class="ph-mobile-menu__link">Inicio</a>
+            <a href="artists.html" class="ph-mobile-menu__link">Artistas</a>
+            <a href="tours.html" class="ph-mobile-menu__link">Tours</a>
+            <a href="tours.html" class="ph-mobile-menu__link">Tours</a>
+            <a href="shop.html" class="ph-mobile-menu__link" id="nav-shop-mobile" style="display: none;">Tienda</a>
+            <a href="about.html" class="ph-mobile-menu__link active">Nosotros</a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="about-hero">
+        <div class="about-hero__content">
+            <img src="assets/logos/PURPLE_HEAL_LOGO_Y_TEXTO_BLANCO.svg" alt="Purple Heal" class="about-hero__logo">
+            <h1 class="about-hero__tagline">Art to Heal the Soul</h1>
+            <p class="about-hero__subtitle">Purple Heal / Starsoul</p>
+        </div>
+    </section>
+
+    <!-- Manifesto Section -->
+    <section class="manifesto">
+        <h2 class="manifesto__title">Manifiesto</h2>
+        <div class="manifesto__content">
+            <p>
+                Purple Heal nace del juego, la curiosidad y la necesidad de expresión genuina.
+                No comenzó como una empresa ni como una estrategia, sino como un espacio donde crear sin permiso, sin
+                miedo y sin expectativas externas.
+            </p>
+
+            <p>
+                Desde muy temprano, el arte fue exploración: imagen, sonido, forma y emoción. Diseñar, editar, componer
+                y experimentar no eran metas profesionales, sino actos naturales de juego y descubrimiento. Con el
+                tiempo, ese juego se volvió lenguaje.
+            </p>
+
+            <p>
+                La música apareció como una extensión de la imagen, y la imagen como una extensión de la música. Beats,
+                voces, colores, símbolos y narrativas comenzaron a entrelazarse hasta formar una identidad propia. No
+                se trataba solo de crear contenido, sino de <span class="manifesto__highlight">crear sentido</span>.
+            </p>
+
+            <p>
+                Purple Heal surge cuando esa exploración se convierte en decisión. Cuando entendemos que el arte no es
+                solo algo que hacemos, sino algo que somos. Que crear también puede sanar: ordenar el caos interno,
+                integrar el conflicto, abrazar la dualidad y transformarla en algo nuevo.
+            </p>
+
+            <div class="manifesto__divider">✦</div>
+
+            <p>
+                El púrpura representa ese proceso. <span class="manifesto__highlight">La unión del rojo y el
+                    azul.</span><br>
+                La pasión y la calma.<br>
+                El impulso y la reflexión.<br>
+                La herida y la sanación.
+            </p>
+
+            <div class="manifesto__divider">✦</div>
+
+            <p>
+                Purple Heal no busca imponer una estética fija, sino acompañar procesos. Evolucionar junto a sus
+                artistas. Adaptarse, mutar y crecer sin perder su núcleo. Porque la identidad no es algo estático: es
+                un camino.
+            </p>
+
+            <p>
+                Starsoul nace como una extensión de esa visión. Cada ser es un alma estelar, con luz propia,
+                atravesando su propio proceso de transformación. El arte se convierte en puente: entre lo interno y lo
+                externo, entre el dolor y la belleza, entre lo que fuimos y lo que estamos destinados a ser.
+            </p>
+
+            <p>
+                Purple Heal y Starsoul existen para crear universos donde la música, la imagen y la emoción se alinean.
+                Donde el arte no es solo entretenimiento, sino un espacio de reconocimiento, conexión y sanación.
+            </p>
+
+            <div class="manifesto__divider">✦</div>
+
+            <p style="text-align: center; font-weight: 600;">
+                Porque creemos que <span class="manifesto__highlight">crear también es cuidar</span>.<br>
+                Porque creemos que <span class="manifesto__highlight">el arte puede sanar el alma</span>.<br>
+                Porque creemos en el proceso, no solo en el resultado.
+            </p>
+        </div>
+    </section>
+
+    <!-- Brand Identity Section -->
+    <section class="brand-identity">
+        <div class="brand-identity__container">
+            <h2 class="brand-identity__title">Identidad de Marca</h2>
+
+            <!-- Color Palette -->
+            <div class="brand-section">
+                <h3 class="brand-section__title">Colores Principales</h3>
+                <p class="brand-section__description">La identidad cromática se define por un púrpura profundo y
+                    elegante, acompañado de un negro sólido y un blanco hueso para máximo contraste y legibilidad.</p>
+
+                <div class="color-grid">
+                    <!-- Purple Brand -->
+                    <div class="color-swatch">
+                        <div class="color-swatch__color" style="background: #61397C; color: white;">
+                            Purple Heal
+                        </div>
+                        <div class="color-swatch__info">
+                            <div class="color-swatch__name">Purple Brand</div>
+                            <div class="color-swatch__codes">
+                                <div class="code-row"><strong>HEX:</strong> #61397C</div>
+                                <div class="code-row"><strong>RGB:</strong> 97, 67, 106</div>
+                                <div class="code-row"><strong>CMYK:</strong> 73, 92, 20, 6</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Black Brand -->
+                    <div class="color-swatch">
+                        <div class="color-swatch__color" style="background: #101820; color: white;">
+                            Black Brand
+                        </div>
+                        <div class="color-swatch__info">
+                            <div class="color-swatch__name">Black Brand</div>
+                            <div class="color-swatch__codes">
+                                <div class="code-row"><strong>HEX:</strong> #101820</div>
+                                <div class="code-row"><strong>RGB:</strong> 16, 24, 32</div>
+                                <div class="code-row"><strong>CMYK:</strong> 80, 71, 60, 76</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- White Brand -->
+                    <div class="color-swatch">
+                        <div class="color-swatch__color"
+                            style="background: #F8F7F2; color: black; border: 1px solid #ccc;">
+                            White Brand
+                        </div>
+                        <div class="color-swatch__info">
+                            <div class="color-swatch__name">White Brand</div>
+                            <div class="color-swatch__codes">
+                                <div class="code-row"><strong>HEX:</strong> #F8F7F2</div>
+                                <div class="code-row"><strong>RGB:</strong> 248, 247, 242</div>
+                                <div class="code-row"><strong>CMYK:</strong> 1, 2, 4, 0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="brand-section">
+                <h3 class="brand-section__title">Colores de Soporte</h3>
+                <p class="brand-section__description">Colores vibrantes para acciones y fondos para estructurar el
+                    contenido.</p>
+
+                <div class="color-grid">
+                    <!-- Blue Support -->
+                    <div class="color-swatch">
+                        <div class="color-swatch__color" style="background: #307FE2; color: white;">
+                            Action Blue
+                        </div>
+                        <div class="color-swatch__info">
+                            <div class="color-swatch__name">Blue Support</div>
+                            <div class="color-swatch__codes">
+                                <div class="code-row"><strong>HEX:</strong> #307FE2</div>
+                                <div class="code-row"><strong>RGB:</strong> 48, 127, 226</div>
+                                <div class="code-row"><strong>CMYK:</strong> 75, 49, 0, 0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Red Alert -->
+                    <div class="color-swatch">
+                        <div class="color-swatch__color" style="background: #D6001C; color: white;">
+                            Alert Red
+                        </div>
+                        <div class="color-swatch__info">
+                            <div class="color-swatch__name">Red Support</div>
+                            <div class="color-swatch__codes">
+                                <div class="code-row"><strong>HEX:</strong> #D6001C</div>
+                                <div class="code-row"><strong>RGB:</strong> 214, 0, 28</div>
+                                <div class="code-row"><strong>CMYK:</strong> 9, 100, 100, 2</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Silver/Gray Support -->
+                    <div class="color-swatch">
+                        <div class="color-swatch__color" style="background: #BBC7D6; color: black;">
+                            Silver Support
+                        </div>
+                        <div class="color-swatch__info">
+                            <div class="color-swatch__name">Silver Support</div>
+                            <div class="color-swatch__codes">
+                                <div class="code-row"><strong>HEX:</strong> #BBC7D6</div>
+                                <div class="code-row"><strong>RGB:</strong> 187, 199, 214</div>
+                                <div class="code-row"><strong>CMYK:</strong> 25, 16, 9, 0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="brand-section">
+                <h3 class="brand-section__title">Especiales Metalicos</h3>
+                <p class="brand-section__description">Uso decorativo y premium para detalles físicos y digitales de alta
+                    gama.</p>
+
+                <div class="color-grid">
+                    <!-- Gold Metallic -->
+                    <div class="color-swatch">
+                        <div class="color-swatch__color" style="background: #A28D5B; color: white;">
+                            Premium Gold
+                        </div>
+                        <div class="color-swatch__info">
+                            <div class="color-swatch__name">Gold Metallic</div>
+                            <div class="color-swatch__codes">
+                                <div class="code-row"><strong>HEX:</strong> #A28D5B</div>
+                                <div class="code-row"><strong>RGB:</strong> 162, 141, 91</div>
+                                <div class="code-row"><strong>CMYK:</strong> 36, 39, 73, 7</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Silver Metallic -->
+                    <div class="color-swatch">
+                        <div class="color-swatch__color" style="background: #87909A; color: white;">
+                            Premium Silver
+                        </div>
+                        <div class="color-swatch__info">
+                            <div class="color-swatch__name">Silver Metallic</div>
+                            <div class="color-swatch__codes">
+                                <div class="code-row"><strong>HEX:</strong> #87909A</div>
+                                <div class="code-row"><strong>RGB:</strong> 135, 144, 154</div>
+                                <div class="code-row"><strong>CMYK:</strong> 50, 38, 32, 2</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Typography -->
+            <div class="brand-section">
+                <h3 class="brand-section__title">Tipografia</h3>
+                <p class="brand-section__description">La construcción geométrica e industrial define nuestro carácter
+                    visual.</p>
+
+                <div class="typography-showcase">
+                    <!-- Square One -->
+                    <div class="typeface">
+                        <div class="typeface__header">
+                            <h4 class="typeface__name" style="font-family: var(--font-primary);">Square One</h4>
+                            <span class="typeface__usage">Principal / Logotipo / Títulos</span>
+                        </div>
+
+                        <div class="typeface__sample">
+                            <div class="typeface__alphabet"
+                                style="font-family: var(--font-primary); letter-spacing: 0.1em;">
+                                ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>
+                                0123456789
+                            </div>
+                        </div>
+
+                        <div class="typeface__details">
+                            <div class="typeface__detail-item">
+                                <strong>Características</strong>
+                                Construcción geométrica, cortes industriales y modernos.
+                            </div>
+                            <div class="typeface__detail-item">
+                                <strong>Interletraje</strong>
+                                Amplio (266% en logo, -342 kerning por palabra)
+                            </div>
+                            <div class="typeface__detail-item">
+                                <strong>Uso</strong>
+                                Titulos de impacto, nombres de artistas, portadas.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Oxanium -->
+                    <div class="typeface">
+                        <div class="typeface__header">
+                            <h4 class="typeface__name" style="font-family: var(--font-alt);">Oxanium</h4>
+                            <span class="typeface__usage">Complementaria / Textos / UI</span>
+                        </div>
+
+                        <div class="typeface__sample">
+                            <div class="typeface__alphabet" style="font-family: var(--font-alt);">
+                                ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>
+                                abcdefghijklmnopqrstuvwxyz<br>
+                                0123456789
+                            </div>
+                        </div>
+
+                        <div class="typeface__details">
+                            <div class="typeface__detail-item">
+                                <strong>Familia</strong>
+                                Gama amplia de grosores (Light a ExtraBold).
+                            </div>
+                            <div class="typeface__detail-item">
+                                <strong>Estilo</strong>
+                                Tecnológico, legible y versátil.
+                            </div>
+                            <div class="typeface__detail-item">
+                                <strong>Uso</strong>
+                                Bloques de texto, subtítulos, navegación.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logos -->
+            <div class="brand-section">
+                <h3 class="brand-section__title">Logos y Variaciones</h3>
+                <p class="brand-section__description">El isotipo representa las iniciales PH (Purple Heal) con una
+                    estética arquitectónica. El área de seguridad se define por el ancho de la letra "P".</p>
+
+                <h4 class="brand-subsection-title">Isotipos (Simbolo)</h4>
+                <div class="logo-grid">
+                    <!-- Isotipo Purple -->
+                    <div class="logo-showcase logo-showcase--dark">
+                        <div class="grid-graphic"></div>
+                        <img src="assets/logos/PURPLE_HEAL_LOGO_PURPURA.svg" alt="Isotipo Purpura"
+                            class="logo-showcase__image">
+                        <p class="logo-showcase__label">Isotipo - Purple Brand</p>
+                    </div>
+
+                    <!-- Isotipo White -->
+                    <div class="logo-showcase logo-showcase--dark">
+                        <img src="assets/logos/PURPLE_HEAL_LOGO_BLANCO.svg" alt="Isotipo Blanco"
+                            class="logo-showcase__image">
+                        <p class="logo-showcase__label">Isotipo - White (Negativo)</p>
+                    </div>
+
+                    <!-- Isotipo Black -->
+                    <div class="logo-showcase logo-showcase--light">
+                        <img src="assets/logos/PURPLE_HEAL_LOGO_NEGRO.svg" alt="Isotipo Negro"
+                            class="logo-showcase__image">
+                        <p class="logo-showcase__label">Isotipo - Black (Positivo)</p>
+                    </div>
+                </div>
+
+                <h4 class="brand-subsection-title">Imagotipos (Simbolo + Texto)</h4>
+                <div class="logo-grid">
+                    <!-- Imagotipo Purple -->
+                    <div class="logo-showcase logo-showcase--dark">
+                        <img src="assets/logos/PURPLE_HEAL_LOGO_TEXTO_PURPURA.svg" alt="Imagotipo Purpura"
+                            class="logo-showcase__image">
+                        <p class="logo-showcase__label">Imagotipo - Purple Brand</p>
+                    </div>
+
+                    <!-- Imagotipo White -->
+                    <div class="logo-showcase logo-showcase--dark">
+                        <img src="assets/logos/PURPLE_HEAL_LOGO_Y_TEXTO_BLANCO.svg" alt="Imagotipo Blanco"
+                            class="logo-showcase__image">
+                        <p class="logo-showcase__label">Imagotipo - White</p>
+                    </div>
+
+                    <!-- Imagotipo Black -->
+                    <div class="logo-showcase logo-showcase--light">
+                        <img src="assets/logos/PURPLE_HEAL_LOGO_Y_TEXTO_NEGRO.svg" alt="Imagotipo Negro"
+                            class="logo-showcase__image">
+                        <p class="logo-showcase__label">Imagotipo - Black</p>
+                    </div>
+                </div>
+
+                <h4 class="brand-subsection-title">Imagotipos (Simbolo + Texto - Opcion 2)</h4>
+                <div class="logo-grid">
+                    <!-- Imagotipo Purple Opc 2 -->
+                    <div class="logo-showcase logo-showcase--dark">
+                        <img src="assets/logos/PURPLE_HEAL_LOGO_Y_TEXTO_PURPURA_OPCION_2.svg"
+                            alt="Imagotipo Purpura Opcion 2" class="logo-showcase__image">
+                        <p class="logo-showcase__label">Imagotipo Opc. 2 - Purple</p>
+                    </div>
+
+                    <!-- Imagotipo White Opc 2 -->
+                    <div class="logo-showcase logo-showcase--dark">
+                        <img src="assets/logos/PURPLE_HEAL_LOGO_Y_TEXTO_BLANCO_OPCION_2.svg"
+                            alt="Imagotipo Blanco Opcion 2" class="logo-showcase__image">
+                        <p class="logo-showcase__label">Imagotipo Opc. 2 - White</p>
+                    </div>
+
+                    <!-- Imagotipo Black Opc 2 -->
+                    <div class="logo-showcase logo-showcase--light">
+                        <img src="assets/logos/PURPLE_HEAL_LOGO_Y_TEXTO_NEGRO_OPCION_2.svg"
+                            alt="Imagotipo Negro Opcion 2" class="logo-showcase__image">
+                        <p class="logo-showcase__label">Imagotipo Opc. 2 - Black</p>
+                    </div>
+                </div>
+
+                <h4 class="brand-subsection-title">Logotipos (Texto Horizontal)</h4>
+                <div class="logo-grid">
+                    <!-- Logo Texto Purple -->
+                    <div class="logo-showcase logo-showcase--dark">
+                        <img src="assets/logos/PURPLE_HEAL_LOGO_Y_TEXTO_PURPURA.svg" alt="Logo Purpura Horizontal"
+                            class="logo-showcase__image">
+                        <p class="logo-showcase__label">Logotipo - Purple Horizontal</p>
+                    </div>
+
+                    <!-- Logo Texto White -->
+                    <div class="logo-showcase logo-showcase--dark">
+                        <img src="assets/logos/PURPLE_HEAL_LOGO_TEXTO_BLANCO.svg" alt="Logo Texto Blanco"
+                            class="logo-showcase__image">
+                        <p class="logo-showcase__label">Logotipo - White</p>
+                    </div>
+
+                    <!-- Logo Texto Negro -->
+                    <div class="logo-showcase logo-showcase--light">
+                        <img src="assets/logos/PURPLE_HEAL_LOGO_TEXTO_NEGRO.svg" alt="Logo Texto Negro"
+                            class="logo-showcase__image">
+                        <p class="logo-showcase__label">Logotipo - Black</p>
+                    </div>
+
+                    <!-- Logo Texto White Opc 2 -->
+                    <div class="logo-showcase logo-showcase--dark">
+                        <img src="assets/logos/PURPLE_HEAL_LOGO_TEXTO_BLANCO_OPCION_2.svg"
+                            alt="Logo Texto Blanco Opcion 2" class="logo-showcase__image">
+                        <p class="logo-showcase__label">Logo Texto Opc. 2 - White</p>
+                    </div>
+
+                    <!-- Logo Texto Negro Opc 2 -->
+                    <div class="logo-showcase logo-showcase--light">
+                        <img src="assets/logos/PURPLE_HEAL_LOGO_TEXTO_NEGRO_OPCION_2.svg"
+                            alt="Logo Texto Negro Opcion 2" class="logo-showcase__image">
+                        <p class="logo-showcase__label">Logo Texto Opc. 2 - Black</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Elementos Complementarios -->
+            <div class="brand-section">
+                <h3 class="brand-section__title">Elementos Graficos</h3>
+                <p class="brand-section__description">Patrones y formas geométricas que definen la estética y el
+                    lenguaje visual de Purple Heal.</p>
+
+                <div class="brand-graphics">
+                    <img src="assets/images/pattern_brand.svg" alt="Patron de Marca Purple Heal"
+                        style="width: 100%; max-width: 900px; height: auto; border-radius: 12px;">
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" style="background: rgba(0, 0, 0, 0.3);">
+        <div class="container">
+            <div style="max-width: 600px; margin: 0 auto; text-align: center;">
+                <h2>¿QUIERES TRABAJAR CON NOSOTROS?</h2>
+                <p style="font-size: var(--fs-lg); color: var(--ph-gray-lighter); margin-bottom: var(--space-2xl);">
+                    Estamos siempre buscando nuevos talentos y colaboraciones emocionantes.
+                    Contactanos para más información.
+                </p>
+                <a href="mailto:contact@purpleheal.com" class="ph-button ph-button--gold">Contactanos</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="ph-footer">
+        <div class="container">
+            <div class="ph-footer__content">
+                <div class="ph-footer__section">
+                    <h3>Purple Heal Entertainment</h3>
+                    <p style="color: var(--ph-gray-light); margin-top: var(--space-sm);">
+                        Creando el futuro de la música, un artista a la vez.
+                    </p>
+                </div>
+
+                <div class="ph-footer__section">
+                    <h3>Enlaces Rapidos</h3>
+                    <div class="ph-footer__links">
+                        <a href="index.html" class="ph-footer__link">Home</a>
+                        <a href="artists.html" class="ph-footer__link">Artistas</a>
+                        <a href="about.html" class="ph-footer__link">Nosotros</a>
+                        <a href="index.html#contact" class="ph-footer__link">Contacto</a>
+                    </div>
+                </div>
+
+                <div class="ph-footer__section">
+                    <h3>Siguenos</h3>
+                    <div class="ph-footer__links">
+                        <a href="https://www.instagram.com/purpleheal_ent/" class="ph-footer__link"
+                            target="_blank">Instagram</a>
+                        <a href="https://www.x.com/PURPLEHEAL" class="ph-footer__link" target="_blank">Twitter</a>
+                        <a href="https://www.youtube.com/@purplehealent" class="ph-footer__link"
+                            target="_blank">YouTube</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ph-footer__bottom">
+                <p>&copy; 2026 Purple Heal Entertainment. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/storage-db.js?v=2.1"></script>
+    <script src="js/main.js?v=2.1"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check Contact Section Visibility
+            try {
+                await initDB();
+                const config = await getSiteConfig();
+                const contactSection = document.getElementById('contact');
+
+                if (contactSection) {
+                    const showContact = config.showContact !== false; // Default to true
+                    contactSection.style.display = showContact ? 'block' : 'none';
+                }
+            } catch (e) {
+                console.warn('Config load error:', e);
+            }
+        });
+    </script>
+</body>
+
+</html>

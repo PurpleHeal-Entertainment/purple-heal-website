@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Debug IndexedDB</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        pre {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 5px;
+            overflow: auto;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>IndexedDB Debug Tool</h1>
+    <button onclick="checkData()">Check IndexedDB Data</button>
+    <button onclick="checkLocalStorage()">Check localStorage</button>
+    <div id="output"></div>
+
+    <script src="js/storage-db.js"></script>
+    <script>
+        async function checkData() {
+            const output = document.getElementById('output');
+            output.innerHTML = '<h2>Checking IndexedDB...</h2>';
+
+            try {
+                await initDB();
+                const artists = await loadArtistsDB();
+
+                output.innerHTML += `<pre>Artists found: ${artists ? artists.length : 0}</pre>`;
+                output.innerHTML += `<pre>${JSON.stringify(artists, null, 2)}</pre>`;
+            } catch (error) {
+                output.innerHTML += `<pre style="color: red;">Error: ${error.message}\n${error.stack}</pre>`;
+            }
+        }
+
+        async function checkLocalStorage() {
+            const output = document.getElementById('output');
+            output.innerHTML = '<h2>Checking localStorage...</h2>';
+
+            const artists = localStorage.getItem('ph_artists');
+            output.innerHTML += `<pre>localStorage 'ph_artists': ${artists ? 'EXISTS' : 'EMPTY'}</pre>`;
+            if (artists) {
+                try {
+                    const parsed = JSON.parse(artists);
+                    output.innerHTML += `<pre>Artists count: ${parsed.length}</pre>`;
+                    output.innerHTML += `<pre>${JSON.stringify(parsed, null, 2)}</pre>`;
+                } catch (e) {
+                    output.innerHTML += `<pre style="color: red;">Parse error: ${e.message}</pre>`;
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

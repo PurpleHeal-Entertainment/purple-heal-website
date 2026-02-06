@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="Tienda Oficial Purple Heal Entertainment - Música y Merch">
+    <title>Tienda Oficial | Purple Heal Entertainment</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/reset.css?v=1.9">
+    <link rel="stylesheet" href="css/variables.css?v=1.9">
+    <link rel="stylesheet" href="css/global.css?v=1.9">
+    <link rel="stylesheet" href="css/components.css?v=1.9">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/logos/PURPLE HEAL LOGO PURPURA.svg">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="ph-nav" id="navbar">
+        <div class="container ph-nav__container">
+            <a href="index.html">
+                <img src="assets/logos/PURPLE HEAL LOGO TEXTO BLANCO OPCION 2.svg" alt="Purple Heal Logo"
+                    class="ph-nav__logo">
+            </a>
+
+            <div class="ph-nav__menu">
+                <a href="index.html" class="ph-nav__link">Inicio</a>
+                <a href="artists.html" class="ph-nav__link">Artistas</a>
+                <a href="tours.html" class="ph-nav__link">Tours</a>
+                <a href="shop.html" class="ph-nav__link active" id="nav-shop" style="display: none;">Tienda</a>
+                <a href="about.html" class="ph-nav__link">Nosotros</a>
+            </div>
+
+            <div class="ph-nav__toggle" id="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="ph-mobile-menu">
+        <div class="ph-mobile-menu__content">
+            <a href="index.html" class="ph-mobile-menu__link">Inicio</a>
+            <a href="artists.html" class="ph-mobile-menu__link">Artistas</a>
+            <a href="tours.html" class="ph-mobile-menu__link">Tours</a>
+            <a href="shop.html" class="ph-mobile-menu__link active" id="nav-shop-mobile"
+                style="display: none;">Tienda</a>
+            <a href="about.html" class="ph-mobile-menu__link">Nosotros</a>
+        </div>
+    </div>
+
+    <!-- Shop Main Section -->
+    <section class="hero fade-in" style="padding-top: 100px; padding-bottom: var(--space-3xl); min-height: 60vh;">
+        <div class="container">
+            <!-- Header Text -->
+            <div class="text-center fade-in" style="margin-bottom: var(--space-xl);">
+                <h1 class="hero__title">
+                    TIENDA <span class="text-gradient">OFICIAL</span>
+                </h1>
+                <p class="hero__subtitle" style="max-width: 700px; margin: 0 auto; margin-bottom: var(--space-xl);">
+                    Adquiere la música y merchandising oficial de tus artistas favoritos.
+                    Apoya su arte directamente.
+                </p>
+
+                <!-- Filters -->
+                <div class="flex justify-center gap-4" style="flex-wrap: wrap;">
+                    <button class="ph-button ph-button--outline active"
+                        onclick="filterProducts('all', this)">TODO</button>
+                    <button class="ph-button ph-button--outline" onclick="filterProducts('album', this)">MUSICA</button>
+                    <button class="ph-button ph-button--outline" onclick="filterProducts('merch', this)">MERCH</button>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="grid grid--3 artists-grid scale-in" id="shopGrid">
+                <!-- Products will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="ph-footer">
+        <div class="container">
+            <div class="ph-footer__content">
+                <div class="ph-footer__section">
+                    <h3>Purple Heal Entertainment</h3>
+                    <p style="color: var(--ph-gray-light); margin-top: var(--space-sm);">
+                        Creando el futuro de la música, un artista a la vez.
+                    </p>
+                </div>
+
+                <div class="ph-footer__section">
+                    <h3>Enlaces Rapidos</h3>
+                    <div class="ph-footer__links">
+                        <a href="index.html" class="ph-footer__link">Home</a>
+                        <a href="artists.html" class="ph-footer__link">Artistas</a>
+                        <a href="about.html" class="ph-footer__link">Nosotros</a>
+                        <a href="index.html#contact" class="ph-footer__link">Contacto</a>
+                    </div>
+                </div>
+
+                <div class="ph-footer__section">
+                    <h3>Siguenos</h3>
+                    <div class="ph-footer__links">
+                        <a href="https://www.instagram.com/purpleheal_ent/" class="ph-footer__link"
+                            target="_blank">Instagram</a>
+                        <a href="https://www.x.com/PURPLEHEAL" class="ph-footer__link" target="_blank">Twitter</a>
+                        <a href="https://www.youtube.com/@purplehealent" class="ph-footer__link"
+                            target="_blank">YouTube</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ph-footer__bottom">
+                <p>&copy; 2026 Purple Heal Entertainment. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/storage-db.js?v=2.1"></script>
+    <script src="js/main.js?v=2.1"></script>
+    <script>
+        let allProductsCache = [];
+
+        async function loadShop() {
+            const grid = document.getElementById('shopGrid');
+            if (!grid) return;
+
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center;">Cargando productos...</div>';
+
+            try {
+                await initDB();
+                const artists = await loadArtistsDB();
+                const config = await getSiteConfig(); // Load config for discounts
+
+                // Aggregate all products
+                let products = [];
+                if (artists && artists.length > 0) {
+                    artists.forEach(artist => {
+                        // Albums
+                        if (artist.albums) {
+                            artist.albums.forEach(album => {
+                                products.push({
+                                    type: 'album',
+                                    artist: artist.name,
+                                    title: album.title,
+                                    image: (album.images && album.images.length > 0) ? album.images[0] : (album.cover || 'assets/images/placeholder.png'),
+                                    price: album.price || 0,
+                                    link: album.link,
+                                    year: album.year
+                                });
+                            });
+                        }
+                        // Merch
+                        if (artist.merch) {
+                            artist.merch.forEach(item => {
+                                products.push({
+                                    type: 'merch',
+                                    artist: artist.name,
+                                    title: item.name,
+                                    image: (item.images && item.images.length > 0) ? item.images[0] : (item.image || 'assets/images/placeholder.png'),
+                                    price: item.price || 0,
+                                    link: item.link
+                                });
+                            });
+                        }
+                    });
+                }
+
+                allProductsCache = products;
+                renderProducts(products, config);
+
+            } catch (err) {
+                console.error('Error loading shop:', err);
+                grid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: var(--space-3xl);">
+                        <h3 style="color: var(--ph-gray-lighter); margin-bottom: var(--space-lg);">Error al cargar productos</h3>
+                        <p style="color: var(--ph-gray-lighter);">Por favor intenta recargar la página.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderProducts(products, config) {
+            const grid = document.getElementById('shopGrid');
+            if (products.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: var(--space-3xl);">
+                        <h3 style="color: var(--ph-gray-lighter); margin-bottom: var(--space-lg);">Próximamente</h3>
+                        <p style="color: var(--ph-gray-lighter);">Estamos preparando la tienda.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = products.map(prod => {
+                // Calculate Price Logic (Reused from product-loader.js)
+                let originalPrice = parseFloat(prod.price) || 0;
+                let finalPrice = originalPrice;
+                let hasDiscount = false;
+                let discountPercent = 0;
+
+                if (config) {
+                    if (prod.type === 'album') {
+                        discountPercent = parseInt(config.promoDiscountAlbum) || 0;
+                    } else if (prod.type === 'merch') {
+                        discountPercent = parseInt(config.promoDiscountMerch) || 0;
+                    }
+
+                    if (discountPercent > 0) {
+                        hasDiscount = true;
+                        finalPrice = originalPrice * (1 - discountPercent / 100);
+                    }
+                }
+
+                return `
+                <div class="artist-card fade-in" style="cursor: default;">
+                    <div style="position: relative; overflow: hidden; border-radius: 8px 8px 0 0;">
+                        <img src="${prod.image}" alt="${prod.title}" class="artist-card__image" style="height: 300px; object-fit: cover;">
+                        ${hasDiscount ? `<div style="position: absolute; top: 10px; right: 10px; background: var(--ph-blue-accent); color: white; padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 0.9em;">-${discountPercent}%</div>` : ''}
+                    </div>
+                    <div class="artist-card__overlay" style="background: rgba(20, 20, 23, 0.95); position: relative; transform: none; padding: 20px;">
+                        <p class="artist-card__genre" style="color: var(--ph-purple-light); text-transform: uppercase; font-size: 0.8em; letter-spacing: 1px;">
+                            ${prod.artist} • ${prod.type === 'album' ? 'ÁLBUM' : 'MERCH'}
+                        </p>
+                        <h3 class="artist-card__name" style="font-size: 1.2em; margin: 5px 0 10px;">${prod.title}</h3>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                            <div style="font-family: 'Oxanium'; font-weight: bold;">
+                                ${hasDiscount ?
+                        `<span style="text-decoration: line-through; color: #666; font-size: 0.9em; margin-right: 8px;">$${originalPrice.toFixed(2)}</span>
+                                     <span style="color: var(--ph-blue-accent); font-size: 1.2em;">$${finalPrice.toFixed(2)}</span>`
+                        : `<span style="color: white; font-size: 1.2em;">$${originalPrice.toFixed(2)}</span>`
+                    }
+                            </div>
+                            ${prod.link ? `<a href="${prod.link}" target="_blank" class="ph-button ph-button--sm ph-button--primary">COMPRAR</a>` : '<span style="color: #666; font-size: 0.9em;">No disponible</span>'}
+                        </div>
+                    </div>
+                </div>
+            `;
+            }).join('');
+        }
+
+        function filterProducts(type, btn) {
+            // Update active button
+            document.querySelectorAll('.ph-button--outline').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Filter logic
+            if (type === 'all') {
+                getSiteConfig().then(config => renderProducts(allProductsCache, config));
+            } else {
+                const filtered = allProductsCache.filter(p => p.type === type);
+                getSiteConfig().then(config => renderProducts(filtered, config));
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadShop);
+    </script>
+</body>
+
+</html>

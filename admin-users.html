@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion de Usuarios - Purple Heal Admin</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/components.css">
+
+    <style>
+        .admin-container {
+            padding: var(--space-2xl);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-3xl);
+            padding-bottom: var(--space-lg);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Tab Navigation */
+        .admin-tabs {
+            display: flex;
+            gap: var(--space-md);
+            margin-bottom: var(--space-xl);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            justify-content: flex-start;
+        }
+
+        .admin-tab {
+            padding: var(--space-md) var(--space-lg);
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--ph-gray-light);
+            font-family: var(--font-primary);
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .admin-tab:hover {
+            color: var(--ph-white);
+        }
+
+        .admin-tab.active {
+            color: var(--ph-purple-light);
+            border-bottom-color: var(--ph-purple);
+        }
+
+        /* Users Grid */
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--space-lg);
+            margin-top: var(--space-xl);
+        }
+
+        .user-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            transition: all var(--transition-base);
+        }
+
+        .user-card:hover {
+            border-color: var(--ph-purple);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .user-card__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-md);
+        }
+
+        .user-role-badge {
+            background: rgba(48, 127, 226, 0.2);
+            color: #307FE2;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Role Colors */
+        .role-admin {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            box-shadow: 0 0 10px rgba(231, 76, 60, 0.4);
+        }
+
+        /* Standard Admin Color Override if not OP */
+        .role-admin-standard {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            box-shadow: none;
+        }
+
+        .role-tour_manager {
+            background: rgba(241, 196, 15, 0.2);
+            color: #f1c40f;
+        }
+
+        .role-product_manager {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+        }
+
+        .role-artist_manager {
+            background: rgba(155, 89, 182, 0.2);
+            color: #9b59b6;
+        }
+
+        .form-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .form-select option {
+            background-color: #1a191f;
+            color: white;
+        }
+
+        button {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Disabled Input Style */
+        .ph-input:disabled,
+        .form-select:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(255, 255, 255, 0.02) !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-container">
+        <!-- Header -->
+        <div class="admin-header">
+            <h1 style="text-transform: uppercase; font-size: var(--fs-xl);">GESTION DE USUARIOS</h1>
+            <div style="display: flex; gap: var(--space-md);">
+                <span id="currentUserDisplay"
+                    style="color: var(--ph-gray-light); font-size: 0.9rem; align-self: center; margin-right: var(--space-md);"></span>
+                <button class="ph-button ph-button--outline" id="logoutBtn">CERRAR SESION</button>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="admin-tabs">
+            <a href="admin.html" class="admin-tab">ARTISTAS</a>
+            <a href="admin-tours.html" class="admin-tab">TOURS</a>
+            <a href="admin-home.html" class="admin-tab">INICIO</a>
+            <button class="admin-tab active">USUARIOS</button>
+        </div>
+
+        <!-- Content -->
+        <div class="ph-card">
+            <div class="ph-card__content">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xl);">
+                    <h3 style="text-transform: uppercase; margin: 0;">USUARIOS REGISTRADOS</h3>
+                    <button onclick="openCreateUserModal()" class="ph-button ph-button--primary">
+                        + NUEVO USUARIO
+                    </button>
+                </div>
+
+                <div id="usersList" class="users-grid">
+                    <!-- Loaded dynamically -->
+                    <p style="color: var(--ph-gray-light);">Cargando usuarios...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create User Modal -->
+    <div id="createUserModal" class="form-overlay">
+        <div class="ph-card"
+            style="max-width: 500px; width: 100%; border: 1px solid var(--ph-purple); box-shadow: 0 0 40px rgba(97, 57, 124, 0.3);">
+            <div class="ph-card__content">
+                <h3 style="text-transform: uppercase; margin-bottom: var(--space-lg);">CREAR NUEVA CUENTA</h3>
+
+                <form id="createUserForm">
+                    <div class="form-group" style="margin-bottom: var(--space-md);">
+                        <label class="form-label"
+                            style="display: block; margin-bottom: 8px; color: var(--ph-gray-light);">NOMBRE DE
+                            USUARIO</label>
+                        <input type="text" id="newUsername" class="ph-input"
+                            style="width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;"
+                            required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: var(--space-md);">
+                        <label class="form-label"
+                            style="display: block; margin-bottom: 8px; color: var(--ph-gray-light);">CONTRASENA</label>
+                        <input type="password" id="newPassword" class="ph-input"
+                            style="width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;"
+                            required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: var(--space-xl);">
+                        <label class="form-label"
+                            style="display: block; margin-bottom: 8px; color: var(--ph-gray-light);">ROL DE
+                            ACCESO</label>
+                        <select id="newRole" class="form-select"
+                            style="width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;"
+                            required>
+                            <option value="tour_manager">Gestor de Tours (Solo Tours)</option>
+                            <option value="product_manager">Gestor de Productos (Incio + Albums/Merch)</option>
+                            <option value="artist_manager">Gestor de Artistas (CRUD Artistas)</option>
+                            <option value="admin">Administrador (Acceso Total)</option>
+                        </select>
+                        <p id="createRoleHint" style="font-size: 0.8rem; color: #888; margin-top: 5px; display: none;">
+                            No puedes crear otros administradores.</p>
+                    </div>
+
+                    <div style="display: flex; gap: var(--space-md);">
+                        <button type="button" onclick="closeCreateUserModal()" class="ph-button ph-button--outline"
+                            style="flex: 1;">CANCELAR</button>
+                        <button type="submit" class="ph-button ph-button--primary" style="flex: 1;">CREAR
+                            CUENTA</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit User Modal (With Password Change) -->
+    <div id="editUserModal" class="form-overlay">
+        <div class="ph-card"
+            style="max-width: 500px; width: 100%; border: 1px solid var(--ph-purple); box-shadow: 0 0 40px rgba(97, 57, 124, 0.3);">
+            <div class="ph-card__content">
+                <h3 style="text-transform: uppercase; margin-bottom: var(--space-lg);">EDITAR USUARIO</h3>
+
+                <form id="editUserForm">
+                    <div class="form-group" style="margin-bottom: var(--space-md);">
+                        <label class="form-label"
+                            style="display: block; margin-bottom: 8px; color: var(--ph-gray-light);">USUARIO</label>
+                        <input type="text" id="editUsername" class="ph-input"
+                            style="width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #888; cursor: not-allowed;"
+                            readonly>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: var(--space-xl);">
+                        <label class="form-label"
+                            style="display: block; margin-bottom: 8px; color: var(--ph-gray-light);">ROL DE
+                            ACCESO</label>
+                        <select id="editRole" class="form-select"
+                            style="width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;"
+                            required>
+                            <option value="tour_manager">Gestor de Tours (Solo Tours)</option>
+                            <option value="product_manager">Gestor de Productos (Incio + Albums/Merch)</option>
+                            <option value="artist_manager">Gestor de Artistas (CRUD Artistas)</option>
+                            <option value="admin">Administrador (Acceso Total)</option>
+                        </select>
+                        <p id="editRoleHint" style="font-size: 0.8rem; color: #888; margin-top: 5px; display: none;">
+                        </p>
+                    </div>
+
+                    <div class="form-group"
+                        style="margin-bottom: var(--space-xl); padding-top: var(--space-md); border-top: 1px solid rgba(255,255,255,0.1);">
+                        <label class="form-label"
+                            style="display: block; margin-bottom: 8px; color: var(--ph-purple-light);">CAMBIAR
+                            CONTRASEÑA (OPCIONAL)</label>
+                        <input type="password" id="editPassword" class="ph-input"
+                            placeholder="Dejar en blanco para no cambiar"
+                            style="width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                        <p id="passwordHint" style="font-size: 0.8rem; color: #888; margin-top: 5px;"></p>
+                    </div>
+
+                    <div style="display: flex; gap: var(--space-md);">
+                        <button type="button" onclick="closeEditUserModal()" class="ph-button ph-button--outline"
+                            style="flex: 1;">CANCELAR</button>
+                        <button type="submit" class="ph-button ph-button--primary" style="flex: 1;">GUARDAR
+                            CAMBIOS</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal (New Professional UI) -->
+    <div id="deleteConfirmModal" class="form-overlay">
+        <div class="ph-card"
+            style="max-width: 400px; width: 100%; border: 1px solid #e74c3c; box-shadow: 0 0 40px rgba(231, 76, 60, 0.2);">
+            <div class="ph-card__content">
+                <h3 style="text-transform: uppercase; margin-bottom: var(--space-lg); color: #e74c3c;">CONFIRMAR
+                    ELIMINACION</h3>
+
+                <p id="deleteConfirmMsg"
+                    style="margin-bottom: var(--space-lg); color: var(--ph-gray-light); line-height: 1.5;"></p>
+
+                <form id="deleteConfirmForm">
+                    <div class="form-group" style="margin-bottom: var(--space-xl);">
+                        <label class="form-label"
+                            style="display: block; margin-bottom: 8px; color: var(--ph-gray-light);">TU CONTRASEÑA
+                            (Confirmación)</label>
+                        <input type="password" id="deleteAdminPassword" class="ph-input"
+                            style="width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;"
+                            required autofocus>
+                    </div>
+
+                    <div style="display: flex; gap: var(--space-md);">
+                        <button type="button" onclick="closeDeleteConfirmModal()" class="ph-button ph-button--outline"
+                            style="flex: 1;">CANCELAR</button>
+                        <button type="submit" class="ph-button ph-button--primary"
+                            style="flex: 1; background-color: #e74c3c; border-color: #e74c3c;">ELIMINAR</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/storage-db.js?v=2.2"></script>
+    <script src="js/admin-auth.js?v=2.2"></script>
+    <script>
+        // Inline script for Users Page Logic
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('DOM Cargado - Iniciando Admin Users (Super Admin Mode)');
+            await initDB();
+
+            // Initial Access Check (Security)
+            const currentUser = getCurrentUser();
+            if (!currentUser.username || currentUser.role !== 'admin') {
+                window.location.href = 'admin.html';
+                return;
+            }
+
+            // Display current login info
+            document.getElementById('currentUserDisplay').textContent =
+                `Conectado como: ${currentUser.username} (${getRoleLabel(currentUser.role, currentUser.username)})`;
+
+            loadUsers();
+        });
+
+        // Load and Render Users
+        async function loadUsers() {
+            const listContainer = document.getElementById('usersList');
+            try {
+                const users = await getAllUsersDB();
+                listContainer.innerHTML = '';
+
+                if (users.length === 0) {
+                    listContainer.innerHTML = '<p>No se encontraron usuarios.</p>';
+                    return;
+                }
+
+                // Permission Check
+                const currentUser = getCurrentUser();
+                const isSuperAdmin = currentUser.username === 'admin';
+
+                users.forEach(user => {
+                    const isTargetAdmin = user.role === 'admin';
+
+                    // SUPER ADMIN LOGIC: Can edit EVERYONE 
+                    // Standard Admin Logic: Can edit NON-ADMINS only. Can edit SELF.
+
+                    let canEdit = true;
+                    let roleLabel = getRoleLabel(user.role, user.username);
+                    let badgeClass = `role-${user.role}`;
+
+                    if (user.role === 'admin' && user.username !== 'admin') {
+                        badgeClass = 'role-admin-standard'; // Less flashy for normal admins
+                    }
+
+                    if (!isSuperAdmin) {
+                        // Standard Admin Checks:
+                        if (isTargetAdmin) {
+                            // Cannot edit OTHER admins
+                            canEdit = false;
+                            // Can edit SELF
+                            if (user.username === currentUser.username) canEdit = true;
+                        }
+                    }
+
+                    // PROTECTED ACCOUNT: 'admin' account cannot be deleted by ANYONE (even itself)
+                    let canDelete = true;
+                    if (user.username === 'admin') canDelete = false;
+
+                    // STANDARD ADMINS cannot delete OTHER ADMINS either
+                    if (!isSuperAdmin && isTargetAdmin) canDelete = false;
+
+                    const card = document.createElement('div');
+                    card.className = 'user-card';
+                    card.innerHTML = `
+                        <div class="user-card__header">
+                            <h4 style="margin: 0; font-size: 1.1rem;">${user.username}</h4>
+                            <span class="user-role-badge ${badgeClass}">${roleLabel}</span>
+                        </div>
+                        <p style="color: var(--ph-gray-light); font-size: 0.85rem; margin-bottom: var(--space-md);">
+                            Creado: ${user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
+                        </p>
+                        
+                        ${canEdit ? `
+                            <div style="display: flex; gap: 10px;">
+                                <button onclick="openEditUserModal('${user.username}', '${user.role}')" class="ph-button ph-button--outline" style="flex: 1; font-size: 0.8rem; padding: 6px;">
+                                    ${(user.username === 'admin' && isSuperAdmin) ? 'CAMBIAR CLAVE' : 'EDITAR / CLAVE'}
+                                </button>
+                                ${canDelete ? `
+                                <button onclick="promptDeleteUser('${user.username}', '${user.role}')" class="ph-button ph-button--outline" style="flex: 1; border-color: #e74c3c; color: #e74c3c; font-size: 0.8rem; padding: 6px;">
+                                    ELIMINAR
+                                </button>
+                                ` : ''}
+                            </div>
+                        ` : ''}
+                    `;
+                    listContainer.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error loading users:', error);
+                listContainer.innerHTML = '<p style="color: red;">Error al cargar usuarios.</p>';
+            }
+        }
+
+        // Helper: Role Labels
+        function getRoleLabel(role, username = '') {
+            // Only the specific 'admin' user gets the OP label
+            if (role === 'admin') {
+                return (username === 'admin') ? 'ADMINISTRADOR OP' : 'ADMINISTRADOR';
+            }
+
+            const labels = {
+                'tour_manager': 'GESTOR DE TOURS',
+                'product_manager': 'GESTOR DE PRODUCTOS',
+                'artist_manager': 'GESTOR DE ARTISTAS'
+            };
+            return labels[role] || role;
+        }
+
+        // UI Modal Functions
+        function openCreateUserModal() {
+            document.getElementById('createUserModal').style.display = 'flex';
+            document.getElementById('newUsername').focus();
+
+            // Disable Admin option for Standard Admins
+            const currentUser = getCurrentUser();
+            const isAdminOption = document.querySelector('#newRole option[value="admin"]');
+            const hint = document.getElementById('createRoleHint');
+
+            if (currentUser.username !== 'admin') {
+                if (isAdminOption) {
+                    isAdminOption.disabled = true;
+                    // isAdminOption.style.display = 'none'; // Optional: Hide completely
+                }
+                hint.style.display = 'block';
+            } else {
+                if (isAdminOption) {
+                    isAdminOption.disabled = false;
+                    // isAdminOption.style.display = 'block';
+                }
+                hint.style.display = 'none';
+            }
+        }
+
+        function closeCreateUserModal() {
+            document.getElementById('createUserModal').style.display = 'none';
+            document.getElementById('createUserForm').reset();
+        }
+
+        // Create User Logic
+        document.getElementById('createUserForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('newUsername').value.trim();
+            const password = document.getElementById('newPassword').value.trim();
+            const role = document.getElementById('newRole').value;
+            const currentUser = getCurrentUser();
+
+            if (!username || !password) return;
+
+            // Security: Standard Admins cannot create Admin roles
+            if (currentUser.username !== 'admin' && role === 'admin') {
+                showToast('No tienes permisos para crear administradores.', 'error');
+                return;
+            }
+
+            // Check if user exists check
+            const existing = await getUserDB(username);
+            if (existing) {
+                showToast('El usuario ya existe', 'error');
+                return;
+            }
+
+            try {
+                await saveUserDB({
+                    username,
+                    password, // Plaintext for now per requirements
+                    role,
+                    createdAt: new Date().toISOString()
+                });
+
+                showToast('Usuario creado exitosamente');
+                closeCreateUserModal();
+                loadUsers();
+            } catch (error) {
+                console.error(error);
+                showToast('Error al guardar usuario', 'error');
+            }
+        });
+
+        // ----------------------------------------------------
+        // NEW PROFESSIONAL DELETE LOGIC
+        // ----------------------------------------------------
+        let pendingDeleteUsername = null;
+
+        window.promptDeleteUser = async (username, targetRole) => {
+            const currentUser = getCurrentUser();
+
+            // Critical Safeguard: Protect 'admin' user
+            if (username === 'admin') {
+                showToast('Error de Seguridad: La cuenta principal de administrador no puede ser eliminada.', 'error');
+                return;
+            }
+
+            // Safeguard: Standard Admin cannot delete other Admins
+            if (currentUser.username !== 'admin' && targetRole === 'admin') {
+                showToast('No tienes permisos para eliminar a otros administradores.', 'error');
+                return;
+            }
+
+            // Self-delete prevention
+            if (username === currentUser.username) {
+                showToast('No puedes eliminar tu propia cuenta mientras estás conectado.', 'error');
+                return;
+            }
+
+            // PREPARE AND SHOW MODAL instead of PROMPT
+            pendingDeleteUsername = username;
+            const modal = document.getElementById('deleteConfirmModal');
+            const msg = document.getElementById('deleteConfirmMsg');
+            const pwdInput = document.getElementById('deleteAdminPassword');
+
+            msg.innerHTML = `Estás a punto de eliminar permanentemente al usuario <strong>${username}</strong>.<br><br>Esta acción es irreversible. Por favor confirma tu identidad.`;
+            pwdInput.value = '';
+
+            modal.style.display = 'flex';
+            pwdInput.focus();
+        };
+
+        window.closeDeleteConfirmModal = function () {
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+            pendingDeleteUsername = null;
+        };
+
+        // Handle Delete Confirmation Submit
+        document.getElementById('deleteConfirmForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!pendingDeleteUsername) return;
+
+            const pwd = document.getElementById('deleteAdminPassword').value;
+            const btn = e.target.querySelector('button[type="submit"]');
+
+            if (verifyPassword(pwd)) {
+                try {
+                    btn.textContent = 'ELIMINANDO...';
+                    await deleteUserDB(pendingDeleteUsername);
+
+                    showToast(`Usuario ${pendingDeleteUsername} eliminado correctamente.`);
+                    closeDeleteConfirmModal();
+                    loadUsers();
+                } catch (e) {
+                    alert('Error: ' + e.message);
+                } finally {
+                    btn.textContent = 'ELIMINAR';
+                }
+            } else {
+                alert('Contraseña incorrecta. Inténtalo de nuevo.');
+                document.getElementById('deleteAdminPassword').value = '';
+                document.getElementById('deleteAdminPassword').focus();
+            }
+        });
+
+        // Simple Toast helper
+        function showToast(msg, type = 'success') {
+            const div = document.createElement('div');
+            div.style.position = 'fixed';
+            div.style.bottom = '20px';
+            div.style.right = '20px';
+            div.style.background = type === 'error' ? '#e74c3c' : '#2ecc71';
+            div.style.color = 'white';
+            div.style.padding = '10px 20px';
+            div.style.borderRadius = '8px';
+            div.style.zIndex = '9999';
+            div.textContent = msg;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 3000);
+        }
+
+        // Edit User Logic
+        window.openEditUserModal = function (username, currentRole) {
+            document.getElementById('editUserModal').style.display = 'flex';
+            document.getElementById('editUsername').value = username;
+            document.getElementById('editRole').value = currentRole;
+            document.getElementById('editPassword').value = ''; // Reset password field
+
+            const currentUser = getCurrentUser();
+            const passwordField = document.getElementById('editPassword').closest('.form-group');
+            const passwordHint = document.getElementById('passwordHint');
+            const roleSelect = document.getElementById('editRole');
+            const roleHint = document.getElementById('editRoleHint');
+            const adminOption = roleSelect.querySelector('option[value="admin"]');
+
+            // Reset state
+            roleSelect.disabled = false;
+            roleHint.style.display = 'none';
+            if (adminOption) adminOption.disabled = false;
+
+            // --- SUPER ADMIN (OP) ---
+            if (currentUser.username === 'admin') {
+                passwordField.style.display = 'block';
+                passwordHint.innerHTML = 'Como <strong>ADMINISTRADOR OP</strong> puedes cambiar la contraseña de cualquier usuario.';
+
+                // OP cannot change their own role (must stay admin)
+                if (username === 'admin') {
+                    roleSelect.disabled = true;
+                    roleHint.style.display = 'block';
+                    roleHint.innerText = 'La cuenta ADMINISTRADOR OP no puede cambiar su propio rol.';
+                }
+            }
+            // --- STANDARD ADMIN ---
+            else {
+                // Handling Standard Admin Permissions
+
+                // 1. Password Visibility
+                // Allowed if: Editing SELF OR Editing NON-ADMIN
+                const isTargetAdmin = (currentRole === 'admin');
+
+                if (username === currentUser.username) {
+                    // Self
+                    passwordField.style.display = 'block';
+                    passwordHint.innerHTML = 'Puedes cambiar tu propia contraseña aquí.';
+                } else if (!isTargetAdmin) {
+                    // Lower Role (Manager of some sort)
+                    passwordField.style.display = 'block';
+                    passwordHint.innerHTML = 'Puedes cambiar la contraseña de este usuario.';
+                } else {
+                    // Other Admin
+                    passwordField.style.display = 'none';
+                }
+
+                // 2. Role Changing Constraints
+                if (username === currentUser.username) {
+                    // Cannot change own role (common sense security)
+                    roleSelect.disabled = true;
+                    roleHint.style.display = 'block';
+                    roleHint.innerText = 'No puedes cambiar tu propio rol.';
+                } else {
+                    // Editing someone else...
+                    // If target is Admin, cannot touch them (but we hide Edit button anyway above).
+                    // If target is lower, cannot PROMOTE to admin
+                    if (adminOption) {
+                        adminOption.disabled = true; // Disable admin option
+                    }
+                    roleHint.style.display = 'block';
+                    roleHint.innerText = 'No puedes asignar el rol de Administrador.';
+                }
+            }
+        };
+
+        window.closeEditUserModal = function () {
+            document.getElementById('editUserModal').style.display = 'none';
+        };
+
+        document.getElementById('editUserForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('editUsername').value;
+            let newRole = document.getElementById('editRole').value;
+            const newPassword = document.getElementById('editPassword').value.trim();
+            const btn = e.target.querySelector('button[type="submit"]');
+
+            try {
+                btn.textContent = 'GUARDANDO...';
+
+                // Get current data to preserve password/created date
+                const user = await getUserDB(username);
+                if (!user) throw new Error('Usuario no encontrado');
+                const currentUser = getCurrentUser();
+
+                // Enforce Role Lock for 'admin' user
+                if (username === 'admin') {
+                    newRole = 'admin'; // Force it back just in case
+                }
+
+                // Security: Standard Admin cannot PROMOTE to Admin
+                if (currentUser.username !== 'admin' && newRole === 'admin' && user.role !== 'admin') {
+                    throw new Error('No tienes permisos para asignar el rol de Administrador.');
+                }
+
+                // Update Role
+                user.role = newRole;
+
+                // Update Password if provided
+                if (newPassword && newPassword.length >= 1) {
+                    // Security Check: Standard Admin...
+                    if (currentUser.username !== 'admin') {
+                        // If not OP...
+                        // If changing someone else...
+                        if (username !== currentUser.username) {
+                            // Must NOT be an admin
+                            if (user.role === 'admin') {
+                                throw new Error('No puedes cambiar la contraseña de otros administradores.');
+                            }
+                        }
+                    }
+
+                    if (newPassword.length < 6) {
+                        alert('La nueva contraseña debe tener al menos 6 caracteres.');
+                        btn.textContent = 'GUARDAR CAMBIOS';
+                        return;
+                    }
+                    user.password = newPassword;
+                    console.log('Password updated for:', username);
+
+                    // If updating self, update session
+                    if (username === currentUser.username) {
+                        localStorage.setItem('ph_session_token', newPassword);
+                        showToast('Tu contraseña ha sido actualizada');
+                    }
+                }
+
+                // Save back
+                await saveUserDB(user);
+
+                if (!newPassword || username !== getCurrentUser().username) {
+                    showToast('Usuario actualizado exitosamente');
+                }
+
+                closeEditUserModal();
+                loadUsers();
+            } catch (err) {
+                console.error(err);
+                showToast('Error al actualizar: ' + err.message, 'error');
+            } finally {
+                btn.textContent = 'GUARDAR CAMBIOS';
+            }
+        });
+    </script>
+</body>
+
+</html>

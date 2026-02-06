@@ -1,0 +1,25 @@
+{
+    "showStats": true,
+    "stats": [
+        {
+            "number": "100K+",
+            "label": "Oyentes Mensuales"
+        },
+        {
+            "number": "50+",
+            "label": "Artistas Firmados"
+        },
+        {
+            "number": "500+",
+            "label": "Canciones Lanzadas"
+        }
+    ],
+    "showBackstage": true,
+    "backstageLink": "#",
+    "showPromo": true,
+    "promoTitle": "DESCUENTO ESPECIAL",
+    "promoSubtitle": "EN TODOS LOS PRODUCTOS",
+    "promoDescription": "Aprovecha nuestras ofertas exclusivas por tiempo limitado.",
+    "promoLink": "shop.html",
+    "featuredTourId": ""
+}

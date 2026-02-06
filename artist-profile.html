@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="Perfil de artista - Purple Heal Entertainment">
+    <title>Artista | Purple Heal Entertainment</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/reset.css?v=1.9">
+    <link rel="stylesheet" href="css/variables.css?v=1.9">
+    <link rel="stylesheet" href="css/global.css?v=1.9">
+    <link rel="stylesheet" href="css/components.css?v=1.9">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/logos/PURPLE HEAL LOGO PURPURA.svg">
+
+    <!-- Favicon -->
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="ph-nav" id="navbar">
+        <div class="container ph-nav__container">
+            <a href="index.html">
+                <img src="assets/logos/PURPLE HEAL LOGO TEXTO BLANCO OPCION 2.svg" alt="Purple Heal Logo"
+                    class="ph-nav__logo">
+            </a>
+
+            <div class="ph-nav__menu">
+                <a href="index.html" class="ph-nav__link">Inicio</a>
+                <a href="artists.html" class="ph-nav__link">Artistas</a>
+                <a href="tours.html" class="ph-nav__link">Tours</a>
+                <a href="shop.html" class="ph-nav__link" id="nav-shop" style="display: none;">Tienda</a>
+                <a href="about.html" class="ph-nav__link">Nosotros</a>
+            </div>
+
+            <div class="ph-nav__toggle" id="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="ph-mobile-menu">
+        <div class="ph-mobile-menu__content">
+            <a href="index.html" class="ph-mobile-menu__link">Inicio</a>
+            <a href="artists.html" class="ph-mobile-menu__link">Artistas</a>
+            <a href="tours.html" class="ph-mobile-menu__link">Tours</a>
+            <a href="tours.html" class="ph-mobile-menu__link">Tours</a>
+            <a href="shop.html" class="ph-mobile-menu__link" id="nav-shop-mobile" style="display: none;">Tienda</a>
+            <a href="about.html" class="ph-mobile-menu__link">Nosotros</a>
+        </div>
+    </div>
+
+    <!-- Artist Hero -->
+    <section class="hero artist-hero">
+        <div class="container">
+            <div class="artist-hero-grid">
+                <!-- Artist Image -->
+                <div class="fade-in">
+                    <img id="artist-image" src="" alt="Artist" class="artist-hero-image">
+                </div>
+
+                <!-- Artist Info -->
+                <div class="artist-info slide-in-right">
+                    <p id="artist-genre" class="artist-info__genre">
+                        <!-- Genre will be loaded dynamically -->
+                    </p>
+                    <h1 id="artist-name" class="artist-info__name">
+                        <!-- Name will be loaded dynamically -->
+                    </h1>
+                    <p id="artist-bio" class="artist-info__bio">
+                        <!-- Bio will be loaded dynamically -->
+                    </p>
+
+                    <!-- Streaming Links -->
+                    <div class="artist-info__links">
+                        <a href="#" class="ph-button ph-button--primary" id="spotifyBtn" style="display: none;"
+                            target="_blank" rel="noopener noreferrer">
+                            SPOTIFY
+                        </a>
+                        <a href="#" class="ph-button ph-button--outline" id="youtubeBtn" style="display: none;"
+                            target="_blank" rel="noopener noreferrer">
+                            YOUTUBE
+                        </a>
+                        <a href="#" class="ph-button ph-button--outline" id="appleMusicBtn" style="display: none;"
+                            target="_blank" rel="noopener noreferrer">
+                            APPLE MUSIC
+                        </a>
+                        <a href="#" class="ph-button ph-button--outline" id="instagramBtn" style="display: none;"
+                            target="_blank" rel="noopener noreferrer">
+                            INSTAGRAM
+                        </a>
+                        <a href="#" class="ph-button ph-button--outline" id="tiktokBtn" style="display: none;"
+                            target="_blank" rel="noopener noreferrer">
+                            TIKTOK
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Video Section -->
+    <section id="latestVideo" style="display: none; padding: var(--space-3xl) 0;">
+        <div class="container">
+            <h2 class="section-title" style="text-align: center; margin-bottom: var(--space-2xl);">
+                ULTIMO LANZAMIENTO
+            </h2>
+            <div class="video-container">
+                <iframe id="youtubePlayer" src="" title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Discography Section -->
+    <section id="discography" style="padding: var(--space-4xl) 0;">
+        <div class="container">
+            <h2 class="text-center" style="margin-bottom: var(--space-2xl);">
+                DISCOGRAFIA
+            </h2>
+            <p class="text-center"
+                style="color: var(--ph-gray-lighter); max-width: 600px; margin: 0 auto var(--space-3xl);">
+                Explora los álbumes y sencillos que han marcado la carrera de este artista
+            </p>
+
+            <div class="slider-wrapper">
+                <button class="slider-btn slider-btn--left" id="prevAlbums" aria-label="Anterior">←</button>
+                <div class="horizontal-slider" id="albumsGrid">
+                    <!-- Albums loaded dynamically from localStorage -->
+                </div>
+                <button class="slider-btn slider-btn--right" id="nextAlbums" aria-label="Siguiente">→</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Merchandise Section -->
+    <section id="merch" style="background: rgba(0, 0, 0, 0.3); padding: var(--space-4xl) 0;">
+        <div class="container">
+            <h2 class="text-center" style="margin-bottom: var(--space-2xl);">
+                MERCHANDISING
+            </h2>
+            <p class="text-center"
+                style="color: var(--ph-gray-lighter); max-width: 600px; margin: 0 auto var(--space-3xl);">
+                Lleva tu amor por la música a otro nivel con mercancía oficial
+            </p>
+
+            <div class="slider-wrapper">
+                <button class="slider-btn slider-btn--left" id="prevMerch" aria-label="Anterior">←</button>
+                <div class="horizontal-slider" id="merchGrid">
+                    <!-- Merch loaded dynamically from localStorage -->
+                </div>
+                <button class="slider-btn slider-btn--right" id="nextMerch" aria-label="Siguiente">→</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Back to Artists -->
+    <section>
+        <div class="container text-center">
+            <a href="artists.html" class="ph-button ph-button--gold">← Ver Todos los Artistas</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="ph-footer">
+        <div class="container">
+            <div class="ph-footer__content">
+                <div class="ph-footer__section">
+                    <h3>Purple Heal Entertainment</h3>
+                    <p style="color: var(--ph-gray-light); margin-top: var(--space-sm);">
+                        Creando el futuro de la música, un artista a la vez.
+                    </p>
+                </div>
+
+                <div class="ph-footer__section">
+                    <h3>Enlaces Rapidos</h3>
+                    <div class="ph-footer__links">
+                        <a href="index.html" class="ph-footer__link">Home</a>
+                        <a href="artists.html" class="ph-footer__link">Artistas</a>
+                        <a href="index.html#about" class="ph-footer__link">Nosotros</a>
+                        <a href="index.html#contact" class="ph-footer__link">Contacto</a>
+                    </div>
+                </div>
+
+                <div class="ph-footer__section">
+                    <h3>Siguenos</h3>
+                    <div class="ph-footer__links">
+                        <a href="https://www.instagram.com/purpleheal_ent/" class="ph-footer__link"
+                            target="_blank">Instagram</a>
+                        <a href="https://www.x.com/PURPLEHEAL" class="ph-footer__link" target="_blank">Twitter</a>
+                        <a href="https://www.youtube.com/@purplehealent" class="ph-footer__link"
+                            target="_blank">YouTube</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ph-footer__bottom">
+                <p>&copy; 2026 Purple Heal Entertainment. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/storage-db.js?v=2.1"></script>
+    <script src="js/main.js?v=2.1"></script>
+    <script src="js/artists-data.js?v=2"></script>
+    <script src="js/product-loader.js?v=2.2"></script>
+    <script>
+        // Load artist data based on URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const artistId = urlParams.get('artist') || '0';
+
+        // Initialize IndexedDB and load artist data
+        (async function () {
+            await initDB();
+            if (typeof loadArtistProfile === 'function') {
+                await loadArtistProfile(artistId);
+            }
+            // Load products with new logic (discounts) overriding the basic load
+            if (typeof loadArtistProducts === 'function') {
+                console.log('🔄 Calling product-loader...');
+                await loadArtistProducts(artistId);
+            }
+        })();
+    </script>
+</body>
+
+</html>

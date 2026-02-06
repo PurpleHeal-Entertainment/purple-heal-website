@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar Datos Guardados</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        h1 {
+            color: #61397C;
+        }
+
+        pre {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border: 1px solid #61397C;
+        }
+
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #252525;
+            border-radius: 8px;
+        }
+
+        button {
+            background: #61397C;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: #7d4a9a;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🔍 Verificador de Datos - Purple Heal</h1>
+
+    <div class="section">
+        <h2>Artistas Guardados</h2>
+        <button onclick="showArtists()">Mostrar Artistas</button>
+        <button onclick="clearArtists()">Limpiar Artistas</button>
+        <pre id="artistsData">Click en "Mostrar Artistas" para ver los datos...</pre>
+    </div>
+
+    <div class="section">
+        <h2>Todos los Datos de LocalStorage</h2>
+        <button onclick="showAll()">Mostrar Todo</button>
+        <button onclick="clearAll()">Limpiar Todo (¡Cuidado!)</button>
+        <pre id="allData">Click en "Mostrar Todo" para ver todos los datos...</pre>
+    </div>
+
+    <script>
+        function showArtists() {
+            const artists = localStorage.getItem('ph_artists');
+            const artistsData = document.getElementById('artistsData');
+
+            if (artists) {
+                try {
+                    const parsed = JSON.parse(artists);
+                    artistsData.textContent = JSON.stringify(parsed, null, 2);
+                    console.log('Artistas encontrados:', parsed);
+                } catch (e) {
+                    artistsData.textContent = 'Error al parsear datos: ' + e.message;
+                }
+            } else {
+                artistsData.textContent = '❌ No hay artistas guardados en localStorage';
+            }
+        }
+
+        function clearArtists() {
+            if (confirm('¿Estás seguro de que quieres eliminar todos los artistas?')) {
+                localStorage.removeItem('ph_artists');
+                localStorage.removeItem('ph_artists_data');
+                document.getElementById('artistsData').textContent = '✅ Artistas eliminados';
+            }
+        }
+
+        function showAll() {
+            const allData = document.getElementById('allData');
+            let output = '';
+
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
+                output += `\n📦 ${key}:\n${value}\n\n${'='.repeat(80)}\n`;
+            }
+
+            if (output) {
+                allData.textContent = output;
+            } else {
+                allData.textContent = '❌ LocalStorage está vacío';
+            }
+        }
+
+        function clearAll() {
+            if (confirm('⚠️ ADVERTENCIA: Esto eliminará TODOS los datos incluyendo la sesión de admin. ¿Continuar?')) {
+                localStorage.clear();
+                document.getElementById('allData').textContent = '✅ Todo eliminado';
+                document.getElementById('artistsData').textContent = '✅ Todo eliminado';
+            }
+        }
+
+        // Auto-mostrar al cargar
+        window.onload = function () {
+            showArtists();
+        };
+    </script>
+</body>
+
+</html>

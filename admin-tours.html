@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administracion - Tours - Purple Heal</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/components.css">
+
+    <style>
+        .admin-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-2xl);
+        }
+
+        .admin-login {
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .admin-panel {
+            max-width: 1200px;
+            width: 100%;
+            display: none;
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        /* Fix centering issue - align to top when panel is shown */
+        .admin-container:has(.admin-panel.active) {
+            align-items: flex-start;
+            padding-top: var(--space-2xl);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-3xl);
+            padding-bottom: var(--space-lg);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-lg);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--space-sm);
+            color: var(--ph-purple-lighter);
+            font-family: var(--font-primary);
+            text-transform: uppercase;
+            font-size: var(--fs-sm);
+            letter-spacing: 0.1em;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: var(--space-md);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-md);
+            color: var(--ph-white);
+            font-family: 'Oxanium', sans-serif;
+            font-size: var(--fs-base);
+            transition: all var(--transition-base);
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--ph-purple-lighter);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Fix for white text on white background in dropdowns */
+        select option {
+            background-color: #1a191f;
+            color: white;
+        }
+
+        .error-message {
+            color: #D6001C;
+            font-size: var(--fs-sm);
+            margin-top: var(--space-sm);
+        }
+
+        .success-message {
+            color: #307FE2;
+            font-size: var(--fs-sm);
+            margin-top: var(--space-sm);
+        }
+
+        /* Tabs Navigation */
+        .admin-tabs {
+            display: flex;
+            gap: var(--space-md);
+            margin-bottom: var(--space-md);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-tab {
+            padding: var(--space-md) var(--space-lg);
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--ph-gray-light);
+            font-family: var(--font-primary);
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            text-decoration: none;
+            /* For A tags */
+            display: inline-block;
+            /* For A tags */
+        }
+
+        .admin-tab:hover {
+            color: var(--ph-white);
+        }
+
+        .admin-tab.active {
+            color: var(--ph-purple-light);
+            border-bottom-color: var(--ph-purple);
+        }
+
+        .tab-content {
+            display: block;
+            /* Always block since we are on separate pages */
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: var(--space-md);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-md);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .file-input-label:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--ph-purple-lighter);
+        }
+
+        .image-preview {
+            max-width: 200px;
+            margin-top: var(--space-md);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+
+    <link rel="icon" type="image/svg+xml" href="assets/logos/PURPLE HEAL LOGO PURPURA.svg">
+</head>
+
+<body>
+
+    <div class="admin-container">
+        <!-- Login Form -->
+        <div class="admin-login" id="loginForm">
+            <div class="ph-card">
+                <div class="ph-card__content">
+                    <div style="text-align: center; margin-bottom: var(--space-2xl);">
+                        <img src="assets/logos/PURPLE HEAL LOGO PURPURA EN PNG.png" alt="Purple Heal"
+                            style="max-width: 90px; display: block; margin: 0 auto;">
+                        <h2 style="margin-top: var(--space-lg); text-transform: uppercase; font-size: var(--fs-xl);">
+                            PANEL DE ADMINISTRACION</h2>
+                    </div>
+
+                    <form id="loginFormElement">
+                        <div class="form-group">
+                            <label class="form-label">USUARIO</label>
+                            <input type="text" class="form-input" id="username" autocomplete="username" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">CONTRASENA</label>
+                            <input type="password" class="form-input" id="password" autocomplete="current-password"
+                                required>
+                            <div id="capsLockWarning" class="error-message" style="display: none;">
+                                ⚠️ MAYUSCULAS ACTIVADAS
+                            </div>
+                        </div>
+
+                        <div id="loginError" class="error-message" style="display: none;"></div>
+
+                        <button type="submit" class="ph-button ph-button--primary"
+                            style="width: 100%; margin-top: var(--space-lg);">
+                            INICIAR SESION
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Panel -->
+        <div class="admin-panel" id="adminPanel">
+            <div class="admin-header">
+                <h1 style="text-transform: uppercase; font-size: var(--fs-2xl);">PANEL DE ADMINISTRACION</h1>
+                <button class="ph-button ph-button--outline" id="logoutBtn">CERRAR SESION</button>
+            </div>
+
+            <!-- Tab Navigation (LINKS) -->
+            <div class="admin-tabs">
+                <a href="admin.html" class="admin-tab">ARTISTAS</a>
+                <button class="admin-tab active">TOURS</button>
+                <a href="admin-home.html" class="admin-tab">INICIO</a>
+                <a href="admin-users.html" class="admin-tab" id="nav-users" style="display: none;">USUARIOS</a>
+            </div>
+
+            <!-- Tours Tab Content -->
+            <div id="tours-tab" class="tab-content active" style="display: block;">
+                <div class="ph-card" style="margin-bottom: var(--space-2xl);">
+                    <div class="ph-card__content">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xl);">
+                            <h3 style="text-transform: uppercase; margin: 0;">GESTIONAR TOURS</h3>
+                            <button onclick="navigateToCreate()" class="ph-button ph-button--primary ph-button--glow"
+                                style="display: flex; align-items: center; gap: 8px;">
+                                + NUEVO TOUR
+                            </button>
+                        </div>
+                        <div id="tours-list"></div>
+                        <div id="tour-view" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Add Tour Form Container -->
+                <div id="add-tour-form-container" style="display: none;">
+                    <div class="ph-card">
+                        <div class="ph-card__content">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xl);">
+                                <h3 style="text-transform: uppercase; margin: 0;">CREAR NUEVO TOUR</h3>
+                                <button type="button" onclick="navigateToList()" class="ph-button ph-button--outline"
+                                    style="padding: 4px 12px; font-size: 0.8em; border-color: #e74c3c; color: #e74c3c;">
+                                    VOLVER A LISTA
+                                </button>
+                            </div>
+                            <form id="tourForm">
+                                <!-- Tour Details -->
+                                <div
+                                    style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-bottom: var(--space-xl);">
+                                    <div class="form-group">
+                                        <label class="form-label">TÍTULO DEL TOUR / GIRA</label>
+                                        <input type="text" class="form-input" id="tourTitle"
+                                            placeholder="Ej: LATAM TOUR 2026">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">PORTADA TIPO BANNER (RECOMENDADO 3:1)</label>
+                                        <div class="file-input-wrapper">
+                                            <input type="file" id="tourCover" accept="image/*"
+                                                onchange="previewTourCover(event)">
+                                            <label for="tourCover" class="file-input-label">
+                                                SELECCIONAR BANNER
+                                            </label>
+                                        </div>
+                                        <img id="tourCoverPreview" class="image-preview"
+                                            style="display: none; width: 100%; height: auto; aspect-ratio: 3/1; object-fit: cover;">
+                                    </div>
+                                </div>
+
+                                <!-- Dates Management Section -->
+                                <div
+                                    style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: var(--space-lg); margin-bottom: var(--space-xl);">
+                                    <h4
+                                        style="color: var(--ph-purple-light); margin-bottom: var(--space-md); text-transform: uppercase;">
+                                        FECHAS DEL TOUR</h4>
+
+                                    <!-- Add Date Inputs -->
+                                    <div
+                                        style="background: rgba(255,255,255,0.03); padding: var(--space-md); border-radius: var(--radius-md); margin-bottom: var(--space-md);">
+                                        <div
+                                            style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-md); margin-bottom: var(--space-md);">
+                                            <div class="form-group" style="margin-bottom: 0;">
+                                                <label class="form-label">FECHA</label>
+                                                <input type="date" class="form-input" id="dateInput">
+                                            </div>
+                                            <div class="form-group" style="margin-bottom: 0;">
+                                                <label class="form-label">ESTADIO / VENUE</label>
+                                                <input type="text" class="form-input" id="venueInput"
+                                                    placeholder="Ej: Estadio Monumental">
+                                            </div>
+                                            <div class="form-group" style="margin-bottom: 0;">
+                                                <label class="form-label">CIUDAD / PAÍS</label>
+                                                <input type="text" class="form-input" id="cityInput"
+                                                    placeholder="Ej: Buenos Aires, Argentina">
+                                            </div>
+                                            <div class="form-group" style="margin-bottom: 0;">
+                                                <label class="form-label">ESTADO</label>
+                                                <select class="form-select" id="statusInput"
+                                                    onchange="toggleTicketLink()">
+                                                    <option value="ticket">TICKETS DISPONIBLES</option>
+                                                    <option value="sold_out">SOLD OUT</option>
+                                                    <option value="coming_soon">PROXIMAMENTE</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" id="ticketLinkContainer">
+                                            <label class="form-label">LINK DE VENTA</label>
+                                            <input type="url" class="form-input" id="ticketLinkInput"
+                                                placeholder="https://ticketmaster.com/...">
+                                        </div>
+
+                                        <div style="display:flex; gap:10px;">
+                                            <button type="button" onclick="addTourDate()"
+                                                class="ph-button ph-button--outline"
+                                                style="flex: 1; border-style: dashed;">
+                                                + AGREGAR FECHA
+                                            </button>
+                                            <button type="button" id="cancelDateEditBtn" onclick="cancelDateEdit()"
+                                                class="ph-button ph-button--outline"
+                                                style="display: none; border-color: #e74c3c; color: #e74c3c;">
+                                                CANCELAR EDICIÓN
+                                            </button>
+                                        </div>
+                                        <p id="dateError" class="error-message"
+                                            style="display: none; text-align: center;"></p>
+                                    </div>
+
+                                    <!-- Dates List (Preview) -->
+                                    <div id="datesListPreview"
+                                        style="display: flex; flex-direction: column; gap: var(--space-xs);">
+                                        <!-- Dates will be added here dynamically -->
+                                        <p
+                                            style="color: var(--ph-gray-lighter); text-align: center; font-size: var(--fs-sm); font-style: italic;">
+                                            No hay fechas agregadas aún.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div id="tourFormMessage"></div>
+                                <div style="display: flex; justify-content: flex-end; margin-top: var(--space-lg);">
+                                    <button type="submit" class="ph-button ph-button--primary ph-button--glow"
+                                        style="min-width: 200px;">
+                                        CREAR TOUR
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/storage-db.js?v=FORCE_RELOAD_8040"></script>
+    <script src="js/inline-forms-helper.js?v=FORCE_RELOAD_8040"></script>
+    <script src="js/admin-auth.js?v=FORCE_RELOAD_8040"></script>
+    <script src="js/admin-tours-router.js?v=FORCE_RELOAD_8040"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            // initToursPage handles auth check and initial rendering
+            await initToursPage();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Debug Artist Data</title>
+    <script src="js/idb.js"></script>
+    <script src="js/storage-db.js"></script>
+    <style>
+        body {
+            background: #1a1a1a;
+            color: white;
+            font-family: monospace;
+            padding: 20px;
+        }
+
+        pre {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Artist Data Structure</h1>
+    <div id="output"></div>
+
+    <script>
+        async function debugArtists() {
+            try {
+                await initDB();
+                const artists = await loadArtistsDB();
+
+                const output = document.getElementById('output');
+                output.innerHTML = '<h2>Total Artists: ' + artists.length + '</h2>';
+
+                artists.forEach((artist, index) => {
+                    output.innerHTML += '<h3>Artist ' + index + ': ' + artist.name + '</h3>';
+                    output.innerHTML += '<pre>' + JSON.stringify(artist, null, 2) + '</pre>';
+
+                    // Check structure
+                    output.innerHTML += '<h4>Data checks:</h4>';
+                    output.innerHTML += '<p>Has image: ' + (!!artist.image) + '</p>';
+                    output.innerHTML += '<p>Image length: ' + (artist.image ? artist.image.length : 0) + '</p>';
+                    output.innerHTML += '<p>Has socials: ' + (!!artist.socials) + '</p>';
+                    output.innerHTML += '<p>Socials structure: ' + JSON.stringify(artist.socials) + '</p>';
+                    output.innerHTML += '<hr>';
+                });
+            } catch (error) {
+                document.getElementById('output').innerHTML = '<p style="color: red;">Error: ' + error.message + '</p>';
+                console.error(error);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', debugArtists);
+    </script>
+</body>
+
+</html>

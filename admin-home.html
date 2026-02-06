@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administracion - Inicio - Purple Heal</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/components.css">
+
+    <style>
+        /* Exact layout from admin-tours.html */
+        .admin-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-2xl);
+        }
+
+        .admin-login {
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .admin-panel {
+            max-width: 1200px;
+            width: 100%;
+            display: none;
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        .admin-container:has(.admin-panel.active) {
+            align-items: flex-start;
+            padding-top: var(--space-2xl);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-3xl);
+            padding-bottom: var(--space-lg);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Tabs Navigation */
+        .admin-tabs {
+            display: flex;
+            gap: var(--space-md);
+            margin-bottom: var(--space-md);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-tab {
+            padding: var(--space-md) var(--space-lg);
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--ph-gray-light);
+            font-family: var(--font-primary);
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .admin-tab:hover {
+            color: var(--ph-white);
+        }
+
+        .admin-tab.active {
+            color: var(--ph-purple-light);
+            border-bottom-color: var(--ph-purple);
+        }
+
+        /* Config Specific styles */
+        .config-block {
+            background: rgba(255, 255, 255, 0.03);
+            padding: var(--space-xl);
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: var(--space-xl);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #333;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--ph-purple-light);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-lg);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--space-sm);
+            color: var(--ph-purple-lighter);
+            font-family: var(--font-primary);
+            text-transform: uppercase;
+            font-size: var(--fs-sm);
+            letter-spacing: 0.1em;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: var(--space-md);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-md);
+            color: var(--ph-white);
+            font-family: 'Oxanium', sans-serif;
+            font-size: var(--fs-base);
+        }
+
+        /* Fix for white text on white background in dropdowns */
+        select option {
+            background-color: #1a191f;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-container">
+        <!-- Login Form Fallback -->
+        <div class="admin-login" id="loginForm">
+            <!-- Simplified login check trigger -->
+            <p style="text-align: center; color: #666;">Verificando Acceso...</p>
+        </div>
+
+        <!-- Admin Panel -->
+        <div class="admin-panel" id="adminPanel">
+            <div class="admin-header">
+                <h1 style="text-transform: uppercase; font-size: var(--fs-2xl);">PANEL DE ADMINISTRACION</h1>
+                <button class="ph-button ph-button--outline" id="logoutBtn">CERRAR SESION</button>
+            </div>
+
+            <!-- Tab Navigation (LINKS) -->
+            <div class="admin-tabs">
+                <a href="admin.html" class="admin-tab">ARTISTAS</a>
+                <a href="admin-tours.html" class="admin-tab">TOURS</a>
+                <button class="admin-tab active">INICIO</button>
+                <a href="admin-users.html" class="admin-tab" id="nav-users" style="display: none;">USUARIOS</a>
+            </div>
+
+            <div id="formMessage"></div>
+
+            <form id="homeConfigForm">
+
+                <div class="grid-layout"
+                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start;">
+
+                    <!-- LEFT COLUMN -->
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+
+                        <!-- STATS -->
+                        <div class="config-block" style="margin: 0;">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                <h3 style="margin: 0; color: white;">BLOQUE DE ESTADISTICAS</h3>
+                                <label class="switch">
+                                    <input type="checkbox" id="showStats">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="grid grid--3">
+                                <div>
+                                    <label class="form-label">Cifra 1</label>
+                                    <input type="text" class="form-input" id="stat1Num" placeholder="10+">
+                                    <label class="form-label" style="margin-top: 10px;">Etiqueta 1</label>
+                                    <input type="text" class="form-input" id="stat1Label" placeholder="Artistas">
+                                </div>
+                                <div>
+                                    <label class="form-label">Cifra 2</label>
+                                    <input type="text" class="form-input" id="stat2Num" placeholder="50+">
+                                    <label class="form-label" style="margin-top: 10px;">Etiqueta 2</label>
+                                    <input type="text" class="form-input" id="stat2Label" placeholder="Lanzamientos">
+                                </div>
+                                <div>
+                                    <label class="form-label">Cifra 3</label>
+                                    <input type="text" class="form-input" id="stat3Num" placeholder="100K+">
+                                    <label class="form-label" style="margin-top: 10px;">Etiqueta 3</label>
+                                    <input type="text" class="form-input" id="stat3Label" placeholder="Fans">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- JOIN SECTION TOGGLE -->
+                        <div class="config-block" style="margin: 0;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h3 style="margin: 0; color: white;">SECCION "BUSCAMOS TALENTOS"</h3>
+                                    <p style="color: #888; font-size: 0.8em; margin-top: 5px;">Muestra u oculta la
+                                        seccion de
+                                        captacion de talentos en la pagina de Artistas.</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="showJoinSection">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- STORE TOGGLE (NEW) -->
+                        <div class="config-block" style="margin: 0;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h3 style="margin: 0; color: white;">HABILITAR TIENDA</h3>
+                                    <p style="color: #888; font-size: 0.8em; margin-top: 5px;">Muestra la pestaña
+                                        "TIENDA" en la barra de navegación.</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="showStore">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- CONTACT / WORK WITH US TOGGLE -->
+                        <div class="config-block" style="margin: 0;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h3 style="margin: 0; color: white;">SECCION "TRABAJA CON NOSOTROS"</h3>
+                                    <p style="color: #888; font-size: 0.8em; margin-top: 5px;">Muestra u oculta la
+                                        sección de contacto al final de las páginas.</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="showContact">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- FEATURED TOUR -->
+                        <div class="config-block" style="margin: 0;">
+                            <h3 style="margin-bottom: 15px; color: white;">TOUR DESTACADO</h3>
+                            <div class="form-group">
+                                <label class="form-label">SELECCIONAR TOUR DE PORTADA</label>
+                                <select class="form-select" id="featuredTourSelect">
+                                    <option value="">-- Ninguno (Ocultar Sección) --</option>
+                                </select>
+                            </div>
+
+                            <div id="tourPreview"
+                                style="display: none; margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.5); border-radius: 8px; border: 1px solid #333;">
+                                <p style="color: #888; font-size: 0.8em; margin-bottom: 5px;">VISTA PREVIA DE IMAGEN:
+                                </p>
+                                <img id="tourPreviewImg" src=""
+                                    style="width: 100%; height: 150px; object-fit: cover; border-radius: 4px; opacity: 0.8;">
+                                <h4 id="tourPreviewTitle"
+                                    style="margin-top: 10px; color: white; text-align: center; font-family: 'Oxanium';">
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT COLUMN: PROMOTIONS -->
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <div class="config-block" style="margin: 0; height: 100%;">
+                            <h3 style="margin-bottom: 20px; color: white;">SECCION DE PROMOCIONES</h3>
+
+                            <!-- Purple Backstage -->
+                            <div
+                                style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                    <div>
+                                        <h4 style="margin: 0; color: #b491cc; font-family: var(--font-primary);">PURPLE
+                                            BACKSTAGE
+                                        </h4>
+                                        <p style="color: #888; font-size: 0.8em; margin-top: 5px;">Campaña de membresia
+                                            de
+                                            YouTube.</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="showBackstage">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Enlace al Canal / Join</label>
+                                    <input type="text" class="form-input" id="backstageLink"
+                                        placeholder="https://youtube.com/...">
+                                </div>
+                            </div>
+
+                            <!-- Smart Promo Configuration -->
+                            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                    <div>
+                                        <h4 style="margin: 0; color: #307FE2; font-family: var(--font-primary);">
+                                            CONFIGURADOR DE
+                                            OFERTAS</h4>
+                                        <p style="color: #888; font-size: 0.8em; margin-top: 5px;">Personaliza
+                                            descuentos para la
+                                            Tienda y Perfiles.</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="showPromo">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="grid grid--2" style="gap: 15px; margin-bottom: 15px;">
+                                    <div>
+                                        <label class="form-label">Titulo de la Oferta</label>
+                                        <input type="text" class="form-input" id="promoTitle"
+                                            placeholder="Ej: SUMMER SALE">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Subtitulo / Etiqueta</label>
+                                        <input type="text" class="form-input" id="promoSubtitle"
+                                            placeholder="Ej: OFERTA LIMITADA">
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 15px;">
+                                    <label class="form-label">Descripción</label>
+                                    <input type="text" class="form-input" id="promoDescription"
+                                        placeholder="Ej: Los álbumes de tus artistas favoritos ahora con descuento...">
+                                </div>
+
+
+                                <div
+                                    style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                                    <label class="form-label"
+                                        style="margin-bottom: 15px; color: var(--ph-blue-accent);">CONFIGURACION DE
+                                        PORCENTAJES</label>
+
+                                    <div class="grid grid--2" style="gap: 15px;">
+                                        <div>
+                                            <label class="form-label">Descuento Albumes (%)</label>
+                                            <input type="number" class="form-input" id="promoDiscountAlbum"
+                                                placeholder="0 = Sin Oferta" min="0" max="100">
+                                        </div>
+                                        <div>
+                                            <label class="form-label">Descuento Merch (%)</label>
+                                            <input type="number" class="form-input" id="promoDiscountMerch"
+                                                placeholder="0 = Sin Oferta" min="0" max="100">
+                                        </div>
+                                    </div>
+                                    <p style="color: #666; font-size: 0.75em; margin-top: 10px;">* Deja en 0 para no
+                                        aplicar descuento a esa categoria.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div> <!-- End Grid Layout -->
+
+                <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
+                    <button type="submit" class="ph-button ph-button--primary ph-button--glow"
+                        style="min-width: 250px;">
+                        GUARDAR CAMBIOS
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Scripts -->
+    <script src="js/storage-db.js"></script>
+    <script src="js/admin-auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Auth Check logic adapted for layout
+            if (!checkAuth()) {
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('adminPanel').classList.remove('active');
+                // Redirect if not logged in to main admin to login
+                window.location.href = 'admin.html';
+                return;
+            } else {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('adminPanel').classList.add('active');
+            }
+
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                logout();
+                window.location.href = 'admin.html';
+            });
+
+            // Load Data
+            try {
+                await initDB();
+                const [config, tours] = await Promise.all([getSiteConfig(), getAllToursDB()]);
+
+                // Populate Tours Dropdown
+                const select = document.getElementById('featuredTourSelect');
+                tours.forEach(tour => {
+                    const option = document.createElement('option');
+                    option.value = tour.id;
+                    option.textContent = tour.title;
+                    select.appendChild(option);
+                });
+
+                // Populate Form
+                console.log('🔧 Loaded Config:', config); // DEBUG
+
+                if (config) {
+                    document.getElementById('showStats').checked = !!config.showStats;
+                    document.getElementById('showJoinSection').checked = config.showJoinSection !== false;
+                    document.getElementById('showContact').checked = config.showContact !== false; // Default true
+                    document.getElementById('showStore').checked = !!config.showStore;
+                }
+
+                // Promos
+                document.getElementById('showBackstage').checked = config.showBackstage || false;
+                document.getElementById('backstageLink').value = config.backstageLink || '';
+                document.getElementById('showPromo').checked = config.showPromo || false;
+
+                document.getElementById('promoTitle').value = config.promoTitle || '';
+                document.getElementById('promoSubtitle').value = config.promoSubtitle || '';
+                document.getElementById('promoDescription').value = config.promoDescription || '';
+
+                // New Split Discounts
+                document.getElementById('promoDiscountAlbum').value = config.promoDiscountAlbum || '';
+                document.getElementById('promoDiscountMerch').value = config.promoDiscountMerch || '';
+
+                // Stats
+                if (config.stats && config.stats.length === 3) {
+                    document.getElementById('stat1Num').value = config.stats[0].number;
+                    document.getElementById('stat1Label').value = config.stats[0].label;
+                    document.getElementById('stat2Num').value = config.stats[1].number;
+                    document.getElementById('stat2Label').value = config.stats[1].label;
+                    document.getElementById('stat3Num').value = config.stats[2].number;
+                    document.getElementById('stat3Label').value = config.stats[2].label;
+                }
+
+                // Featured Tour
+                if (config.featuredTourId) {
+                    select.value = config.featuredTourId;
+                    updatePreview(config.featuredTourId, tours);
+                }
+
+                // Preview Listener
+                select.addEventListener('change', (e) => updatePreview(e.target.value, tours));
+
+            } catch (err) {
+                console.error('Error loading config:', err);
+                alert('Error cargando configuración.');
+            }
+
+            // Save Handler
+            document.getElementById('homeConfigForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = e.target.querySelector('button');
+                btn.textContent = 'GUARDANDO...';
+
+                const newConfig = {
+                    showStats: document.getElementById('showStats').checked,
+                    showStats: document.getElementById('showStats').checked,
+                    showJoinSection: document.getElementById('showJoinSection').checked,
+                    showJoinSection: document.getElementById('showJoinSection').checked,
+                    showContact: document.getElementById('showContact').checked,
+                    showStore: document.getElementById('showStore').checked,
+                    // Promos
+                    // Promos
+                    showBackstage: document.getElementById('showBackstage').checked,
+                    backstageLink: document.getElementById('backstageLink').value,
+                    showPromo: document.getElementById('showPromo').checked,
+
+                    promoTitle: document.getElementById('promoTitle').value,
+                    promoSubtitle: document.getElementById('promoSubtitle').value,
+                    promoDescription: document.getElementById('promoDescription').value,
+
+                    // New Split Discounts
+                    promoDiscountAlbum: document.getElementById('promoDiscountAlbum').value,
+                    promoDiscountMerch: document.getElementById('promoDiscountMerch').value,
+
+                    stats: [
+                        { number: document.getElementById('stat1Num').value, label: document.getElementById('stat1Label').value },
+                        { number: document.getElementById('stat2Num').value, label: document.getElementById('stat2Label').value },
+                        { number: document.getElementById('stat3Num').value, label: document.getElementById('stat3Label').value }
+                    ],
+                    featuredTourId: document.getElementById('featuredTourSelect').value || null
+                };
+
+                try {
+                    await saveSiteConfig(newConfig);
+                    // Use new message style
+                    const msgEl = document.getElementById('formMessage');
+                    msgEl.innerHTML = `<div class="ph-alert ph-alert--success" style="padding: 15px; margin-bottom: 20px; text-align: center; border: 1px solid #2ecc71; background: rgba(46, 204, 113, 0.1); color: #2ecc71; border-radius: 8px;">✅ ¡Configuración guardada! Actualizando sitio web...</div>`;
+                    msgEl.scrollIntoView({ behavior: 'smooth' });
+
+                    setTimeout(() => {
+                        msgEl.innerHTML = '';
+                        btn.textContent = 'GUARDAR CAMBIOS';
+                    }, 2000);
+
+                } catch (saveErr) {
+                    alert('Error al guardar: ' + saveErr.message);
+                    btn.textContent = 'GUARDAR CAMBIOS';
+                }
+            });
+        });
+
+        function updatePreview(id, tours) {
+            const preview = document.getElementById('tourPreview');
+            if (!id) {
+                preview.style.display = 'none';
+                return;
+            }
+            const tour = tours.find(t => String(t.id) === String(id));
+            if (tour) {
+                document.getElementById('tourPreviewImg').src = tour.coverImage;
+                document.getElementById('tourPreviewTitle').textContent = tour.title;
+                preview.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Test Directo - Guardar Artista</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        button {
+            background: #61397C;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+        }
+
+        pre {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #61397C;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🧪 Test de Guardado Directo</h1>
+
+    <button onclick="testSave()">1. Guardar Artista de Prueba</button>
+    <button onclick="testLoad()">2. Ver Qué hay Guardado</button>
+    <button onclick="clearData()">3. Limpiar Todo</button>
+
+    <pre id="result">Haz click en los botones para testear...</pre>
+
+    <script>
+        function testSave() {
+            const artist = {
+                name: "R.N BOI TEST",
+                genre: "trap/hiphop/rap/newjazz",
+                bio: "Artista de prueba",
+                imageData: "",
+                spotifyUrl: "",
+                youtubeUrl: "",
+                appleMusicUrl: "",
+                instagramUrl: "",
+                tiktokUrl: "",
+                albums: [],
+                merch: []
+            };
+
+            // Intentar guardar
+            try {
+                const existing = localStorage.getItem('ph_artists');
+                const artists = existing ? JSON.parse(existing) : [];
+                artists.push(artist);
+                localStorage.setItem('ph_artists', JSON.stringify(artists));
+
+                document.getElementById('result').textContent =
+                    '✅ GUARDADO EXITOSO!\n\n' +
+                    'Total de artistas: ' + artists.length + '\n' +
+                    'Último artista: ' + JSON.stringify(artist, null, 2);
+            } catch (e) {
+                document.getElementById('result').textContent =
+                    '❌ ERROR AL GUARDAR:\n' + e.message;
+            }
+        }
+
+        function testLoad() {
+            try {
+                const stored = localStorage.getItem('ph_artists');
+                if (stored) {
+                    const artists = JSON.parse(stored);
+                    document.getElementById('result').textContent =
+                        '📦 DATOS ENCONTRADOS:\n\n' +
+                        'Total: ' + artists.length + ' artistas\n\n' +
+                        JSON.stringify(artists, null, 2);
+                } else {
+                    document.getElementById('result').textContent =
+                        '❌ NO HAY DATOS GUARDADOS';
+                }
+            } catch (e) {
+                document.getElementById('result').textContent =
+                    '❌ ERROR AL LEER:\n' + e.message;
+            }
+        }
+
+        function clearData() {
+            if (confirm('¿Eliminar todos los artistas de prueba?')) {
+                localStorage.removeItem('ph_artists');
+                document.getElementById('result').textContent = '✅ DATOS ELIMINADOS';
+            }
+        }
+    </script>
+</body>
+
+</html>

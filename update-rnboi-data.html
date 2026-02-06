@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualizar Datos de R.N BOI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(97, 57, 124, 0.3);
+            border-radius: 16px;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #61397C;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            color: #aaa;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .info-box {
+            background: rgba(97, 57, 124, 0.1);
+            border-left: 4px solid #61397C;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+
+        .info-box p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #b8b8ff;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(97, 57, 124, 0.4);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #61397C;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .button {
+            background: linear-gradient(135deg, #61397C 0%, #8854a0 100%);
+            color: #fff;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(97, 57, 124, 0.4);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .status.success {
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid rgba(46, 204, 113, 0.5);
+            color: #2ecc71;
+        }
+
+        .status.error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid rgba(231, 76, 60, 0.5);
+            color: #e74c3c;
+        }
+
+        .current-data {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .current-data h3 {
+            color: #61397C;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .current-data pre {
+            color: #aaa;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎵 Actualizar Datos de R.N BOI</h1>
+        <p class="subtitle">Herramienta para agregar foto de perfil y redes sociales</p>
+
+        <div class="info-box">
+            <p><strong>📋 Información Actual en IndexedDB:</strong></p>
+            <p>Artista: <strong>EL M DEL</strong> (R.N BOI)</p>
+            <p>Género: CUMBIERO galáctico</p>
+            <p>Foto actual: <strong id="currentImage">Verificando...</strong></p>
+            <p>Redes sociales: <strong id="currentSocials">Verificando...</strong></p>
+        </div>
+
+        <div class="current-data" id="currentDataDisplay"></div>
+
+        <form id="updateForm">
+            <h3 style="color: #61397C; margin-bottom: 20px;">Agregar/Actualizar Datos</h3>
+
+            <div class="form-group">
+                <label for="imageUrl">🖼️ URL Imagen de Perfil</label>
+                <input type="text" id="imageUrl" placeholder="Ej: assets/images/rnboi_portrait.png">
+                <small style="color: #888; font-size: 0.8rem; margin-top: 5px; display: block;">
+                    Pega la ruta de la imagen que se muestra en artist-profile.html
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="instagram">📷 Instagram</label>
+                <input type="url" id="instagram" placeholder="https://instagram.com/rnboi">
+            </div>
+
+            <div class="form-group">
+                <label for="youtube">▶️ YouTube</label>
+                <input type="url" id="youtube" placeholder="https://youtube.com/@rnboi">
+            </div>
+
+            <div class="form-group">
+                <label for="spotify">🎵 Spotify</label>
+                <input type="url" id="spotify" placeholder="https://open.spotify.com/artist/...">
+            </div>
+
+            <div class="form-group">
+                <label for="appleMusic">🍎 Apple Music</label>
+                <input type="url" id="appleMusic" placeholder="https://music.apple.com/artist/...">
+            </div>
+
+            <div class="form-group">
+                <label for="tiktok">🎬 TikTok</label>
+                <input type="url" id="tiktok" placeholder="https://tiktok.com/@rnboi">
+            </div>
+
+            <button type="submit" class="button">✅ ACTUALIZAR DATOS</button>
+        </form>
+
+        <div class="status" id="status"></div>
+    </div>
+
+    <script src="js/storage-db.js"></script>
+    <script>
+        let currentArtist = null;
+        let artistIndex = 0;
+
+        // Initialize
+        async function init() {
+            try {
+                await initDB();
+                const artists = await loadArtistsDB();
+
+                // Find the artist (assuming R.N BOI is "EL M DEL")
+                artistIndex = artists.findIndex(a => a.name && (
+                    a.name.includes('R.N BOI') ||
+                    a.name.includes('EL M DEL') ||
+                    a.name.includes('JOFRYVNG')
+                ));
+
+                if (artistIndex === -1) {
+                    // Use first artist if not found
+                    artistIndex = 0;
+                }
+
+                currentArtist = artists[artistIndex];
+
+                // Display current data
+                document.getElementById('currentImage').textContent =
+                    currentArtist.imageUrl || currentArtist.imageData ? 'Sí tiene imagen' : 'No tiene imagen';
+
+                const hasSocials = currentArtist.instagram || currentArtist.youtube ||
+                    currentArtist.spotify || currentArtist.appleMusic || currentArtist.tiktok;
+                document.getElementById('currentSocials').textContent =
+                    hasSocials ? 'Sí tiene redes' : 'No tiene redes';
+
+                // Show current data
+                const dataDisplay = document.getElementById('currentDataDisplay');
+                dataDisplay.innerHTML = `
+                    <h3>Datos Actuales:</h3>
+                    <pre>${JSON.stringify({
+                    name: currentArtist.name,
+                    imageUrl: currentArtist.imageUrl || 'No definido',
+                    imageData: currentArtist.imageData ? 'Base64 presente' : 'No presente',
+                    instagram: currentArtist.instagram || 'No definido',
+                    youtube: currentArtist.youtube || 'No definido',
+                    spotify: currentArtist.spotify || 'No definido',
+                    appleMusic: currentArtist.appleMusic || 'No definido',
+                    tiktok: currentArtist.tiktok || 'No definido'
+                }, null, 2)}</pre>
+                `;
+
+                // Pre-fill form with existing data
+                if (currentArtist.imageUrl) document.getElementById('imageUrl').value = currentArtist.imageUrl;
+                if (currentArtist.instagram) document.getElementById('instagram').value = currentArtist.instagram;
+                if (currentArtist.youtube) document.getElementById('youtube').value = currentArtist.youtube;
+                if (currentArtist.spotify) document.getElementById('spotify').value = currentArtist.spotify;
+                if (currentArtist.appleMusic) document.getElementById('appleMusic').value = currentArtist.appleMusic;
+                if (currentArtist.tiktok) document.getElementById('tiktok').value = currentArtist.tiktok;
+
+            } catch (error) {
+                console.error('Error al cargar datos:', error);
+                showStatus('Error al cargar los datos: ' + error.message, 'error');
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('updateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            try {
+                const artists = await loadArtistsDB();
+                const artist = artists[artistIndex];
+
+                // Update artist data
+                const imageUrl = document.getElementById('imageUrl').value.trim();
+                const instagram = document.getElementById('instagram').value.trim();
+                const youtube = document.getElementById('youtube').value.trim();
+                const spotify = document.getElementById('spotify').value.trim();
+                const appleMusic = document.getElementById('appleMusic').value.trim();
+                const tiktok = document.getElementById('tiktok').value.trim();
+
+                if (imageUrl) artist.imageUrl = imageUrl;
+                if (instagram) artist.instagram = instagram;
+                if (youtube) artist.youtube = youtube;
+                if (spotify) artist.spotify = spotify;
+                if (appleMusic) artist.appleMusic = appleMusic;
+                if (tiktok) artist.tiktok = tiktok;
+
+                // Save to IndexedDB
+                await saveArtistsDB(artists);
+
+                showStatus('✅ Datos actualizados correctamente! Recarga el admin panel para ver los cambios.', 'success');
+
+                // Refresh current data display
+                setTimeout(() => init(), 500);
+
+            } catch (error) {
+                console.error('Error al actualizar:', error);
+                showStatus('❌ Error al actualizar los datos: ' + error.message, 'error');
+            }
+        });
+
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+            statusEl.style.display = 'block';
+
+            setTimeout(() => {
+                statusEl.style.display = 'none';
+            }, 5000);
+        }
+
+        // Initialize on page load
+        init();
+    </script>
+</body>
+
+</html>

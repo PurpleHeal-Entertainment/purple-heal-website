@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <meta name="description"
+    content="Purple Heal Entertainment - Discográfica independiente con los mejores artistas emergentes">
+  <title>Purple Heal Entertainment | Discográfica Musical</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/reset.css?v=1.9">
+  <link rel="stylesheet" href="css/variables.css?v=1.9">
+  <link rel="stylesheet" href="css/global.css?v=1.9">
+  <link rel="stylesheet" href="css/components.css?v=2.1">
+  <link rel="stylesheet" href="css/components.css?v=2.4">
+
+  <!-- Favicon -->
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/logos/PURPLE HEAL LOGO PURPURA.svg">
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="ph-nav" id="navbar">
+    <div class="container ph-nav__container">
+      <a href="index.html">
+        <img src="assets/logos/PURPLE HEAL LOGO TEXTO BLANCO OPCION 2.svg" alt="Purple Heal Logo" class="ph-nav__logo">
+      </a>
+
+      <div class="ph-nav__menu">
+        <a href="index.html" class="ph-nav__link active">Inicio</a>
+        <a href="artists.html" class="ph-nav__link">Artistas</a>
+        <a href="tours.html" class="ph-nav__link">Tours</a>
+        <a href="shop.html" class="ph-nav__link" id="nav-shop" style="display: none;">Tienda</a>
+        <a href="about.html" class="ph-nav__link">Nosotros</a>
+      </div>
+
+      <div class="ph-nav__toggle" id="nav-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="ph-mobile-menu">
+    <div class="ph-mobile-menu__content">
+      <a href="index.html" class="ph-mobile-menu__link active">Inicio</a>
+      <a href="artists.html" class="ph-mobile-menu__link">Artistas</a>
+      <a href="tours.html" class="ph-mobile-menu__link">Tours</a>
+      <a href="shop.html" class="ph-mobile-menu__link" id="nav-shop-mobile" style="display: none;">Tienda</a>
+      <a href="about.html" class="ph-mobile-menu__link">Nosotros</a>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero fade-in">
+    <div class="hero__content">
+      <img src="assets/logos/PURPLE HEAL LOGO PURPURA EN PNG.png" alt="Purple Heal Logo" class="hero__logo">
+      <h1 class="hero__title">
+        CREANDO EL FUTURO<br>
+        DE LA MUSICA
+      </h1>
+      <p class="hero__subtitle">
+        Descubre a los artistas más talentosos y únicos de la nueva generación musical.
+        Purple Heal Entertainment es más que una discográfica, es una familia de creadores.
+      </p>
+      <div class="hero__actions"
+        style="display: flex; gap: var(--space-lg); justify-content: center; margin-top: var(--space-2xl); flex-wrap: wrap;">
+        <a href="artists.html" class="ph-button ph-button--primary">Ver Artistas</a>
+        <a href="about.html" class="ph-button ph-button--outline">Conoce mas</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED TOUR (Dynamic) -->
+  <section id="featured-tour-container"
+    style="display: none; position: relative; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1);"></section>
+
+  <!-- Featured Artists -->
+  <section id="featured" style="background: rgba(0, 0, 0, 0.3);">
+    <div class="container">
+      <h2 class="text-center slide-in-left">
+        NUESTROS <span class="text-gradient">ARTISTAS</span>
+      </h2>
+      <p class="text-center" style="color: var(--ph-gray-lighter); max-width: 600px; margin: 0 auto var(--space-3xl);">
+        Conoce a los talentosos artistas que forman parte de la familia Purple Heal
+      </p>
+
+      <div class="grid" id="artistsGrid"
+        style="display: flex; justify-content: center; gap: var(--space-lg); flex-wrap: wrap;">
+        <!-- Artists will be loaded dynamically from IndexedDB -->
+      </div>
+
+      <div style="text-align: center; margin-top: var(--space-3xl);">
+        <a href="artists.html" class="ph-button ph-button--gold">Ver Todos los Artistas</a>
+      </div>
+    </div>
+  </section>
+
+  </section>
+
+  <!-- NEW: PROMO SALE SECTION (Between Artists and About) -->
+  <section id="promo-sale-section" style="padding: var(--space-3xl) 0; display: none;">
+    <div class="container">
+      <!-- 2. Promo / Sale (Full Width Block) -->
+      <div id="promo-sale" class="ph-card fade-in"
+        style="display: none; border: 1px solid rgba(255,255,255,0.1); background: linear-gradient(135deg, rgba(20,20,25,0.95) 0%, rgba(30,10,10,0.95) 100%); overflow: hidden; position: relative;">
+
+        <div class="promo-full-card">
+
+          <!-- Left: Text Content -->
+          <div
+            style="flex: 1; padding: var(--space-3xl); display: flex; flex-direction: column; justify-content: center; align-items: flex-start;">
+            <p id="promo-subtitle"
+              style="color: var(--ph-blue-accent); font-family: 'Oxanium'; letter-spacing: 2px; font-size: var(--fs-md); margin-bottom: var(--space-md); text-transform: uppercase;">
+              OFERTA LIMITADA
+            </p>
+            <h2 id="promo-title-main"
+              style="font-size: clamp(3rem, 8vw, 6rem); line-height: 0.85; margin-bottom: var(--space-lg); font-family: 'Oxanium'; font-weight: 800; color: white;">
+              50% <span style="color: var(--ph-blue-accent);">OFF</span>
+            </h2>
+            <p id="promo-desc"
+              style="color: var(--ph-gray-lighter); font-size: 1.1rem; max-width: 450px; margin-bottom: var(--space-2xl); line-height: 1.6;">
+              Los álbumes de tus artistas favoritos ahora con descuento especial. Aprovecha esta oportunidad.
+            </p>
+            <a id="btn-promo" href="shop.html" class="ph-button ph-button--outline"
+              style="border-color: var(--ph-blue-accent); color: var(--ph-blue-accent); padding: 12px 30px; font-size: 1.1rem;">
+              VER OFERTAS
+            </a>
+          </div>
+
+          <!-- Right: Dynamic Product Collage (Grid controlled by CSS) -->
+          <div id="promo-images-container" class="promo-products-container"
+            style="flex: 1; min-height: 400px; position: relative;">
+            <!-- Images injected via JS -->
+            <div
+              style="position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(214, 0, 28, 0.1) 0%, transparent 70%); pointer-events: none; z-index: 0;">
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Background Graphic Elements -->
+        <div
+          style="position: absolute; top: -50px; right: -50px; font-size: 20rem; font-weight: bold; color: rgba(255,255,255,0.02); font-family: 'Oxanium'; z-index: 1;">
+          %</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about">
+    <div class="container">
+      <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+        <h2 class="slide-in-right">
+          SOBRE <span class="text-gradient">PURPLE HEAL</span>
+        </h2>
+        <p
+          style="font-size: var(--fs-lg); line-height: 1.8; color: var(--ph-gray-lighter); margin-bottom: var(--space-xl);">
+          Purple Heal Entertainment nació con la misión de dar voz a los artistas independientes
+          y revolucionarios que están redefiniendo la música contemporánea.
+        </p>
+        </p>
+
+        <!-- DYNAMIC STATS SECTION -->
+        <div id="home-stats-section" class="grid grid--3"
+          style="margin-top: var(--space-3xl); text-align: center; display: none;">
+          <div class="ph-card">
+            <div class="ph-card__content">
+              <h3 id="stat1-num" style="color: #307FE2; font-size: var(--fs-4xl); margin-bottom: var(--space-sm);">10+
+              </h3>
+              <p id="stat1-label" style="color: var(--ph-gray-lighter);">Artistas Talentosos</p>
+            </div>
+          </div>
+
+          <div class="ph-card">
+            <div class="ph-card__content">
+              <h3 id="stat2-num" style="color: #307FE2; font-size: var(--fs-4xl); margin-bottom: var(--space-sm);">50+
+              </h3>
+              <p id="stat2-label" style="color: var(--ph-gray-lighter);">Lanzamientos Musicales</p>
+            </div>
+          </div>
+
+          <div class="ph-card">
+            <div class="ph-card__content">
+              <h3 id="stat3-num" style="color: #307FE2; font-size: var(--fs-4xl); margin-bottom: var(--space-sm);">100K+
+              </h3>
+              <p id="stat3-label" style="color: var(--ph-gray-lighter);">Fans en el Mundo</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEW: PROMO SALE SECTION (Placed after About? No, User said: "por debajo de artistas ... por encima de SOBRE PURPLE HEAL") -->
+  <!-- So it should be BEFORE About. Wait.
+       Order: Artists (#featured) -> Sale -> About (#about) -> Backstage
+  -->
+
+
+  <!-- NEW: BACKSTAGE SECTION (Below About) -->
+  <section id="backstage-section" style="padding: var(--space-3xl) 0; display: none;">
+    <div class="container">
+      <!-- 1. Purple Backstage (Centered) -->
+      <div id="promo-backstage-wrapper" style="max-width: 800px; margin: 0 auto; display: none;">
+        <div id="promo-backstage" class="ph-card"
+          style="border-left: 4px solid var(--ph-purple); background: linear-gradient(145deg, rgba(30,15,40,0.9), rgba(10,10,12,0.95));">
+          <div class="ph-card__content"
+            style="display: flex; flex-direction: column; justify-content: center; height: 100%; text-align: left;">
+            <div
+              style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-md); margin-bottom: var(--space-md);">
+              <p style="color: white; font-weight: bold; font-size: 1.1em;">QUE ES PURPLE BACKSTAGE?</p>
+              <span
+                style="background: rgba(139, 92, 246, 0.2); color: var(--ph-purple); padding: 4px 8px; border-radius: 4px; font-size: 0.8em; text-transform: uppercase;">MEMBRESÍA
+                DE YOUTUBE</span>
+            </div>
+
+            <ul
+              style="list-style: none; margin-bottom: var(--space-lg); color: var(--ph-gray-lighter); line-height: 1.6;">
+              <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                <span style="margin-right: 10px; min-width: 20px;">🎥</span>
+                <span>Acceso a detras de camaras y entrevistas exclusivas</span>
+              </li>
+              <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                <span style="margin-right: 10px; min-width: 20px;">💬</span>
+                <span>Comentarios destacados y la posibilidad de recibir una respuesta por parte de uno de los artistas
+                  de Purple Heal. ¡Con suerte te tocará tu favorito!</span>
+              </li>
+              <li style="display: flex; align-items: flex-start;">
+                <span style="margin-right: 10px; min-width: 20px;">🤝</span>
+                <span>Ayuda directa a la produccion y campañas publicitarias</span>
+              </li>
+            </ul>
+            <a id="btn-backstage" href="#" target="_blank" class="ph-button ph-button--primary ph-button--glow"
+              style="align-self: flex-start;">
+              UNIRME AHORA
+            </a>
+            <p
+              style="font-size: 0.75em; color: rgba(255,255,255,0.5); margin-top: 15px; font-style: italic; line-height: 1.4;">
+              * Esta iniciativa busca mejorar la gestión de nuestros artistas, equipos de producción y campañas
+              publicitarias. Aunque este método no cubrirá todas nuestras necesidades, es un grano de arena que tanto
+              nuestro equipo como los artistas agradecen profundamente.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED TOUR SECTION -->
+  <section id="featured-tour-container" style="display: none; padding: 0;"></section>
+
+  <!-- Contact Section -->
+  <section id="contact" style="background: rgba(0, 0, 0, 0.3);">
+    <div class="container">
+      <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+        <h2>TRABAJA CON NOSOTROS</h2>
+        <p style="font-size: var(--fs-lg); color: var(--ph-gray-lighter); margin-bottom: var(--space-2xl);">
+          Estamos buscando nuevas personas para añadir a nuestras filas de equipo, y tambien colaboraciones emocionantes
+          en todo momento. Contactanos para mas informacion.
+        </p>
+        <a href="mailto:purplehealent@gmail.com" class="ph-button ph-button--gold">Contactanos</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="ph-footer">
+    <div class="container">
+      <div class="ph-footer__content">
+        <div class="ph-footer__section">
+          <h3>Purple Heal Entertainment</h3>
+          <p style="color: var(--ph-gray-light); margin-top: var(--space-sm);">
+            Creando el futuro de la música, un artista a la vez.
+          </p>
+        </div>
+
+        <div class="ph-footer__section">
+          <h3>Enlaces Rapidos</h3>
+          <div class="ph-footer__links">
+            <a href="index.html" class="ph-footer__link">Home</a>
+            <a href="artists.html" class="ph-footer__link">Artistas</a>
+            <a href="#about" class="ph-footer__link">Nosotros</a>
+            <a href="#contact" class="ph-footer__link">Contacto</a>
+          </div>
+        </div>
+
+        <div class="ph-footer__section">
+          <h3>Siguenos</h3>
+          <div class="ph-footer__links">
+            <a href="https://www.instagram.com/purpleheal_ent/" class="ph-footer__link" target="_blank">Instagram</a>
+            <a href="https://www.x.com/PURPLEHEAL" class="ph-footer__link" target="_blank">Twitter</a>
+            <a href="https://www.youtube.com/@purplehealent" class="ph-footer__link" target="_blank">YouTube</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="ph-footer__bottom">
+        <p>&copy; 2026 Purple Heal Entertainment. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script src="js/storage-db.js?v=2.1"></script>
+  <script src="js/main.js?v=2.1"></script>
+  <script>
+    // Load artists from IndexedDB
+    async function loadArtists() {
+      const artists = await loadArtistsDB();
+      const grid = document.getElementById('artistsGrid');
+
+      if (!grid) return;
+
+      if (artists && artists.length > 0) {
+        // Show only first 3 artists on homepage
+        const displayArtists = artists.slice(0, 3);
+
+
+        grid.innerHTML = displayArtists.map((artist, index) => `
+                <a href="artist-profile.html?artist=${index}" class="artist-card">
+                    <img src="${artist.image || 'assets/images/placeholder.png'}" alt="${artist.name}"
+                        class="artist-card__image">
+                    <div class="artist-card__overlay">
+                        <p class="artist-card__genre">${artist.genre || 'Artista'}</p>
+                        <h3 class="artist-card__name">${artist.name}</h3>
+                        <p class="artist-card__bio">
+                            ${artist.bio ? (artist.bio.substring(0, 120) + (artist.bio.length > 120 ? '...' : '')) : 'Descubre más'}
+                        </p>
+                    </div>
+                </a>
+            `).join('');
+      } else {
+        grid.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: var(--space-xl);">
+                    <p style="color: var(--ph-gray-lighter);">No hay artistas disponibles</p>
+                </div>
+            `;
+      }
+    }
+
+
+    // Helper:    // Helper: Shuffle Array
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadArtists(); // Existing artist load
+
+      try {
+        await initDB();
+        const config = await getSiteConfig();
+
+        // 1. Handle Stats
+        const statsSection = document.getElementById('home-stats-section');
+        if (config.showStats) {
+          statsSection.style.display = 'grid';
+
+          if (config.stats && config.stats.length === 3) {
+            config.stats.forEach((s, i) => {
+              const numId = `stat${i + 1}-num`;
+              const labelId = `stat${i + 1}-label`;
+              const el = document.getElementById(numId)?.parentElement?.parentElement;
+              if (el) {
+                if (s.number && s.number.trim() !== '') {
+                  document.getElementById(numId).textContent = s.number;
+                  document.getElementById(labelId).textContent = s.label;
+                  el.style.display = 'block';
+                } else {
+                  el.style.display = 'none';
+                }
+              }
+            });
+          }
+        } else {
+          statsSection.style.display = 'none';
+        }
+
+        // 2 & 3. Promos - Independent Sections Logic
+        const backstageSection = document.getElementById('backstage-section');
+        const backstageWrapper = document.getElementById('promo-backstage-wrapper');
+        const saleSection = document.getElementById('promo-sale-section');
+        const saleCard = document.getElementById('promo-sale');
+
+        // Handle Backstage Visibility
+        if (config.showBackstage && backstageWrapper) {
+          backstageSection.style.display = 'block';
+          backstageWrapper.style.display = 'block';
+          const btn = document.getElementById('btn-backstage');
+          if (btn) btn.href = config.backstageLink || '#';
+        }
+
+        // Handle Contact Section Visibility
+        const contactSection = document.getElementById('contact');
+        if (contactSection) {
+          const showContact = config.showContact !== false; // Default to true
+          contactSection.style.display = showContact ? 'block' : 'none';
+        }
+
+        // Handle Sale Promo Visibility
+        if (config.showPromo && saleCard) {
+          saleSection.style.display = 'block';
+          saleCard.style.display = 'block';
+
+          const btn = document.getElementById('btn-promo');
+          if (btn) btn.href = config.promoLink || 'shop.html';
+
+          const titleEl = document.getElementById('promo-title-main');
+          const subtitleEl = document.getElementById('promo-subtitle');
+
+          const descEl = document.getElementById('promo-desc');
+
+          const discAlbum = config.promoDiscountAlbum ? parseInt(config.promoDiscountAlbum) : 0;
+          const discMerch = config.promoDiscountMerch ? parseInt(config.promoDiscountMerch) : 0;
+          const maxDisc = Math.max(discAlbum, discMerch);
+
+          if (titleEl && maxDisc > 0) {
+            titleEl.innerHTML = `${maxDisc}% <span style="color: var(--ph-blue-accent);">OFF</span>`;
+          } else if (titleEl && config.promoTitle) {
+            titleEl.textContent = config.promoTitle;
+          }
+
+          if (subtitleEl) {
+            if (config.promoSubtitle) {
+              subtitleEl.textContent = config.promoSubtitle;
+            } else {
+              // Fallback Logic
+              if (discAlbum > 0 && discMerch > 0 && discAlbum === discMerch) {
+                subtitleEl.textContent = 'DESCUENTO EN TODOS LOS PRODUCTOS';
+              } else if (discAlbum > 0) {
+                subtitleEl.textContent = 'OFERTA EN ÁLBUMES';
+              } else if (discMerch > 0) {
+                subtitleEl.textContent = 'DESCUENTO EN MERCH';
+              } else {
+                subtitleEl.textContent = 'GRANDES OFERTAS';
+              }
+            }
+          }
+
+          if (descEl && config.promoDescription) {
+            descEl.textContent = config.promoDescription;
+          }
+
+          // Random Products
+          try {
+            const artists = await loadArtistsDB();
+            if (artists && artists.length > 0) {
+              let allProducts = [];
+              // Collect all products with images
+              artists.forEach(artist => {
+                if (artist.albums) {
+                  artist.albums.forEach(album => {
+                    // Robust check for image
+                    let img = null;
+                    if (album.images && album.images.length > 0) img = album.images[0];
+                    else if (album.cover) img = album.cover;
+                    else if (album.image) img = album.image;
+
+                    if (img) allProducts.push({ img: img, type: 'album' });
+                  });
+                }
+                if (artist.merch) {
+                  artist.merch.forEach(item => {
+                    // Robust check for image
+                    let img = null;
+                    if (item.images && item.images.length > 0) img = item.images[0];
+                    else if (item.image) img = item.image;
+
+                    if (img) allProducts.push({ img: img, type: 'merch' });
+                  });
+                }
+              });
+              const imageContainer = document.getElementById('promo-images-container');
+
+              if (imageContainer) {
+                const bg = imageContainer.querySelector('div[style*="radial-gradient"]');
+                imageContainer.innerHTML = '';
+                if (bg) imageContainer.appendChild(bg);
+
+                let productsToShow = [];
+                if (allProducts.length > 0) {
+                  productsToShow = shuffleArray(allProducts).slice(0, 3);
+                } else {
+                  // Fallback placeholders
+                  productsToShow = [
+                    { img: 'assets/images/placeholder.png' },
+                    { img: 'assets/images/placeholder.png' }
+                  ];
+                }
+
+                // Set class for flexible styling (promo-count-1, promo-count-2, promo-count-3)
+                imageContainer.className = `promo-products-container promo-count-${productsToShow.length}`;
+
+                productsToShow.forEach((prod, i) => {
+                  const img = document.createElement('img');
+                  img.src = prod.img;
+                  // Add specific item class for robust CSS targeting
+                  img.className = `promo-image-collage promo-item-${i} fade-in`;
+                  img.alt = 'Producto en oferta';
+                  imageContainer.appendChild(img);
+                });
+              }
+            }
+          } catch (e) {
+            console.error('Promo Logic Error:', e);
+          }
+        }
+
+
+
+        // Featured Tour
+        if (config.featuredTourId) {
+          const tour = await getTourByIdDB(config.featuredTourId);
+          const container = document.getElementById('featured-tour-container');
+          if (tour && container) {
+            container.style.display = 'block';
+            container.innerHTML = `
+                    <div style="position: relative; width: 100%; height: 400px; overflow: hidden;">
+                        <div style="position: absolute; inset: 0; background-image: url('${tour.coverImage}'); background-size: cover; background-position: center;"></div>
+                        <div style="position: absolute; inset: 0; background: linear-gradient(to right, #000 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.8) 100%);"></div>
+                        <div class="container" style="position: relative; height: 100%; display: flex; align-items: center; justify-content: flex-start;">
+                            <div class="fade-in" style="max-width: 600px; padding: var(--space-xl);">
+                                <h4 style="color: var(--ph-blue-accent); font-family: 'Oxanium'; text-transform: uppercase; letter-spacing: 2px; margin-bottom: var(--space-sm);">TOUR DESTACADO</h4>
+                                <h2 style="font-size: clamp(2rem, 5vw, 4rem); line-height: 1.1; margin-bottom: var(--space-md); text-transform: uppercase;">${tour.title}</h2>
+                                <a href="tours.html" class="ph-button ph-button--primary ph-button--glow">VER DETALLES Y FECHAS</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+          }
+        }
+
+      } catch (err) {
+        console.error('Home Config Error:', err);
+        document.getElementById('home-stats-section').style.display = 'grid';
+      }
+    });
+  </script>
+</body>
+
+</html>

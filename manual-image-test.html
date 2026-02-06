@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Manual Image Save Test</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            background: #8a2be2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        input[type="file"] {
+            margin: 10px 0;
+        }
+
+        pre {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 5px;
+            overflow: auto;
+            max-height: 400px;
+        }
+
+        .success {
+            color: #00ff00;
+        }
+
+        .error {
+            color: #ff0000;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🔧 Manual Image Save to R.N BOI</h1>
+
+    <input type="file" id="imageInput" accept="image/*">
+    <button onclick="saveImageToArtist0()">Save Image to R.N BOI (Artist 0)</button>
+    <button onclick="checkResult()">Check Result</button>
+
+    <div id="output"></div>
+
+    <script src="js/storage-db.js"></script>
+    <script>
+        let selectedImageData = null;
+
+        document.getElementById('imageInput').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    selectedImageData = event.target.result;
+                    output.innerHTML = `<pre class="success">✅ Image loaded: ${selectedImageData.length} characters</pre>`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        async function saveImageToArtist0() {
+            const output = document.getElementById('output');
+
+            if (!selectedImageData) {
+                output.innerHTML = '<pre class="error">❌ Please select an image first!</pre>';
+                return;
+            }
+
+            try {
+                await initDB();
+                const artists = await loadArtistsDB();
+
+                output.innerHTML = `<pre>Loaded ${artists.length} artists\nArtist 0: ${artists[0].name}</pre>`;
+
+                // Add imageData to R.N BOI
+                artists[0].imageData = selectedImageData;
+                artists[0].manualSaveTimestamp = new Date().toISOString();
+
+                output.innerHTML += `<pre>Saving imageData (${selectedImageData.length} chars) to ${artists[0].name}...</pre>`;
+
+                await saveArtistsDB(artists);
+
+                output.innerHTML += `<pre class="success">✅ Saved successfully!</pre>`;
+
+            } catch (error) {
+                output.innerHTML += `<pre class="error">❌ Error: ${error.message}\n${error.stack}</pre>`;
+            }
+        }
+
+        async function checkResult() {
+            const output = document.getElementById('output');
+
+            try {
+                await initDB();
+                const artists = await loadArtistsDB();
+
+                output.innerHTML = '<h2>Current State:</h2>';
+
+                artists.forEach((artist, index) => {
+                    const hasImage = !!artist.imageData;
+                    const imageLength = artist.imageData ? artist.imageData.length : 0;
+
+                    output.innerHTML += `<pre>Artist ${index}: ${artist.name}
+  - Has imageData: ${hasImage ? '✅ YES' : '❌ NO'}
+  - Image length: ${imageLength}
+  - Manual save timestamp: ${artist.manualSaveTimestamp || 'N/A'}
+</pre>`;
+                });
+
+            } catch (error) {
+                output.innerHTML += `<pre class="error">❌ Error: ${error.message}</pre>`;
+            }
+        }
+    </script>
+</body>
+
+</html>

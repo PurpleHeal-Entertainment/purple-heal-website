@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 2888 1073" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(1,0,0,1,-56.441889,-963.830218)">
+        <g transform="matrix(3.062047,0,-0.076551,3.062047,-1804.052261,-2122.327318)">
+            <path d="M1196.85,1259.843L1165.354,1259.843L1174.803,1165.354L1143.307,1165.354L1146.457,1133.858L1177.953,1133.858L1190.551,1007.874L1222.047,1007.874L1196.85,1259.843Z" style="fill:rgb(97,57,124);"/>
+            <path d="M976.378,1259.843L944.882,1259.843L970.079,1007.874L1127.559,1007.874L1111.811,1165.354L1048.819,1165.354L1039.37,1259.843L1007.874,1259.843L1017.323,1165.354L985.827,1165.354L976.378,1259.843ZM998.425,1039.37L988.976,1133.858L1083.465,1133.858L1092.913,1039.37L1061.417,1039.37L1055.118,1102.362L1023.622,1102.362L1029.921,1039.37L998.425,1039.37Z" style="fill:rgb(97,57,124);"/>
+        </g>
+        <g transform="matrix(3.062047,0,0,3.062047,-2829.407864,-1828.950075)">
+            <g>
+                <g transform="matrix(1,0,0,1,944.882,1259.843)">
+                    <text x="0px" y="0px" style="font-family:'SquareOne-Bold', 'Square One';font-weight:700;font-size:99.294px;fill:white;">P</text>
+                </g>
+                <g transform="matrix(1,0,0,1,1039.171,1259.843)">
+                    <text x="0px" y="0px" style="font-family:'SquareOne-Bold', 'Square One';font-weight:700;font-size:99.294px;fill:white;">U<tspan x="94.289px 188.578px 282.867px 377.157px 471.446px 502.686px 596.975px 691.265px 785.554px " y="0px 0px 0px 0px 0px 0px 0px 0px 0px ">RPLE HEAL</tspan></text>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

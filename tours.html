@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="Purple Heal Entertainment - Tours y Giras Mundiales de nuestros artistas">
+    <title>Tours | Purple Heal Entertainment</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/reset.css?v=1.9">
+    <link rel="stylesheet" href="css/variables.css?v=1.9">
+    <link rel="stylesheet" href="css/global.css?v=1.9">
+    <link rel="stylesheet" href="css/components.css?v=1.9">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/logos/PURPLE HEAL LOGO PURPURA.svg">
+
+    <style>
+        /* Specific page overrides */
+        body {
+            background-color: #050505;
+            /* Deep black for tours */
+        }
+
+        /* Solid Navbar for Tours Page */
+        .ph-nav.solid-nav {
+            background: #000 !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Tour Block Styles */
+        .tour-block {
+            margin-bottom: var(--space-4xl);
+        }
+
+        .tour-banner {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 3/1;
+            object-fit: cover;
+            display: block;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tour-dates {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: var(--space-2xl) var(--space-md);
+        }
+
+        .tour-date-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-lg) 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .tour-date-row:hover {
+            background: rgba(255, 255, 255, 0.02);
+            padding-left: var(--space-md);
+            padding-right: var(--space-md);
+        }
+
+        .tour-date-info {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+        }
+
+        .tour-date-main {
+            font-size: var(--fs-lg);
+            font-weight: bold;
+            color: var(--ph-white);
+            font-family: 'Oxanium', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .tour-venue {
+            font-size: var(--fs-md);
+            color: var(--ph-gray-light);
+            text-transform: uppercase;
+        }
+
+        /* Buttons */
+        .ticket-btn {
+            background: var(--ph-white);
+            color: #000;
+            padding: 8px 24px;
+            font-family: 'Oxanium', sans-serif;
+            font-weight: bold;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+
+        .ticket-btn:hover {
+            background: var(--ph-gray-light);
+            transform: translateY(-2px);
+        }
+
+        .status-badge {
+            font-family: 'Oxanium', sans-serif;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 8px 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--ph-gray-light);
+            cursor: default;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .tour-banner {
+                aspect-ratio: 16/9;
+                /* Taller on mobile for better visibility */
+            }
+
+            .tour-date-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-md);
+            }
+
+            .tour-actions {
+                width: 100%;
+            }
+
+            .ticket-btn,
+            .status-badge {
+                width: 100%;
+                text-align: center;
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation (Solid Background) -->
+    <nav class="ph-nav solid-nav" id="navbar">
+        <div class="container ph-nav__container">
+            <a href="index.html">
+                <img src="assets/logos/PURPLE HEAL LOGO TEXTO BLANCO OPCION 2.svg" alt="Purple Heal Logo"
+                    class="ph-nav__logo">
+            </a>
+
+            <div class="ph-nav__menu">
+                <a href="index.html" class="ph-nav__link">Inicio</a>
+                <a href="artists.html" class="ph-nav__link">Artistas</a>
+                <a href="tours.html" class="ph-nav__link active">Tours</a>
+                <a href="shop.html" class="ph-nav__link" id="nav-shop" style="display: none;">Tienda</a>
+                <a href="about.html" class="ph-nav__link">Nosotros</a>
+            </div>
+
+            <div class="ph-nav__toggle" id="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="ph-mobile-menu">
+        <div class="ph-mobile-menu__content">
+            <a href="index.html" class="ph-mobile-menu__link">Inicio</a>
+            <a href="artists.html" class="ph-mobile-menu__link">Artistas</a>
+            <a href="tours.html" class="ph-mobile-menu__link active">Tours</a>
+            <a href="tours.html" class="ph-mobile-menu__link">Tours</a>
+            <a href="shop.html" class="ph-mobile-menu__link" id="nav-shop-mobile" style="display: none;">Tienda</a>
+            <a href="about.html" class="ph-mobile-menu__link">Nosotros</a>
+        </div>
+    </div>
+
+    <!-- Tours Content -->
+    <main id="tours-container" style="min-height: 80vh; padding-top: 100px;">
+        <!-- Loaded dynamically -->
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 50vh;">
+            <div class="spinner"></div>
+            <p style="margin-top: var(--space-md); color: var(--ph-gray-light);">Cargando giras...</p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="ph-footer">
+        <div class="container">
+            <div class="ph-footer__content">
+                <div class="ph-footer__section">
+                    <h3>Purple Heal Entertainment</h3>
+                    <p style="color: var(--ph-gray-light); margin-top: var(--space-sm);">
+                        Creando el futuro de la música, un artista a la vez.
+                    </p>
+                </div>
+
+                <div class="ph-footer__section">
+                    <h3>Enlaces Rapidos</h3>
+                    <div class="ph-footer__links">
+                        <a href="index.html" class="ph-footer__link">Home</a>
+                        <a href="artists.html" class="ph-footer__link">Artistas</a>
+                        <a href="tours.html" class="ph-footer__link">Tours</a>
+                        <a href="#about" class="ph-footer__link">Nosotros</a>
+                        <a href="#contact" class="ph-footer__link">Contacto</a>
+                    </div>
+                </div>
+
+                <div class="ph-footer__section">
+                    <h3>Siguenos</h3>
+                    <div class="ph-footer__links">
+                        <a href="https://www.instagram.com/purpleheal_ent/" class="ph-footer__link"
+                            target="_blank">Instagram</a>
+                        <a href="https://www.x.com/PURPLEHEAL" class="ph-footer__link" target="_blank">Twitter</a>
+                        <a href="https://www.youtube.com/@purplehealent" class="ph-footer__link"
+                            target="_blank">YouTube</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ph-footer__bottom">
+                <p>&copy; 2026 Purple Heal Entertainment. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/storage-db.js?v=2.1"></script>
+    <script src="js/main.js?v=2.1"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            const container = document.getElementById('tours-container');
+
+            try {
+                // Initialize DB and load tours
+                await initDB();
+                const tours = await getAllToursDB();
+
+                if (!tours || tours.length === 0) {
+                    renderEmptyState(container);
+                    return;
+                }
+
+                renderTours(container, tours);
+
+            } catch (error) {
+                console.error('Error loading tours:', error);
+                renderEmptyState(container);
+            }
+        });
+
+        function renderEmptyState(container) {
+            container.innerHTML = `
+                <div style="height: 60vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: var(--space-xl);">
+                    <h1 style="font-size: clamp(3rem, 8vw, 6rem); color: var(--ph-white); letter-spacing: 0.1em; margin-bottom: var(--space-lg);">
+                        PROXIMAMENTE
+                    </h1>
+                    <p style="color: var(--ph-gray-light); font-size: var(--fs-lg); max-width: 600px;">
+                        Estamos preparando las próximas fechas. Mantente atento a nuestras redes sociales para los anuncios oficiales.
+                    </p>
+                </div>
+            `;
+        }
+
+        function renderTours(container, tours) {
+            container.innerHTML = tours.map(tour => `
+                <section class="tour-block fade-in">
+                    <!-- Banner -->
+                    <img src="${tour.coverImage}" alt="${tour.title}" class="tour-banner">
+                    
+                    <!-- Dates List -->
+                    <div class="tour-dates">
+                        <h2 style="text-align: center; margin-bottom: var(--space-2xl); text-transform: uppercase; letter-spacing: 0.1em;">
+                            ${tour.title}
+                        </h2>
+
+                        ${tour.dates.length > 0 ? tour.dates.map(date => {
+                // Date formatting
+                const dateParts = date.date.split('-');
+                const dateObj = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+
+                const day = dateObj.getDate();
+                const month = dateObj.toLocaleDateString('es-ES', { month: 'long' }).toUpperCase();
+                const year = dateObj.getFullYear();
+
+                // Button Logic
+                const status = date.status ? date.status.trim().toLowerCase() : 'ticket';
+                // Debug log to help identify issues
+                console.log('Date Status:', status, 'Original:', date.status);
+
+                let actionBtn = '';
+                if (status === 'sold_out') {
+                    actionBtn = '<div class="status-badge" style="color: #e74c3c; border-color: #e74c3c;">SOLD OUT</div>';
+                } else if (status === 'coming_soon') {
+                    actionBtn = '<div class="status-badge">PROXIMAMENTE</div>';
+                } else {
+                    actionBtn = `<a href="${date.ticketLink}" target="_blank" class="ticket-btn">TICKETS</a>`;
+                }
+
+                return `
+                                <div class="tour-date-row">
+                                    <div class="tour-date-info">
+                                        <div class="tour-date-main">
+                                            ${month} ${day}, ${year} <span style="color: var(--ph-gray-light); margin: 0 8px;">/</span> ${date.city}
+                                        </div>
+                                        <div class="tour-venue">
+                                            ${date.venue}
+                                        </div>
+                                    </div>
+                                    <div class="tour-actions">
+                                        ${actionBtn}
+                                    </div>
+                                </div>
+                            `;
+            }).join('') : '<p class="text-center" style="color: var(--ph-gray-light);">Fechas por anunciar</p>'}
+                    </div>
+                </section>
+            `).join('');
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Debug Tour Update</title>
+    <style>
+        body {
+            background: #111;
+            color: white;
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        button {
+            padding: 10px;
+            background: #9b59b6;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        pre {
+            background: #222;
+            padding: 10px;
+        }
+
+        .tour-item {
+            border: 1px solid #444;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .success {
+            color: #2ecc71;
+        }
+
+        .error {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Herramienta de Diagnóstico de Actualización</h1>
+    <div id="output">Cargando...</div>
+
+    <script src="js/storage-db.js?v=DEBUG"></script>
+    <script>
+        const output = document.getElementById('output');
+
+        function log(msg, type = '') {
+            const div = document.createElement('div');
+            div.textContent = msg;
+            if (type) div.className = type;
+            output.appendChild(div);
+            console.log(msg);
+        }
+
+        async function init() {
+            try {
+                await initDB();
+                log('DB Initialized');
+                await refreshList();
+            } catch (e) {
+                log('Error init: ' + e.message, 'error');
+            }
+        }
+
+        async function refreshList() {
+            output.innerHTML = '<h2>Lista de Tours en BD</h2>';
+            const tours = await getAllToursDB();
+
+            if (tours.length === 0) {
+                output.innerHTML += '<p>No hay tours.</p>';
+                return;
+            }
+
+            tours.forEach(tour => {
+                const div = document.createElement('div');
+                div.className = 'tour-item';
+                div.innerHTML = `
+                    <h3>ID: ${tour.id} (${typeof tour.id}) - ${tour.title}</h3>
+                    <pre>${JSON.stringify(tour.dates, null, 2)}</pre>
+                    <button onclick="forceUpdateTour(${tour.id})">FORZAR SET "SOLD OUT" (Update)</button>
+                    <br>
+                    <button onclick="checkIdType(${tour.id})">🔍 Check ID Type</button>
+                `;
+                output.appendChild(div);
+            });
+        }
+
+        window.forceUpdateTour = async (id) => {
+            try {
+                // Ensure ID is number because HTML attributes pass strings
+                const numericId = Number(id);
+                log(`Starting update for ID: ${numericId}...`);
+
+                const tours = await getAllToursDB();
+                const tour = tours.find(t => t.id === numericId);
+
+                if (!tour) {
+                    log('Tour not found!', 'error');
+                    return;
+                }
+
+                // MODIFY
+                if (tour.dates.length > 0) {
+                    tour.dates[0].status = 'sold_out';
+                    tour.dates[0].updatedByDebug = true; // Flag to prove it changed
+                } else {
+                    log('No dates to update, adding dummy date');
+                    tour.dates.push({ date: '2099-01-01', status: 'sold_out' });
+                }
+
+                log('Saving modified tour...');
+                await saveTourDB(tour);
+
+                log('Save complete. Reloading list from DB...');
+                await refreshList();
+                log('VERIFY ABOVE if status is "sold_out".', 'success');
+
+            } catch (e) {
+                log('Update failed: ' + e.message, 'error');
+                console.error(e);
+            }
+        };
+
+        window.checkIdType = async (id) => {
+            const numericId = Number(id);
+            const tours = await getAllToursDB();
+            const tour = tours.find(t => t.id === numericId);
+            if (tour) {
+                alert(`ID en DB: ${tour.id} (Tipo: ${typeof tour.id})`);
+            } else {
+                alert('No encontrado');
+            }
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

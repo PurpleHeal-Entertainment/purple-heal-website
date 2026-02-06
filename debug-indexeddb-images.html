@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Debug IndexedDB Images</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            background: #8a2be2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        pre {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 5px;
+            overflow: auto;
+            max-height: 400px;
+        }
+
+        .success {
+            color: #00ff00;
+        }
+
+        .error {
+            color: #ff0000;
+        }
+
+        .warning {
+            color: #ffaa00;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🔍 IndexedDB Image Debug Tool</h1>
+
+    <button onclick="checkImages()">1. Check All Images in IndexedDB</button>
+    <button onclick="testSaveImage()">2. Test Save Single Image</button>
+    <button onclick="clearDB()">3. Clear All Data</button>
+
+    <div id="output"></div>
+
+    <script src="js/storage-db.js"></script>
+    <script>
+        async function checkImages() {
+            const output = document.getElementById('output');
+            output.innerHTML = '<h2>Checking IndexedDB...</h2>';
+
+            try {
+                await initDB();
+                const artists = await loadArtistsDB();
+
+                output.innerHTML += `<pre class="success">✅ Loaded ${artists.length} artists from IndexedDB</pre>`;
+
+                artists.forEach((artist, index) => {
+                    const hasImage = !!artist.imageData;
+                    const imageLength = artist.imageData ? artist.imageData.length : 0;
+                    const isBase64 = artist.imageData ? artist.imageData.startsWith('data:image') : false;
+
+                    output.innerHTML += `<pre>
+Artist ${index}: ${artist.name}
+  - Has imageData: ${hasImage ? '✅ YES' : '❌ NO'}
+  - Image length: ${imageLength} characters
+  - Is valid base64: ${isBase64 ? '✅ YES' : '❌ NO'}
+  - First 100 chars: ${artist.imageData ? artist.imageData.substring(0, 100) : 'N/A'}
+</pre>`;
+                });
+
+            } catch (error) {
+                output.innerHTML += `<pre class="error">❌ Error: ${error.message}\n${error.stack}</pre>`;
+            }
+        }
+
+        async function testSaveImage() {
+            const output = document.getElementById('output');
+            output.innerHTML = '<h2>Testing Save...</h2>';
+
+            // Create test base64 image (tiny 1x1 red pixel)
+            const testImage = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==';
+
+            try {
+                await initDB();
+                let artists = await loadArtistsDB();
+
+                if (artists.length === 0) {
+                    output.innerHTML += `<pre class="warning">⚠️ No artists found. Create one in admin first.</pre>`;
+                    return;
+                }
+
+                // Add image to first artist
+                artists[0].imageData = testImage;
+                artists[0].testTimestamp = new Date().toISOString();
+
+                output.innerHTML += `<pre>Saving test image to artist: ${artists[0].name}...</pre>`;
+
+                await saveArtistsDB(artists);
+
+                output.innerHTML += `<pre class="success">✅ Saved!</pre>`;
+
+                // Reload and verify
+                output.innerHTML += `<pre>Reloading from IndexedDB...</pre>`;
+                const reloaded = await loadArtistsDB();
+
+                const hasImage = !!reloaded[0].imageData;
+                const matches = reloaded[0].imageData === testImage;
+
+                output.innerHTML += `<pre class="${hasImage && matches ? 'success' : 'error'}">
+After reload:
+  - Has imageData: ${hasImage ? '✅ YES' : '❌ NO'}
+  - Matches original: ${matches ? '✅ YES' : '❌ NO'}
+  - Timestamp: ${reloaded[0].testTimestamp}
+</pre>`;
+
+            } catch (error) {
+                output.innerHTML += `<pre class="error">❌ Error: ${error.message}\n${error.stack}</pre>`;
+            }
+        }
+
+        async function clearDB() {
+            if (!confirm('Are you sure? This will delete all data!')) return;
+
+            const output = document.getElementById('output');
+            output.innerHTML = '<h2>Clearing...</h2>';
+
+            try {
+                await initDB();
+                await saveArtistsDB([]);
+                output.innerHTML += `<pre class="success">✅ Cleared all data</pre>`;
+            } catch (error) {
+                output.innerHTML += `<pre class="error">❌ Error: ${error.message}</pre>`;
+            }
+        }
+    </script>
+</body>
+
+</html>

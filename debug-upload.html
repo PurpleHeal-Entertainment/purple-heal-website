@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Debug Image Upload</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        button {
+            background: #61397C;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        pre {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #61397C;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🔍 Debug: Image Upload Test</h1>
+
+    <button onclick="checkImageData()">Ver estado actual del preview</button>
+    <button onclick="openAdmin()">Abrir Admin Panel</button>
+
+    <pre id="output">Click en "Ver estado" para debuggear...</pre>
+
+    <script>
+        function checkImageData() {
+            const preview = window.opener?.document?.getElementById('artistImagePreview');
+            const input = window.opener?.document?.getElementById('artistImage');
+
+            if (!preview || !input) {
+                document.getElementById('output').textContent =
+                    '❌ No se puede acceder al admin panel.\n' +
+                    'Asegúrate de que el admin panel esté abierto.';
+                return;
+            }
+
+            const output = `
+📊 ESTADO DEL IMAGE UPLOAD:
+
+Input File:
+- ID: ${input.id}
+- Archivo seleccionado: ${input.files.length > 0 ? input.files[0].name : 'Ninguno'}
+- Event listeners: ${input.onclick ? 'Tiene' : 'No tiene'}
+
+Preview:
+- Visible: ${preview.style.display !== 'none'}
+- Tiene src: ${preview.src ? 'Sí' : 'No'}
+- dataset.imageData existe: ${preview.dataset.imageData ? 'SÍ ✅' : 'NO ❌'}
+- dataset.imageData length: ${preview.dataset.imageData ? preview.dataset.imageData.length : 0}
+
+NOTA: Si dataset.imageData NO existe después de subir imagen,
+el evento change() NO está funcionando.
+            `;
+
+            document.getElementById('output').textContent = output;
+        }
+
+        function openAdmin() {
+            window.open('../admin.html', 'adminPanel');
+        }
+    </script>
+</body>
+
+</html>

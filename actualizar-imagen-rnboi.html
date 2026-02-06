@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualizar Imagen R.N BOI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            padding: 40px 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #61397C;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            text-align: center;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(97, 57, 124, 0.3);
+            border-radius: 16px;
+            padding: 40px;
+        }
+
+        .info-box {
+            background: rgba(52, 152, 219, 0.1);
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .current-image {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+        }
+
+        .current-image img {
+            max-width: 200px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .current-image p {
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #b8b8ff;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(97, 57, 124, 0.4);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #61397C;
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .button {
+            background: linear-gradient(135deg, #61397C 0%, #8854a0 100%);
+            color: #fff;
+            padding: 16px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(97, 57, 124, 0.4);
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .status.success {
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid rgba(46, 204, 113, 0.5);
+            color: #2ecc71;
+        }
+
+        .status.error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid rgba(231, 76, 60, 0.5);
+            color: #e74c3c;
+        }
+
+        .help-text {
+            color: #888;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        .link {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🖼️ Actualizar Imagen de R.N BOI</h1>
+
+        <div class="card">
+            <div class="info-box">
+                <strong>📋 Instrucción:</strong><br>
+                1. Abre <a href="artist-profile.html?artist=1" target="_blank"
+                    class="link">artist-profile.html?artist=1</a><br>
+                2. Clic derecho en la foto → "Copiar dirección de imagen"<br>
+                3. Pega aquí y guarda
+            </div>
+
+            <div class="current-image" id="currentImageDiv">
+                <p>Cargando imagen actual...</p>
+            </div>
+
+            <form id="imageForm">
+                <div class="form-group">
+                    <label for="imageUrl">🖼️ URL de la Imagen</label>
+                    <input type="text" id="imageUrl" placeholder="Pega aquí (ejemplo: assets/images/rnboi.png)"
+                        required>
+                    <p class="help-text">
+                        Copia la dirección completa de la imagen desde artist-profile.html
+                    </p>
+                </div>
+
+                <button type="submit" class="button">💾 GUARDAR IMAGEN</button>
+            </form>
+
+            <div class="status" id="status"></div>
+        </div>
+    </div>
+
+    <script src="js/storage-db.js"></script>
+    <script>
+        let currentArtist = null;
+
+        // Load current data
+        async function loadCurrentData() {
+            try {
+                await initDB();
+                const artists = await loadArtistsDB();
+                currentArtist = artists[0]; // R.N BOI is at index 0
+
+                const currentImageDiv = document.getElementById('currentImageDiv');
+
+                if (currentArtist.imageUrl || currentArtist.imageData) {
+                    const imageSrc = currentArtist.imageUrl || currentArtist.imageData;
+                    currentImageDiv.innerHTML = `
+                        <img src="${imageSrc}" alt="Imagen actual">
+                        <p>Imagen actual: ${currentArtist.imageUrl || 'Base64'}</p>
+                    `;
+                } else {
+                    currentImageDiv.innerHTML = `
+                        <p style="color: #e74c3c;">❌ No hay imagen configurada</p>
+                    `;
+                }
+
+                // Pre-fill input if exists
+                if (currentArtist.imageUrl) {
+                    document.getElementById('imageUrl').value = currentArtist.imageUrl;
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('currentImageDiv').innerHTML =
+                    `<p style="color: #e74c3c;">Error al cargar: ${error.message}</p>`;
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('imageForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            try {
+                showStatus('⏳ Guardando...', 'info');
+
+                const imageUrl = document.getElementById('imageUrl').value.trim();
+
+                if (!imageUrl) {
+                    showStatus('❌ Por favor ingresa una URL', 'error');
+                    return;
+                }
+
+                // Load artists
+                const artists = await loadArtistsDB();
+                const artist = artists[0];
+
+                // Extract relative path if it's a full URL
+                let finalImageUrl = imageUrl;
+                if (imageUrl.includes('assets/')) {
+                    finalImageUrl = imageUrl.substring(imageUrl.indexOf('assets/'));
+                }
+
+                // Update image
+                artist.imageUrl = finalImageUrl;
+
+                // Save to IndexedDB
+                await saveArtistsDB(artists);
+
+                showStatus('✅ ¡Imagen guardada! Recarga el admin panel para ver el cambio.', 'success');
+
+                // Refresh display
+                setTimeout(() => loadCurrentData(), 500);
+
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus('❌ Error: ' + error.message, 'error');
+            }
+        });
+
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+            statusEl.style.display = 'block';
+        }
+
+        // Initialize
+        loadCurrentData();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,290 @@
+/* ========================================
+   Purple Heal Entertainment - Global Styles
+   ======================================== */
+
+/* === FONT FACES === */
+@font-face {
+    font-family: 'Square One';
+    src: url('../assets/fonts/Square One.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Square One Bold';
+    src: url('../assets/fonts/Square One Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Oxanium - Para cuerpo de texto y subtítulos */
+@font-face {
+    font-family: 'Oxanium';
+    src: url('../assets/fonts/oxanium/ttf/Oxanium-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Oxanium';
+    src: url('../assets/fonts/oxanium/ttf/Oxanium-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Oxanium';
+    src: url('../assets/fonts/oxanium/ttf/Oxanium-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Oxanium';
+    src: url('../assets/fonts/oxanium/ttf/Oxanium-ExtraBold.ttf') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+html,
+body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: 'Oxanium', var(--font-system);
+    font-size: var(--fs-base);
+    font-weight: 300;
+    line-height: 1.6;
+    color: var(--ph-white);
+    background: #000000;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Animated purple breathing background - REMOVED gradient overlay for pure black */
+
+/* === HEADINGS === */
+h1,
+h2,
+h3 {
+    font-family: var(--font-primary);
+    line-height: 1.2;
+    font-weight: bold;
+    color: var(--ph-white);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    /* Square One solo en mayúsculas */
+}
+
+h1 {
+    font-size: clamp(var(--fs-3xl), 5vw, var(--fs-5xl));
+    margin-bottom: var(--space-lg);
+}
+
+h2 {
+    font-size: clamp(var(--fs-2xl), 4vw, var(--fs-4xl));
+    margin-bottom: var(--space-md);
+}
+
+h3 {
+    font-size: clamp(var(--fs-xl), 3vw, var(--fs-3xl));
+    margin-bottom: var(--space-md);
+}
+
+/* Subtítulos usan Oxanium */
+h4 {
+    font-family: 'Oxanium', var(--font-system);
+    font-size: var(--fs-2xl);
+    font-weight: 800;
+    /* ExtraBold */
+    margin-bottom: var(--space-sm);
+}
+
+h5,
+h6 {
+    font-family: 'Oxanium', var(--font-system);
+    font-weight: 800;
+    /* ExtraBold */
+}
+
+/* === LINKS === */
+a {
+    color: var(--ph-purple-lighter);
+    transition: color var(--transition-base);
+}
+
+a:hover {
+    color: var(--ph-purple-lighter);
+}
+
+/* === SELECTION === */
+::selection {
+    background-color: var(--ph-purple-primary);
+    color: var(--ph-white);
+}
+
+/* === SCROLLBAR === */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--ph-gray-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--ph-purple-primary);
+    border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--ph-purple-light);
+}
+
+/* === CONTAINER === */
+.container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+    /* Mobile default padding */
+}
+
+@media screen and (min-width: 769px) {
+    .container {
+        max-width: var(--container-max);
+        padding: 0 var(--space-3xl);
+    }
+}
+
+.container-wide {
+    max-width: var(--container-wide);
+}
+
+.container-narrow {
+    max-width: var(--container-narrow);
+}
+
+/* === UTILITIES === */
+.text-center {
+    text-align: center;
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, var(--ph-purple-light) 0%, var(--ph-purple-lighter) 50%, var(--ph-purple-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.text-purple {
+    color: var(--ph-purple-primary);
+}
+
+.text-gold {
+    color: var(--ph-purple-lighter);
+}
+
+/* === GLASS CARD === */
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+}
+
+/* === SECTION SPACING === */
+section {
+    width: 100%;
+    overflow-x: hidden;
+    padding: var(--space-2xl) 0;
+    /* Mobile default */
+}
+
+@media screen and (min-width: 769px) {
+    section {
+        padding: var(--space-4xl) 0;
+    }
+}
+
+/* === ANIMATIONS === */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+.slide-in-left {
+    animation: slideInLeft 0.6s ease-out forwards;
+}
+
+.slide-in-right {
+    animation: slideInRight 0.6s ease-out forwards;
+}
+
+.scale-in {
+    animation: scaleIn 0.4s ease-out forwards;
+}

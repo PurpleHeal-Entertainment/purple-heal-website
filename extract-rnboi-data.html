@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extractor de Datos R.N BOI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #61397C;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(97, 57, 124, 0.3);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            background: linear-gradient(135deg, #61397C 0%, #8854a0 100%);
+            color: #fff;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(97, 57, 124, 0.4);
+        }
+
+        .button-secondary {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .data-display {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .data-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .data-item:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            color: #b8b8ff;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .value {
+            color: #fff;
+            word-break: break-all;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .status.success {
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid rgba(46, 204, 113, 0.5);
+            color: #2ecc71;
+        }
+
+        .status.error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid rgba(231, 76, 60, 0.5);
+            color: #e74c3c;
+        }
+
+        .status.info {
+            background: rgba(52, 152, 219, 0.2);
+            border: 1px solid rgba(52, 152, 219, 0.5);
+            color: #3498db;
+        }
+
+        .preview-image {
+            max-width: 300px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin: 15px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎵 Extractor de Datos - R.N BOI</h1>
+
+        <div class="card">
+            <h2 style="color: #61397C; margin-bottom: 20px;">Paso 1: Abrir Página del Artista</h2>
+            <p style="margin-bottom: 20px; color: #aaa;">
+                Esta herramienta abrirá artist-profile.html?artist=1 en un iframe para extraer automáticamente la imagen
+                y enlaces de redes sociales.
+            </p>
+            <button class="button" onclick="loadArtistPage()">📂 CARGAR PÁGINA DEL ARTISTA</button>
+            <div class="status" id="loadStatus"></div>
+        </div>
+
+        <div class="card" id="extractCard" style="display: none;">
+            <h2 style="color: #61397C; margin-bottom: 20px;">Paso 2: Datos Extraídos</h2>
+            <div id="extractedData"></div>
+            <button class="button" onclick="updateDatabase()">💾 GUARDAR EN INDEXEDDB</button>
+            <button class="button button-secondary" onclick="copyToClipboard()">📋 COPIAR DATOS</button>
+            <div class="status" id="updateStatus"></div>
+        </div>
+
+        <div class="card" id="currentDataCard">
+            <h2 style="color: #61397C; margin-bottom: 20px;">Datos Actuales en IndexedDB</h2>
+            <div id="currentData">Cargando...</div>
+        </div>
+
+        <!-- Hidden iframe to load the artist page -->
+        <iframe id="artistFrame" style="display: none;"></iframe>
+    </div>
+
+    <script src="js/storage-db.js"></script>
+    <script>
+        let extractedArtist = null;
+        let currentArtists = [];
+
+        // Load current data from IndexedDB
+        async function loadCurrentData() {
+            try {
+                await initDB();
+                currentArtists = await loadArtistsDB();
+
+                const artist = currentArtists[0]; // R.N BOI is at index 0
+
+                const currentDataDiv = document.getElementById('currentData');
+                currentDataDiv.innerHTML = `
+                    <div class="data-display">
+                        <div class="data-item">
+                            <div class="label">Nombre:</div>
+                            <div class="value">${artist.name || 'No definido'}</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="label">Género:</div>
+                            <div class="value">${artist.genre || 'No definido'}</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="label">Imagen URL:</div>
+                            <div class="value">${artist.imageUrl || 'No definido'}</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="label">Imagen Base64:</div>
+                            <div class="value">${artist.imageData ? 'Presente (' + (artist.imageData.length / 1024).toFixed(1) + ' KB)' : 'No presente'}</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="label">Instagram:</div>
+                            <div class="value">${artist.instagram || 'No definido'}</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="label">YouTube:</div>
+                            <div class="value">${artist.youtube || 'No definido'}</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="label">Spotify:</div>
+                            <div class="value">${artist.spotify || 'No definido'}</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="label">Apple Music:</div>
+                            <div class="value">${artist.appleMusic || 'No definido'}</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="label">TikTok:</div>
+                            <div class="value">${artist.tiktok || 'No definido'}</div>
+                        </div>
+                    </div>
+                `;
+
+                showStatus('loadStatus', '✅ Datos actuales cargados', 'info');
+            } catch (error) {
+                console.error('Error al cargar datos:', error);
+                showStatus('loadStatus', '❌ Error al cargar datos: ' + error.message, 'error');
+            }
+        }
+
+        // Load artist page in iframe and extract data
+        function loadArtistPage() {
+            showStatus('loadStatus', '⏳ Cargando página del artista...', 'info');
+
+            const iframe = document.getElementById('artistFrame');
+            iframe.src = 'artist-profile.html?artist=1';
+
+            iframe.onload = function () {
+                try {
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+                    // Extract data from the page
+                    const artistData = {
+                        name: iframeDoc.getElementById('artist-name')?.textContent || 'R.N BOI',
+                        genre: iframeDoc.getElementById('artist-genre')?.textContent || '',
+                        bio: iframeDoc.getElementById('artist-bio')?.textContent || '',
+                        imageUrl: iframeDoc.getElementById('artist-image')?.src || '',
+                        instagram: iframeDoc.getElementById('instagramBtn')?.href || '',
+                        youtube: iframeDoc.getElementById('youtubeBtn')?.href || '',
+                        spotify: iframeDoc.getElementById('spotifyBtn')?.href || '',
+                        appleMusic: iframeDoc.getElementById('appleMusicBtn')?.href || '',
+                        tiktok: iframeDoc.getElementById('tiktokBtn')?.href || ''
+                    };
+
+                    extractedArtist = artistData;
+                    displayExtractedData(artistData);
+                    showStatus('loadStatus', '✅ Datos extraídos exitosamente', 'success');
+
+                    document.getElementById('extractCard').style.display = 'block';
+                } catch (error) {
+                    console.error('Error al extraer datos:', error);
+                    showStatus('loadStatus', '❌ Error: ' + error.message + ' - Intenta abrir artist-profile.html?artist=1 manualmente y copia los datos.', 'error');
+                }
+            };
+
+            iframe.onerror = function () {
+                showStatus('loadStatus', '❌ Error al cargar la página', 'error');
+            };
+        }
+
+        // Display extracted data
+        function displayExtractedData(data) {
+            const extractedDiv = document.getElementById('extractedData');
+
+            let imagePreview = '';
+            if (data.imageUrl) {
+                // Convert full URL to relative path if needed
+                const imagePath = data.imageUrl.includes('assets/') ?
+                    data.imageUrl.substring(data.imageUrl.indexOf('assets/')) :
+                    data.imageUrl;
+                imagePreview = `<img src="${imagePath}" class="preview-image" alt="Preview">`;
+            }
+
+            extractedDiv.innerHTML = `
+                ${imagePreview}
+                <div class="data-display">
+                    <div class="data-item">
+                        <div class="label">🖼️ Imagen URL:</div>
+                        <div class="value">${data.imageUrl || 'No encontrado'}</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="label">📷 Instagram:</div>
+                        <div class="value">${data.instagram || 'No encontrado'}</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="label">▶️ YouTube:</div>
+                        <div class="value">${data.youtube || 'No encontrado'}</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="label">🎵 Spotify:</div>
+                        <div class="value">${data.spotify || 'No encontrado'}</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="label">🍎 Apple Music:</div>
+                        <div class="value">${data.appleMusic || 'No encontrado'}</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="label">🎬 TikTok:</div>
+                        <div class="value">${data.tiktok || 'No encontrado'}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Update database with extracted data
+        async function updateDatabase() {
+            if (!extractedArtist) {
+                showStatus('updateStatus', '❌ No hay datos para guardar', 'error');
+                return;
+            }
+
+            try {
+                showStatus('updateStatus', '⏳ Actualizando base de datos...', 'info');
+
+                const artists = await loadArtistsDB();
+                const artist = artists[0]; // R.N BOI is at index 0
+
+                // Update only if we have valid data
+                if (extractedArtist.imageUrl && extractedArtist.imageUrl.includes('assets/')) {
+                    const imagePath = extractedArtist.imageUrl.substring(extractedArtist.imageUrl.indexOf('assets/'));
+                    artist.imageUrl = imagePath;
+                }
+
+                if (extractedArtist.instagram && extractedArtist.instagram !== '#') {
+                    artist.instagram = extractedArtist.instagram;
+                }
+                if (extractedArtist.youtube && extractedArtist.youtube !== '#') {
+                    artist.youtube = extractedArtist.youtube;
+                }
+                if (extractedArtist.spotify && extractedArtist.spotify !== '#') {
+                    artist.spotify = extractedArtist.spotify;
+                }
+                if (extractedArtist.appleMusic && extractedArtist.appleMusic !== '#') {
+                    artist.appleMusic = extractedArtist.appleMusic;
+                }
+                if (extractedArtist.tiktok && extractedArtist.tiktok !== '#') {
+                    artist.tiktok = extractedArtist.tiktok;
+                }
+
+                // Save to IndexedDB
+                await saveArtistsDB(artists);
+
+                showStatus('updateStatus', '✅ ¡Datos actualizados exitosamente! Recarga el admin panel para ver los cambios.', 'success');
+
+                // Refresh current data display
+                setTimeout(() => loadCurrentData(), 500);
+
+            } catch (error) {
+                console.error('Error al actualizar:', error);
+                showStatus('updateStatus', '❌ Error al actualizar: ' + error.message, 'error');
+            }
+        }
+
+        // Copy data to clipboard
+        function copyToClipboard() {
+            if (!extractedArtist) return;
+
+            const text = `Datos de R.N BOI:
+Imagen: ${extractedArtist.imageUrl}
+Instagram: ${extractedArtist.instagram}
+YouTube: ${extractedArtist.youtube}
+Spotify: ${extractedArtist.spotify}
+Apple Music: ${extractedArtist.appleMusic}
+TikTok: ${extractedArtist.tiktok}`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                showStatus('updateStatus', '📋 Datos copiados al portapapeles', 'success');
+            });
+        }
+
+        // Show status message
+        function showStatus(elementId, message, type) {
+            const statusEl = document.getElementById(elementId);
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+            statusEl.style.display = 'block';
+
+            if (type !== 'info') {
+                setTimeout(() => {
+                    statusEl.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // Initialize on page load
+        loadCurrentData();
+    </script>
+</body>
+
+</html>
