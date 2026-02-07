@@ -207,10 +207,10 @@ function renderArtistsList(artists) {
             <div>
                 <h3>${artist.name}</h3>
                 <p style="color: var(--ph-gray-lighter); font-size: var(--fs-sm); margin-top: var(--space-xs);">
-                    ${artist.genre || 'Sin género'} | ${artist.albums?.length || 0} álbumes | ${artist.merch?.length || 0} productos
+                    ${artist.genre || 'Sin genero'} | ${artist.albums?.length || 0} albumes | ${artist.merch?.length || 0} productos
                 </p>
             </div>
-            <div style="display: flex; gap: var(--space-sm);">
+            <div class="admin-card-actions">
                 <button onclick="editArtist(${index})" class="ph-button ph-button--outline" style="padding: var(--space-sm) var(--space-md);">
                     EDITAR
                 </button>
@@ -374,11 +374,11 @@ function showArtistProfile(artist, artistIndex) {
                 
                 <!-- Two-column layout: Image left, Form right -->
                 <form id="artist-form" onsubmit="saveArtistProfile(event, ${artistIndex})">
-                    <div style="display: grid; grid-template-columns: 380px 1fr; gap: var(--space-3xl); margin-bottom: var(--space-3xl);">
+                    <div class="admin-profile-grid">
                         
                         <!-- LEFT COLUMN: Artist Image -->
                         <div>
-                            <div style="position: relative; width: 380px; height: 507px; background: var(--ph-gray-darker); border-radius: var(--radius-md); overflow: hidden; border: 2px dashed rgba(155, 89, 182, 0.3);">
+                            <div class="admin-image-preview-container">
                                 ${artist.image ? `
                                     <img id="artist-image-preview" src="${artist.image}" style="width: 100%; height: 100%; object-fit: cover;">
                                 ` : `
@@ -453,7 +453,7 @@ function showArtistProfile(artist, artistIndex) {
                             </div>
                             
                             <div class="form-group">
-                                <label for="artist-latest-video">ÚLTIMO VIDEO (YouTube ID)</label>
+                                <label for="artist-latest-video">ULTIMO VIDEO (YouTube ID)</label>
                                 <input type="text" id="artist-latest-video" value="${artist.latestVideoId || ''}" placeholder="ej: dQw4w9WgXcQ"
                                        style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-md); padding: var(--space-md); color: var(--ph-white); font-family: var(--font-body); width: 100%; box-sizing: border-box;">
                                 <p style="color: var(--ph-gray-lighter); font-size: var(--fs-xs); margin-top: var(--space-xs);">
@@ -470,9 +470,9 @@ function showArtistProfile(artist, artistIndex) {
                 </form>
                 
                 <!-- Albums Section -->
-                <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: var(--space-2xl); margin-top: var(--space-2xl);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
-                        <h3 style="color: var(--ph-purple-lighter);">ALBUMES</h3>
+                <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: var(--space-xl); margin-top: var(--space-xl);">
+                    <div class="tab-header">
+                        <h3 style="color: var(--ph-purple-lighter); margin: 0;">ALBUMES</h3>
                         <button onclick="showAlbumForm(${artistIndex}, null)" class="ph-button ph-button--primary">
                             + AGREGAR ALBUM
                         </button>
@@ -483,9 +483,9 @@ function showArtistProfile(artist, artistIndex) {
                 </div>
                 
                 <!-- Merch Section -->
-                <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: var(--space-2xl); margin-top: var(--space-2xl);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
-                        <h3 style="color: var(--ph-purple-lighter);">MERCHANDISING</h3>
+                <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: var(--space-xl); margin-top: var(--space-xl);">
+                    <div class="tab-header">
+                        <h3 style="color: var(--ph-purple-lighter); margin: 0;">MERCHANDISING</h3>
                         <button onclick="showMerchForm(${artistIndex}, null)" class="ph-button ph-button--primary">
                             + AGREGAR PRODUCTO
                         </button>
@@ -578,7 +578,7 @@ function renderArtistAlbums(artist, artistIndex) {
     }
 
     return `
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--space-md); margin-top: var(--space-lg);">
+        <div class="admin-horizontal-slider">
             ${albums.map((album, albumIndex) => {
         // Parse date properly to avoid timezone issues
         let formattedDate = '';
@@ -615,10 +615,10 @@ function renderArtistAlbums(artist, artistIndex) {
                             
                             <!-- Botones -->
                             <div style="display: flex; gap: 8px;">
-                                <button onclick="showAlbumForm(${artistIndex}, ${albumIndex})" class="ph-button ph-button--outline" style="flex: 1; padding: 6px 10px; font-size: 0.7rem; border-color: var(--ph-purple); color: var(--ph-purple); border-radius: 20px; text-align: center; display: flex; align-items: center; justify-content: center; font-weight: 500;">
+                                <button onclick="showAlbumForm(${artistIndex}, ${albumIndex})" class="ph-button ph-button--outline" style="flex: 1; padding: 10px; font-size: 0.75rem; border-color: var(--ph-purple); color: var(--ph-purple); border-radius: 8px; text-align: center; display: flex; align-items: center; justify-content: center; font-weight: 500;">
                                     EDITAR
                                 </button>
-                                <button onclick="deleteAlbum(${artistIndex}, ${albumIndex})" class="ph-button ph-button--outline" style="flex: 1; padding: 6px 10px; font-size: 0.7rem; border-color: #e74c3c; color: #e74c3c; border-radius: 20px; text-align: center; display: flex; align-items: center; justify-content: center; font-weight: 500;">
+                                <button onclick="deleteAlbum(${artistIndex}, ${albumIndex})" class="ph-button ph-button--outline" style="flex: 1; padding: 10px; font-size: 0.75rem; border-color: #e74c3c; color: #e74c3c; border-radius: 8px; text-align: center; display: flex; align-items: center; justify-content: center; font-weight: 500;">
                                     ELIMINAR
                                 </button>
                             </div>
@@ -639,7 +639,7 @@ function renderArtistMerch(artist, artistIndex) {
     }
 
     return `
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--space-md); margin-top: var(--space-lg);">
+        <div class="admin-horizontal-slider">
             ${merch.map((product, productIndex) => {
         const stockStatus = product.stock === 'SOLD OUT' ? 'SOLD OUT' : 'EN STOCK';
         const stockColor = product.stock === 'SOLD OUT' ? '#e74c3c' : 'var(--ph-gray-lighter)';
@@ -669,10 +669,10 @@ function renderArtistMerch(artist, artistIndex) {
                             
                             <!-- Botones -->
                             <div style="display: flex; gap: 8px;">
-                                <button onclick="showMerchForm(${artistIndex}, ${productIndex})" class="ph-button ph-button--outline" style="flex: 1; padding: 6px 10px; font-size: 0.7rem; border-color: var(--ph-purple); color: var(--ph-purple); border-radius: 20px; text-align: center; display: flex; align-items: center; justify-content: center; font-weight: 500;">
+                                <button onclick="showMerchForm(${artistIndex}, ${productIndex})" class="ph-button ph-button--outline" style="flex: 1; padding: 10px; font-size: 0.75rem; border-color: var(--ph-purple); color: var(--ph-purple); border-radius: 8px; text-align: center; display: flex; align-items: center; justify-content: center; font-weight: 500;">
                                     EDITAR
                                 </button>
-                                <button onclick="deleteMerch(${artistIndex}, ${productIndex})" class="ph-button ph-button--outline" style="flex: 1; padding: 6px 10px; font-size: 0.7rem; border-color: #e74c3c; color: #e74c3c; border-radius: 20px; text-align: center; display: flex; align-items: center; justify-content: center; font-weight: 500;">
+                                <button onclick="deleteMerch(${artistIndex}, ${productIndex})" class="ph-button ph-button--outline" style="flex: 1; padding: 10px; font-size: 0.75rem; border-color: #e74c3c; color: #e74c3c; border-radius: 8px; text-align: center; display: flex; align-items: center; justify-content: center; font-weight: 500;">
                                     ELIMINAR
                                 </button>
                             </div>
@@ -690,7 +690,7 @@ function deleteAlbum(artistIndex, albumIndex) {
         const artists = await loadArtists();
         artists[artistIndex].albums.splice(albumIndex, 1);
         await saveArtists(artists);
-        showToast('Álbum eliminado exitosamente.');
+        showToast('Album eliminado exitosamente.');
         showArtistProfile(artists[artistIndex], artistIndex);
     });
 }
@@ -811,11 +811,11 @@ async function showAlbumForm(artistIndex, albumIndex) {
                 </div>
                 
                 <!-- Centered Artist Name -->
-                <h1 style="margin-bottom: var(--space-3xl); color: var(--ph-white); font-size: var(--fs-3xl);">
+                <h1 style="margin-bottom: var(--space-xl); color: var(--ph-white); font-size: var(--fs-2xl); text-align: center;">
                     ARTISTA: ${artist.name}
                 </h1>
                 
-                <div style="display: grid; grid-template-columns: 500px 1fr; gap: 60px;">
+                <div class="admin-form-grid">
                     
                     <!-- LEFT COLUMN: Album Images -->
                     <div>
@@ -824,14 +824,14 @@ async function showAlbumForm(artistIndex, albumIndex) {
                             Resolución recomendada: 3000x3000px (formato 1:1)
                         </p>
                         
-                        <div id="album-images-container" style="display: flex; flex-direction: column; gap: var(--space-md);">
+                        <div id="album-images-container" style="display: grid; grid-template-columns: 1fr; gap: var(--space-md);">
                             ${renderAlbumImagePreviews(album, artistIndex, albumIndex)}
                         </div>
                         
                         <button type="button" onclick="addAlbumImageSlot(${artistIndex}, ${albumIndex})" 
                                 id="add-album-image-btn"
                                 class="ph-button ph-button--outline" 
-                                style="width: 100%; margin-top: var(--space-md);">
+                                style="width: 100%; margin-top: var(--space-md); border-radius: 8px !important;">
                             + AGREGAR OTRA IMAGEN
                         </button>
                         <p style="color: var(--ph-gray-lighter); font-size: var(--fs-xs); text-align: center; margin-top: var(--space-sm);">
@@ -876,7 +876,7 @@ async function showAlbumForm(artistIndex, albumIndex) {
                             </style>
                             
                             <div class="form-group">
-                                <label for="album-title">Título del Álbum *</label>
+                                <label for="album-title">Titulo del Album *</label>
                                 <input type="text" id="album-title" name="title" 
                                        value="${album?.title || ''}" 
                                        placeholder="Ej: Mi Primer EP" 
@@ -902,7 +902,7 @@ async function showAlbumForm(artistIndex, albumIndex) {
                                 <label for="album-type">Tipo *</label>
                                 <select id="album-type" name="type" style="width: 100%; box-sizing: border-box;" required>
                                     <option value="EP" ${album?.type === 'EP' ? 'selected' : ''}>EP</option>
-                                    <option value="LP" ${album?.type === 'LP' ? 'selected' : ''}>LP (Álbum completo)</option>
+                                    <option value="LP" ${album?.type === 'LP' ? 'selected' : ''}>LP (Album completo)</option>
                                     <option value="Single" ${album?.type === 'Single' ? 'selected' : ''}>Single</option>
                                     <option value="Mixtape" ${album?.type === 'Mixtape' ? 'selected' : ''}>Mixtape</option>
                                 </select>
@@ -1121,7 +1121,7 @@ async function saveAlbumForm(event) {
     }
 
     await saveArtists(artists);
-    showToast(`Álbum "${albumData.title}" ${albumIndex === null ? 'agregado' : 'actualizado'} exitosamente!`);
+    showToast(`Album "${albumData.title}" ${albumIndex === null ? 'agregado' : 'actualizado'} exitosamente!`);
 
     // Go back to artist profile
     showArtistProfile(artists[artistIndex], artistIndex);
@@ -1160,11 +1160,11 @@ async function showMerchForm(artistIndex, merchIndex) {
                 </div>
                 
                 <!-- Centered Artist Name -->
-                <h1 style="margin-bottom: var(--space-3xl); color: var(--ph-white); font-size: var(--fs-3xl);">
+                <h1 style="margin-bottom: var(--space-xl); color: var(--ph-white); font-size: var(--fs-2xl); text-align: center;">
                     ARTISTA: ${artist.name}
                 </h1>
                 
-                <div style="display: grid; grid-template-columns: 500px 1fr; gap: 60px;">
+                <div class="admin-form-grid">
                     
                     <!-- LEFT COLUMN: Product Images -->
                     <div>
@@ -1173,14 +1173,14 @@ async function showMerchForm(artistIndex, merchIndex) {
                             Resolución recomendada: 3000x3000px (formato 1:1)
                         </p>
                         
-                        <div id="merch-images-container" style="display: flex; flex-direction: column; gap: var(--space-md);">
+                        <div id="merch-images-container" style="display: grid; grid-template-columns: 1fr; gap: var(--space-md);">
                             ${renderMerchImagePreviews(product, artistIndex, merchIndex)}
                         </div>
                         
                         <button type="button" onclick="addMerchImageSlot(${artistIndex}, ${merchIndex})" 
                                 id="add-merch-image-btn"
                                 class="ph-button ph-button--outline" 
-                                style="width: 100%; margin-top: var(--space-md);">
+                                style="width: 100%; margin-top: var(--space-md); border-radius: 8px !important;">
                             + AGREGAR OTRA IMAGEN
                         </button>
                         <p style="color: var(--ph-gray-lighter); font-size: var(--fs-xs); text-align: center; margin-top: var(--space-sm);">

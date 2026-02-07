@@ -35,6 +35,15 @@
             margin-bottom: var(--space-xl);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             justify-content: flex-start;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            white-space: nowrap;
+            padding-bottom: 5px;
+        }
+
+        .admin-tabs::-webkit-scrollbar {
+            display: none;
         }
 
         .admin-tab {
@@ -49,6 +58,7 @@
             transition: all var(--transition-base);
             text-decoration: none;
             display: inline-block;
+            flex-shrink: 0;
         }
 
         .admin-tab:hover {
@@ -157,6 +167,74 @@
             cursor: not-allowed;
             background: rgba(255, 255, 255, 0.02) !important;
         }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: var(--space-md);
+            }
+
+            .admin-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 15px;
+                margin-bottom: var(--space-xl);
+            }
+
+            .admin-header h1 {
+                font-size: var(--fs-lg) !important;
+                margin: 0;
+            }
+
+            /* Modern Button Fixes */
+            .ph-button {
+                border-radius: var(--radius-md) !important;
+                padding: 12px 20px !important;
+                font-size: var(--fs-sm) !important;
+                min-height: 48px;
+                text-align: center;
+            }
+
+            .admin-header div {
+                width: 100%;
+                justify-content: space-between;
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch !important;
+            }
+
+            #currentUserDisplay {
+                margin-right: 0 !important;
+                text-align: center;
+                background: rgba(255, 255, 255, 0.05);
+                padding: 10px;
+                border-radius: 8px;
+            }
+
+            .tab-header {
+                flex-direction: column;
+                align-items: stretch !important;
+                gap: 15px;
+            }
+
+            .users-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .ph-card__content {
+                padding: var(--space-md);
+            }
+
+            .form-overlay .ph-card {
+                max-width: 95% !important;
+                margin: 0 10px;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 
@@ -183,7 +261,7 @@
         <!-- Content -->
         <div class="ph-card">
             <div class="ph-card__content">
-                <div
+                <div class="tab-header"
                     style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xl);">
                     <h3 style="text-transform: uppercase; margin: 0;">USUARIOS REGISTRADOS</h3>
                     <button onclick="openCreateUserModal()" class="ph-button ph-button--primary">
@@ -240,7 +318,7 @@
                             No puedes crear otros administradores.</p>
                     </div>
 
-                    <div style="display: flex; gap: var(--space-md);">
+                    <div class="modal-actions" style="display: flex; gap: var(--space-md);">
                         <button type="button" onclick="closeCreateUserModal()" class="ph-button ph-button--outline"
                             style="flex: 1;">CANCELAR</button>
                         <button type="submit" class="ph-button ph-button--primary" style="flex: 1;">CREAR
@@ -294,7 +372,7 @@
                         <p id="passwordHint" style="font-size: 0.8rem; color: #888; margin-top: 5px;"></p>
                     </div>
 
-                    <div style="display: flex; gap: var(--space-md);">
+                    <div class="modal-actions" style="display: flex; gap: var(--space-md);">
                         <button type="button" onclick="closeEditUserModal()" class="ph-button ph-button--outline"
                             style="flex: 1;">CANCELAR</button>
                         <button type="submit" class="ph-button ph-button--primary" style="flex: 1;">GUARDAR
@@ -326,7 +404,7 @@
                             required autofocus>
                     </div>
 
-                    <div style="display: flex; gap: var(--space-md);">
+                    <div class="modal-actions" style="display: flex; gap: var(--space-md);">
                         <button type="button" onclick="closeDeleteConfirmModal()" class="ph-button ph-button--outline"
                             style="flex: 1;">CANCELAR</button>
                         <button type="submit" class="ph-button ph-button--primary"

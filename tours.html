@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Purple Heal Entertainment - Tours y Giras Mundiales de nuestros artistas">
     <title>Tours | Purple Heal Entertainment</title>
 
@@ -142,90 +142,92 @@
 </head>
 
 <body>
-    <!-- Navigation (Solid Background) -->
-    <nav class="ph-nav solid-nav" id="navbar">
-        <div class="container ph-nav__container">
-            <a href="index.html">
-                <img src="assets/logos/PURPLE HEAL LOGO TEXTO BLANCO OPCION 2.svg" alt="Purple Heal Logo"
-                    class="ph-nav__logo">
-            </a>
+    <div class="site-wrapper">
+        <!-- Navigation (Solid Background) -->
+        <nav class="ph-nav solid-nav" id="navbar">
+            <div class="container ph-nav__container">
+                <a href="index.html">
+                    <img src="assets/logos/PURPLE HEAL LOGO TEXTO BLANCO OPCION 2.svg" alt="Purple Heal Logo"
+                        class="ph-nav__logo">
+                </a>
 
-            <div class="ph-nav__menu">
-                <a href="index.html" class="ph-nav__link">Inicio</a>
-                <a href="artists.html" class="ph-nav__link">Artistas</a>
-                <a href="tours.html" class="ph-nav__link active">Tours</a>
-                <a href="shop.html" class="ph-nav__link" id="nav-shop" style="display: none;">Tienda</a>
-                <a href="about.html" class="ph-nav__link">Nosotros</a>
+                <div class="ph-nav__menu">
+                    <a href="index.html" class="ph-nav__link">Inicio</a>
+                    <a href="artists.html" class="ph-nav__link">Artistas</a>
+                    <a href="tours.html" class="ph-nav__link active">Tours</a>
+                    <a href="shop.html" class="ph-nav__link" id="nav-shop" style="display: none;">Tienda</a>
+                    <a href="about.html" class="ph-nav__link">Nosotros</a>
+                </div>
+
+                <div class="ph-nav__toggle" id="nav-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
             </div>
+        </nav>
 
-            <div class="ph-nav__toggle" id="nav-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
+        <!-- Mobile Menu -->
+        <div class="ph-mobile-menu">
+            <div class="ph-mobile-menu__content">
+                <a href="index.html" class="ph-mobile-menu__link">Inicio</a>
+                <a href="artists.html" class="ph-mobile-menu__link">Artistas</a>
+                <a href="tours.html" class="ph-mobile-menu__link active">Tours</a>
+                <a href="shop.html" class="ph-mobile-menu__link" id="nav-shop-mobile" style="display: none;">Tienda</a>
+                <a href="about.html" class="ph-mobile-menu__link">Nosotros</a>
             </div>
         </div>
-    </nav>
 
-    <!-- Mobile Menu -->
-    <div class="ph-mobile-menu">
-        <div class="ph-mobile-menu__content">
-            <a href="index.html" class="ph-mobile-menu__link">Inicio</a>
-            <a href="artists.html" class="ph-mobile-menu__link">Artistas</a>
-            <a href="tours.html" class="ph-mobile-menu__link active">Tours</a>
-            <a href="tours.html" class="ph-mobile-menu__link">Tours</a>
-            <a href="shop.html" class="ph-mobile-menu__link" id="nav-shop-mobile" style="display: none;">Tienda</a>
-            <a href="about.html" class="ph-mobile-menu__link">Nosotros</a>
-        </div>
+        <!-- Tours Content -->
+        <main id="tours-container" style="min-height: 80vh; padding-top: 100px;">
+            <!-- Loaded dynamically -->
+            <div
+                style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 50vh;">
+                <div class="spinner"></div>
+                <p style="margin-top: var(--space-md); color: var(--ph-gray-light);">Cargando giras...</p>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="ph-footer">
+            <div class="container">
+                <div class="ph-footer__content">
+                    <div class="ph-footer__section">
+                        <h3>Purple Heal Entertainment</h3>
+                        <p style="color: var(--ph-gray-light); margin-top: var(--space-sm);">
+                            Creando el futuro de la música, un artista a la vez.
+                        </p>
+                    </div>
+
+                    <div class="ph-footer__section">
+                        <h3>Enlaces Rapidos</h3>
+                        <div class="ph-footer__links">
+                            <a href="index.html" class="ph-footer__link">Home</a>
+                            <a href="artists.html" class="ph-footer__link">Artistas</a>
+                            <a href="tours.html" class="ph-footer__link">Tours</a>
+                            <a href="#about" class="ph-footer__link">Nosotros</a>
+                            <a href="#contact" class="ph-footer__link">Contacto</a>
+                        </div>
+                    </div>
+
+                    <div class="ph-footer__section">
+                        <h3>Siguenos</h3>
+                        <div class="ph-footer__links">
+                            <a href="https://www.instagram.com/purpleheal_ent/" class="ph-footer__link"
+                                target="_blank">Instagram</a>
+                            <a href="https://www.x.com/PURPLEHEAL" class="ph-footer__link" target="_blank">Twitter</a>
+                            <a href="https://www.youtube.com/@purplehealent" class="ph-footer__link"
+                                target="_blank">YouTube</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ph-footer__bottom">
+                    <p>&copy; 2026 Purple Heal Entertainment. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </footer>
     </div>
-
-    <!-- Tours Content -->
-    <main id="tours-container" style="min-height: 80vh; padding-top: 100px;">
-        <!-- Loaded dynamically -->
-        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 50vh;">
-            <div class="spinner"></div>
-            <p style="margin-top: var(--space-md); color: var(--ph-gray-light);">Cargando giras...</p>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="ph-footer">
-        <div class="container">
-            <div class="ph-footer__content">
-                <div class="ph-footer__section">
-                    <h3>Purple Heal Entertainment</h3>
-                    <p style="color: var(--ph-gray-light); margin-top: var(--space-sm);">
-                        Creando el futuro de la música, un artista a la vez.
-                    </p>
-                </div>
-
-                <div class="ph-footer__section">
-                    <h3>Enlaces Rapidos</h3>
-                    <div class="ph-footer__links">
-                        <a href="index.html" class="ph-footer__link">Home</a>
-                        <a href="artists.html" class="ph-footer__link">Artistas</a>
-                        <a href="tours.html" class="ph-footer__link">Tours</a>
-                        <a href="#about" class="ph-footer__link">Nosotros</a>
-                        <a href="#contact" class="ph-footer__link">Contacto</a>
-                    </div>
-                </div>
-
-                <div class="ph-footer__section">
-                    <h3>Siguenos</h3>
-                    <div class="ph-footer__links">
-                        <a href="https://www.instagram.com/purpleheal_ent/" class="ph-footer__link"
-                            target="_blank">Instagram</a>
-                        <a href="https://www.x.com/PURPLEHEAL" class="ph-footer__link" target="_blank">Twitter</a>
-                        <a href="https://www.youtube.com/@purplehealent" class="ph-footer__link"
-                            target="_blank">YouTube</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ph-footer__bottom">
-                <p>&copy; 2026 Purple Heal Entertainment. Todos los derechos reservados.</p>
-            </div>
-        </div>
-    </footer>
 
     <!-- Scripts -->
     <script src="js/storage-db.js?v=2.1"></script>
@@ -255,7 +257,7 @@
         function renderEmptyState(container) {
             container.innerHTML = `
                 <div style="height: 60vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: var(--space-xl);">
-                    <h1 style="font-size: clamp(3rem, 8vw, 6rem); color: var(--ph-white); letter-spacing: 0.1em; margin-bottom: var(--space-lg);">
+                    <h1 style="font-size: clamp(1.8rem, 8vw, 6rem); color: var(--ph-white); letter-spacing: 0.1em; margin-bottom: var(--space-lg); word-break: break-word;">
                         PROXIMAMENTE
                     </h1>
                     <p style="color: var(--ph-gray-light); font-size: var(--fs-lg); max-width: 600px;">

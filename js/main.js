@@ -87,6 +87,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
             // Close mobile menu if open
             // Close mobile menu if open
+            // Close mobile menu if open
             const menu = document.querySelector('.ph-mobile-menu');
             const toggle = document.getElementById('nav-toggle');
 

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Tienda Oficial Purple Heal Entertainment - Música y Merch">
     <title>Tienda Oficial | Purple Heal Entertainment</title>
 
@@ -18,109 +18,113 @@
 </head>
 
 <body>
-    <!-- Navigation -->
-    <nav class="ph-nav" id="navbar">
-        <div class="container ph-nav__container">
-            <a href="index.html">
-                <img src="assets/logos/PURPLE HEAL LOGO TEXTO BLANCO OPCION 2.svg" alt="Purple Heal Logo"
-                    class="ph-nav__logo">
-            </a>
+    <div class="site-wrapper">
+        <!-- Navigation -->
+        <nav class="ph-nav" id="navbar">
+            <div class="container ph-nav__container">
+                <a href="index.html">
+                    <img src="assets/logos/PURPLE HEAL LOGO TEXTO BLANCO OPCION 2.svg" alt="Purple Heal Logo"
+                        class="ph-nav__logo">
+                </a>
 
-            <div class="ph-nav__menu">
-                <a href="index.html" class="ph-nav__link">Inicio</a>
-                <a href="artists.html" class="ph-nav__link">Artistas</a>
-                <a href="tours.html" class="ph-nav__link">Tours</a>
-                <a href="shop.html" class="ph-nav__link active" id="nav-shop" style="display: none;">Tienda</a>
-                <a href="about.html" class="ph-nav__link">Nosotros</a>
-            </div>
+                <div class="ph-nav__menu">
+                    <a href="index.html" class="ph-nav__link">Inicio</a>
+                    <a href="artists.html" class="ph-nav__link">Artistas</a>
+                    <a href="tours.html" class="ph-nav__link">Tours</a>
+                    <a href="shop.html" class="ph-nav__link active" id="nav-shop" style="display: none;">Tienda</a>
+                    <a href="about.html" class="ph-nav__link">Nosotros</a>
+                </div>
 
-            <div class="ph-nav__toggle" id="nav-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Mobile Menu -->
-    <div class="ph-mobile-menu">
-        <div class="ph-mobile-menu__content">
-            <a href="index.html" class="ph-mobile-menu__link">Inicio</a>
-            <a href="artists.html" class="ph-mobile-menu__link">Artistas</a>
-            <a href="tours.html" class="ph-mobile-menu__link">Tours</a>
-            <a href="shop.html" class="ph-mobile-menu__link active" id="nav-shop-mobile"
-                style="display: none;">Tienda</a>
-            <a href="about.html" class="ph-mobile-menu__link">Nosotros</a>
-        </div>
-    </div>
-
-    <!-- Shop Main Section -->
-    <section class="hero fade-in" style="padding-top: 100px; padding-bottom: var(--space-3xl); min-height: 60vh;">
-        <div class="container">
-            <!-- Header Text -->
-            <div class="text-center fade-in" style="margin-bottom: var(--space-xl);">
-                <h1 class="hero__title">
-                    TIENDA <span class="text-gradient">OFICIAL</span>
-                </h1>
-                <p class="hero__subtitle" style="max-width: 700px; margin: 0 auto; margin-bottom: var(--space-xl);">
-                    Adquiere la música y merchandising oficial de tus artistas favoritos.
-                    Apoya su arte directamente.
-                </p>
-
-                <!-- Filters -->
-                <div class="flex justify-center gap-4" style="flex-wrap: wrap;">
-                    <button class="ph-button ph-button--outline active"
-                        onclick="filterProducts('all', this)">TODO</button>
-                    <button class="ph-button ph-button--outline" onclick="filterProducts('album', this)">MUSICA</button>
-                    <button class="ph-button ph-button--outline" onclick="filterProducts('merch', this)">MERCH</button>
+                <div class="ph-nav__toggle" id="nav-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </div>
             </div>
+        </nav>
 
-            <!-- Products Grid -->
-            <div class="grid grid--3 artists-grid scale-in" id="shopGrid">
-                <!-- Products will be loaded dynamically -->
+        <!-- Mobile Menu -->
+        <div class="ph-mobile-menu">
+            <div class="ph-mobile-menu__content">
+                <a href="index.html" class="ph-mobile-menu__link">Inicio</a>
+                <a href="artists.html" class="ph-mobile-menu__link">Artistas</a>
+                <a href="tours.html" class="ph-mobile-menu__link">Tours</a>
+                <a href="shop.html" class="ph-mobile-menu__link active" id="nav-shop-mobile"
+                    style="display: none;">Tienda</a>
+                <a href="about.html" class="ph-mobile-menu__link">Nosotros</a>
             </div>
         </div>
-    </section>
 
-    <!-- Footer -->
-    <footer class="ph-footer">
-        <div class="container">
-            <div class="ph-footer__content">
-                <div class="ph-footer__section">
-                    <h3>Purple Heal Entertainment</h3>
-                    <p style="color: var(--ph-gray-light); margin-top: var(--space-sm);">
-                        Creando el futuro de la música, un artista a la vez.
+        <!-- Shop Main Section -->
+        <section class="hero fade-in" style="padding-top: 100px; padding-bottom: var(--space-3xl); min-height: 60vh;">
+            <div class="container">
+                <!-- Header Text -->
+                <div class="text-center fade-in" style="margin-bottom: var(--space-xl);">
+                    <h1 class="hero__title">
+                        TIENDA <span class="text-gradient">OFICIAL</span>
+                    </h1>
+                    <p class="hero__subtitle" style="max-width: 700px; margin: 0 auto; margin-bottom: var(--space-xl);">
+                        Adquiere la música y merchandising oficial de tus artistas favoritos.
+                        Apoya su arte directamente.
                     </p>
-                </div>
 
-                <div class="ph-footer__section">
-                    <h3>Enlaces Rapidos</h3>
-                    <div class="ph-footer__links">
-                        <a href="index.html" class="ph-footer__link">Home</a>
-                        <a href="artists.html" class="ph-footer__link">Artistas</a>
-                        <a href="about.html" class="ph-footer__link">Nosotros</a>
-                        <a href="index.html#contact" class="ph-footer__link">Contacto</a>
+                    <!-- Filters -->
+                    <div class="flex justify-center gap-4" style="flex-wrap: wrap;">
+                        <button class="ph-button ph-button--outline active"
+                            onclick="filterProducts('all', this)">TODO</button>
+                        <button class="ph-button ph-button--outline"
+                            onclick="filterProducts('album', this)">MUSICA</button>
+                        <button class="ph-button ph-button--outline"
+                            onclick="filterProducts('merch', this)">MERCH</button>
                     </div>
                 </div>
 
-                <div class="ph-footer__section">
-                    <h3>Siguenos</h3>
-                    <div class="ph-footer__links">
-                        <a href="https://www.instagram.com/purpleheal_ent/" class="ph-footer__link"
-                            target="_blank">Instagram</a>
-                        <a href="https://www.x.com/PURPLEHEAL" class="ph-footer__link" target="_blank">Twitter</a>
-                        <a href="https://www.youtube.com/@purplehealent" class="ph-footer__link"
-                            target="_blank">YouTube</a>
-                    </div>
+                <!-- Products Grid -->
+                <div class="grid grid--3 artists-grid scale-in" id="shopGrid">
+                    <!-- Products will be loaded dynamically -->
                 </div>
             </div>
+        </section>
 
-            <div class="ph-footer__bottom">
-                <p>&copy; 2026 Purple Heal Entertainment. Todos los derechos reservados.</p>
+        <!-- Footer -->
+        <footer class="ph-footer">
+            <div class="container">
+                <div class="ph-footer__content">
+                    <div class="ph-footer__section">
+                        <h3>Purple Heal Entertainment</h3>
+                        <p style="color: var(--ph-gray-light); margin-top: var(--space-sm);">
+                            Creando el futuro de la música, un artista a la vez.
+                        </p>
+                    </div>
+
+                    <div class="ph-footer__section">
+                        <h3>Enlaces Rapidos</h3>
+                        <div class="ph-footer__links">
+                            <a href="index.html" class="ph-footer__link">Home</a>
+                            <a href="artists.html" class="ph-footer__link">Artistas</a>
+                            <a href="about.html" class="ph-footer__link">Nosotros</a>
+                            <a href="index.html#contact" class="ph-footer__link">Contacto</a>
+                        </div>
+                    </div>
+
+                    <div class="ph-footer__section">
+                        <h3>Siguenos</h3>
+                        <div class="ph-footer__links">
+                            <a href="https://www.instagram.com/purpleheal_ent/" class="ph-footer__link"
+                                target="_blank">Instagram</a>
+                            <a href="https://www.x.com/PURPLEHEAL" class="ph-footer__link" target="_blank">Twitter</a>
+                            <a href="https://www.youtube.com/@purplehealent" class="ph-footer__link"
+                                target="_blank">YouTube</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ph-footer__bottom">
+                    <p>&copy; 2026 Purple Heal Entertainment. Todos los derechos reservados.</p>
+                </div>
             </div>
-        </div>
-    </footer>
+        </footer>
+    </div>
 
     <!-- JavaScript -->
     <script src="js/storage-db.js?v=2.1"></script>
@@ -227,7 +231,7 @@
                     </div>
                     <div class="artist-card__overlay" style="background: rgba(20, 20, 23, 0.95); position: relative; transform: none; padding: 20px;">
                         <p class="artist-card__genre" style="color: var(--ph-purple-light); text-transform: uppercase; font-size: 0.8em; letter-spacing: 1px;">
-                            ${prod.artist} • ${prod.type === 'album' ? 'ÁLBUM' : 'MERCH'}
+                            ${prod.artist} • ${prod.type === 'album' ? 'ALBUM' : 'MERCH'}
                         </p>
                         <h3 class="artist-card__name" style="font-size: 1.2em; margin: 5px 0 10px;">${prod.title}</h3>
                         

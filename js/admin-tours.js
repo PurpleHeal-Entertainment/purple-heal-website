@@ -209,7 +209,7 @@ function renderDatesList() {
 
         let statusBadge = '';
         if (d.status === 'sold_out') statusBadge = '<span style="color: #e74c3c; font-weight: bold; font-size: 0.8em;">SOLD OUT</span>';
-        if (d.status === 'coming_soon') statusBadge = '<span style="color: #f39c12; font-weight: bold; font-size: 0.8em;">PRÓXIMAMENTE</span>';
+        if (d.status === 'coming_soon') statusBadge = '<span style="color: #f39c12; font-weight: bold; font-size: 0.8em;">PROXIMAMENTE</span>';
         if (d.status === 'ticket') statusBadge = '<span style="color: #2ecc71; font-weight: bold; font-size: 0.8em;">TICKETS</span>';
 
         // Add highlight if currently editing this one
@@ -217,7 +217,7 @@ function renderDatesList() {
         const bgStyle = isEditing ? 'background: rgba(48, 127, 226, 0.2); border: 1px solid var(--ph-purple-light);' : 'background: rgba(255,255,255,0.05);';
 
         return `
-            <div style="${bgStyle} padding: var(--space-sm) var(--space-md); border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center;">
+            <div class="tour-date-item" style="${bgStyle}">
                 <div>
                     <strong style="color: var(--ph-white);">${dateFormatted}</strong>
                     <span style="color: var(--ph-gray-light); margin: 0 8px;">|</span>
@@ -225,10 +225,10 @@ function renderDatesList() {
                     <span style="color: var(--ph-gray-light); margin: 0 8px;">-</span>
                     <span style="color: var(--ph-white); font-size: 0.9em;">${d.venue}</span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 8px;">
+                <div class="actions">
                     ${statusBadge}
-                    <div style="margin-left: 10px;">
-                        <button type="button" onclick="editDateInList(${index})" class="ph-button ph-button--outline" style="font-size: 0.75rem; padding: 4px 10px; margin-right: 4px;">EDITAR</button>
+                    <div style="display: flex; gap: 4px;">
+                        <button type="button" onclick="editDateInList(${index})" class="ph-button ph-button--outline" style="font-size: 0.75rem; padding: 4px 10px;">EDITAR</button>
                         <button type="button" onclick="removeTourDate(${index})" class="ph-button ph-button--outline" style="border-color: #e74c3c; color: #e74c3c; font-size: 0.75rem; padding: 4px 10px;">ELIMINAR</button>
                     </div>
                 </div>

@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description"
     content="Purple Heal Entertainment - Discográfica independiente con los mejores artistas emergentes">
   <title>Purple Heal Entertainment | Discográfica Musical</title>
@@ -12,7 +12,6 @@
   <link rel="stylesheet" href="css/reset.css?v=1.9">
   <link rel="stylesheet" href="css/variables.css?v=1.9">
   <link rel="stylesheet" href="css/global.css?v=1.9">
-  <link rel="stylesheet" href="css/components.css?v=2.1">
   <link rel="stylesheet" href="css/components.css?v=2.4">
 
   <!-- Favicon -->
@@ -22,105 +21,103 @@
 </head>
 
 <body>
-  <!-- Navigation -->
-  <nav class="ph-nav" id="navbar">
-    <div class="container ph-nav__container">
-      <a href="index.html">
-        <img src="assets/logos/PURPLE HEAL LOGO TEXTO BLANCO OPCION 2.svg" alt="Purple Heal Logo" class="ph-nav__logo">
-      </a>
+  <div class="site-wrapper">
+    <!-- Navigation -->
+    <nav class="ph-nav" id="navbar">
+      <div class="container ph-nav__container">
+        <a href="index.html">
+          <img src="assets/logos/PURPLE HEAL LOGO TEXTO BLANCO OPCION 2.svg" alt="Purple Heal Logo"
+            class="ph-nav__logo">
+        </a>
 
-      <div class="ph-nav__menu">
-        <a href="index.html" class="ph-nav__link active">Inicio</a>
-        <a href="artists.html" class="ph-nav__link">Artistas</a>
-        <a href="tours.html" class="ph-nav__link">Tours</a>
-        <a href="shop.html" class="ph-nav__link" id="nav-shop" style="display: none;">Tienda</a>
-        <a href="about.html" class="ph-nav__link">Nosotros</a>
+        <div class="ph-nav__menu">
+          <a href="index.html" class="ph-nav__link active">Inicio</a>
+          <a href="artists.html" class="ph-nav__link">Artistas</a>
+          <a href="tours.html" class="ph-nav__link">Tours</a>
+          <a href="shop.html" class="ph-nav__link" id="nav-shop" style="display: none;">Tienda</a>
+          <a href="about.html" class="ph-nav__link">Nosotros</a>
+        </div>
+
+        <div class="ph-nav__toggle" id="nav-toggle">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
       </div>
+    </nav>
 
-      <div class="ph-nav__toggle" id="nav-toggle">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Mobile Menu -->
-  <div class="ph-mobile-menu">
-    <div class="ph-mobile-menu__content">
-      <a href="index.html" class="ph-mobile-menu__link active">Inicio</a>
-      <a href="artists.html" class="ph-mobile-menu__link">Artistas</a>
-      <a href="tours.html" class="ph-mobile-menu__link">Tours</a>
-      <a href="shop.html" class="ph-mobile-menu__link" id="nav-shop-mobile" style="display: none;">Tienda</a>
-      <a href="about.html" class="ph-mobile-menu__link">Nosotros</a>
-    </div>
-  </div>
-
-  <!-- Hero Section -->
-  <section class="hero fade-in">
-    <div class="hero__content">
-      <img src="assets/logos/PURPLE HEAL LOGO PURPURA EN PNG.png" alt="Purple Heal Logo" class="hero__logo">
-      <h1 class="hero__title">
-        CREANDO EL FUTURO<br>
-        DE LA MUSICA
-      </h1>
-      <p class="hero__subtitle">
-        Descubre a los artistas más talentosos y únicos de la nueva generación musical.
-        Purple Heal Entertainment es más que una discográfica, es una familia de creadores.
-      </p>
-      <div class="hero__actions"
-        style="display: flex; gap: var(--space-lg); justify-content: center; margin-top: var(--space-2xl); flex-wrap: wrap;">
-        <a href="artists.html" class="ph-button ph-button--primary">Ver Artistas</a>
-        <a href="about.html" class="ph-button ph-button--outline">Conoce mas</a>
+    <!-- Mobile Menu -->
+    <div class="ph-mobile-menu">
+      <div class="ph-mobile-menu__content">
+        <a href="index.html" class="ph-mobile-menu__link active">Inicio</a>
+        <a href="artists.html" class="ph-mobile-menu__link">Artistas</a>
+        <a href="tours.html" class="ph-mobile-menu__link">Tours</a>
+        <a href="shop.html" class="ph-mobile-menu__link" id="nav-shop-mobile" style="display: none;">Tienda</a>
+        <a href="about.html" class="ph-mobile-menu__link">Nosotros</a>
       </div>
     </div>
-  </section>
 
-  <!-- FEATURED TOUR (Dynamic) -->
-  <section id="featured-tour-container"
-    style="display: none; position: relative; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1);"></section>
-
-  <!-- Featured Artists -->
-  <section id="featured" style="background: rgba(0, 0, 0, 0.3);">
-    <div class="container">
-      <h2 class="text-center slide-in-left">
-        NUESTROS <span class="text-gradient">ARTISTAS</span>
-      </h2>
-      <p class="text-center" style="color: var(--ph-gray-lighter); max-width: 600px; margin: 0 auto var(--space-3xl);">
-        Conoce a los talentosos artistas que forman parte de la familia Purple Heal
-      </p>
-
-      <div class="grid" id="artistsGrid"
-        style="display: flex; justify-content: center; gap: var(--space-lg); flex-wrap: wrap;">
-        <!-- Artists will be loaded dynamically from IndexedDB -->
+    <!-- Hero Section -->
+    <section class="hero fade-in">
+      <div class="hero__content">
+        <img src="assets/logos/PURPLE HEAL LOGO PURPURA EN PNG.png" alt="Purple Heal Logo" class="hero__logo">
+        <h1 class="hero__title">
+          CREANDO EL FUTURO<br>
+          DE LA MUSICA
+        </h1>
+        <p class="hero__subtitle">
+          Descubre a los artistas más talentosos y únicos de la nueva generación musical.
+          Purple Heal Entertainment es más que una discográfica, es una familia de creadores.
+        </p>
+        <div class="hero__actions"
+          style="display: flex; gap: var(--space-lg); justify-content: center; margin-top: var(--space-2xl); flex-wrap: wrap;">
+          <a href="artists.html" class="ph-button ph-button--primary">Ver Artistas</a>
+          <a href="about.html" class="ph-button ph-button--outline">Conoce mas</a>
+        </div>
       </div>
+    </section>
 
-      <div style="text-align: center; margin-top: var(--space-3xl);">
-        <a href="artists.html" class="ph-button ph-button--gold">Ver Todos los Artistas</a>
+
+    <!-- FEATURED TOUR (Dynamic) -->
+    <section id="featured-tour-container" style="display: none;"></section>
+
+    <!-- Featured Artists -->
+    <section id="featured" style="background: rgba(0, 0, 0, 0.3);">
+      <div class="container">
+        <h2 class="text-center slide-in-left">
+          NUESTROS <span class="text-gradient">ARTISTAS</span>
+        </h2>
+        <p class="text-center"
+          style="color: var(--ph-gray-lighter); max-width: 600px; margin: 0 auto var(--space-3xl);">
+          Conoce a los talentosos artistas que forman parte de la familia Purple Heal
+        </p>
+
+        <div class="grid" id="artistsGrid"
+          style="display: flex; justify-content: center; gap: var(--space-lg); flex-wrap: wrap;">
+          <!-- Artists will be loaded dynamically from IndexedDB -->
+        </div>
+
+        <div style="text-align: center; margin-top: var(--space-3xl);">
+          <a href="artists.html" class="ph-button ph-button--gold">Ver Todos los Artistas</a>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  </section>
+    </section>
 
-  <!-- NEW: PROMO SALE SECTION (Between Artists and About) -->
-  <section id="promo-sale-section" style="padding: var(--space-3xl) 0; display: none;">
-    <div class="container">
-      <!-- 2. Promo / Sale (Full Width Block) -->
-      <div id="promo-sale" class="ph-card fade-in"
-        style="display: none; border: 1px solid rgba(255,255,255,0.1); background: linear-gradient(135deg, rgba(20,20,25,0.95) 0%, rgba(30,10,10,0.95) 100%); overflow: hidden; position: relative;">
-
-        <div class="promo-full-card">
-
+    <!-- NEW: PROMO SALE SECTION (Between Artists and About) -->
+    <section id="promo-sale-section" style="padding: var(--space-3xl) 0; display: none;">
+      <div class="container">
+        <!-- 2. Promo / Sale (Full Width Block) -->
+        <div id="promo-sale" class="ph-card promo-full-card fade-in" style="display: none;">
           <!-- Left: Text Content -->
-          <div
-            style="flex: 1; padding: var(--space-3xl); display: flex; flex-direction: column; justify-content: center; align-items: flex-start;">
+          <div class="promo-text-content">
             <p id="promo-subtitle"
               style="color: var(--ph-blue-accent); font-family: 'Oxanium'; letter-spacing: 2px; font-size: var(--fs-md); margin-bottom: var(--space-md); text-transform: uppercase;">
               OFERTA LIMITADA
             </p>
-            <h2 id="promo-title-main"
-              style="font-size: clamp(3rem, 8vw, 6rem); line-height: 0.85; margin-bottom: var(--space-lg); font-family: 'Oxanium'; font-weight: 800; color: white;">
+            <h2 id="promo-title-main" class="promo-title-main"
+              style="line-height: 0.85; margin-bottom: var(--space-lg); font-family: 'Oxanium'; font-weight: 800; color: white; pointer-events: none;">
               50% <span style="color: var(--ph-blue-accent);">OFF</span>
             </h2>
             <p id="promo-desc"
@@ -128,28 +125,27 @@
               Los álbumes de tus artistas favoritos ahora con descuento especial. Aprovecha esta oportunidad.
             </p>
             <a id="btn-promo" href="shop.html" class="ph-button ph-button--outline"
-              style="border-color: var(--ph-blue-accent); color: var(--ph-blue-accent); padding: 12px 30px; font-size: 1.1rem;">
+              style="border-color: var(--ph-blue-accent); color: var(--ph-blue-accent); position: relative; z-index: 10;">
               VER OFERTAS
             </a>
           </div>
 
           <!-- Right: Dynamic Product Collage (Grid controlled by CSS) -->
-          <div id="promo-images-container" class="promo-products-container"
-            style="flex: 1; min-height: 400px; position: relative;">
+          <div id="promo-images-container" class="promo-products-container">
             <!-- Images injected via JS -->
             <div
               style="position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(214, 0, 28, 0.1) 0%, transparent 70%); pointer-events: none; z-index: 0;">
             </div>
           </div>
 
+          <!-- Background Graphic Elements -->
+          <div
+            style="position: absolute; top: -50px; right: -50px; font-size: 20rem; font-weight: bold; color: rgba(255,255,255,0.02); font-family: 'Oxanium'; z-index: 1;">
+            %</div>
         </div>
 
-        <!-- Background Graphic Elements -->
-        <div
-          style="position: absolute; top: -50px; right: -50px; font-size: 20rem; font-weight: bold; color: rgba(255,255,255,0.02); font-family: 'Oxanium'; z-index: 1;">
-          %</div>
       </div>
-    </div>
+  </div>
   </section>
 
   <!-- About Section -->
@@ -208,31 +204,29 @@
     <div class="container">
       <!-- 1. Purple Backstage (Centered) -->
       <div id="promo-backstage-wrapper" style="max-width: 800px; margin: 0 auto; display: none;">
-        <div id="promo-backstage" class="ph-card"
-          style="border-left: 4px solid var(--ph-purple); background: linear-gradient(145deg, rgba(30,15,40,0.9), rgba(10,10,12,0.95));">
+        <div id="promo-backstage" class="ph-card ph-backstage-card">
           <div class="ph-card__content"
             style="display: flex; flex-direction: column; justify-content: center; height: 100%; text-align: left;">
             <div
               style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-md); margin-bottom: var(--space-md);">
               <p style="color: white; font-weight: bold; font-size: 1.1em;">QUE ES PURPLE BACKSTAGE?</p>
               <span
-                style="background: rgba(139, 92, 246, 0.2); color: var(--ph-purple); padding: 4px 8px; border-radius: 4px; font-size: 0.8em; text-transform: uppercase;">MEMBRESÍA
+                style="background: rgba(139, 92, 246, 0.2); color: var(--ph-purple); padding: 4px 8px; border-radius: 4px; font-size: 0.8em; text-transform: uppercase;">MEMBRESIA
                 DE YOUTUBE</span>
             </div>
 
-            <ul
-              style="list-style: none; margin-bottom: var(--space-lg); color: var(--ph-gray-lighter); line-height: 1.6;">
-              <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
-                <span style="margin-right: 10px; min-width: 20px;">🎥</span>
+            <ul class="ph-backstage-list">
+              <li>
+                <span>🎥</span>
                 <span>Acceso a detras de camaras y entrevistas exclusivas</span>
               </li>
-              <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
-                <span style="margin-right: 10px; min-width: 20px;">💬</span>
+              <li>
+                <span>💬</span>
                 <span>Comentarios destacados y la posibilidad de recibir una respuesta por parte de uno de los artistas
                   de Purple Heal. ¡Con suerte te tocará tu favorito!</span>
               </li>
-              <li style="display: flex; align-items: flex-start;">
-                <span style="margin-right: 10px; min-width: 20px;">🤝</span>
+              <li>
+                <span>🤝</span>
                 <span>Ayuda directa a la produccion y campañas publicitarias</span>
               </li>
             </ul>
@@ -252,8 +246,6 @@
     </div>
   </section>
 
-  <!-- FEATURED TOUR SECTION -->
-  <section id="featured-tour-container" style="display: none; padding: 0;"></section>
 
   <!-- Contact Section -->
   <section id="contact" style="background: rgba(0, 0, 0, 0.3);">
@@ -305,6 +297,7 @@
       </div>
     </div>
   </footer>
+  </div>
 
   <!-- JavaScript -->
   <script src="js/storage-db.js?v=2.1"></script>
@@ -410,7 +403,7 @@
         // Handle Sale Promo Visibility
         if (config.showPromo && saleCard) {
           saleSection.style.display = 'block';
-          saleCard.style.display = 'block';
+          saleCard.style.display = 'flex';
 
           const btn = document.getElementById('btn-promo');
           if (btn) btn.href = config.promoLink || 'shop.html';
@@ -438,7 +431,7 @@
               if (discAlbum > 0 && discMerch > 0 && discAlbum === discMerch) {
                 subtitleEl.textContent = 'DESCUENTO EN TODOS LOS PRODUCTOS';
               } else if (discAlbum > 0) {
-                subtitleEl.textContent = 'OFERTA EN ÁLBUMES';
+                subtitleEl.textContent = 'OFERTA EN ALBUMES';
               } else if (discMerch > 0) {
                 subtitleEl.textContent = 'DESCUENTO EN MERCH';
               } else {
@@ -518,25 +511,24 @@
 
 
 
-        // Featured Tour
         if (config.featuredTourId) {
           const tour = await getTourByIdDB(config.featuredTourId);
           const container = document.getElementById('featured-tour-container');
           if (tour && container) {
             container.style.display = 'block';
             container.innerHTML = `
-                    <div style="position: relative; width: 100%; height: 400px; overflow: hidden;">
-                        <div style="position: absolute; inset: 0; background-image: url('${tour.coverImage}'); background-size: cover; background-position: center;"></div>
-                        <div style="position: absolute; inset: 0; background: linear-gradient(to right, #000 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.8) 100%);"></div>
-                        <div class="container" style="position: relative; height: 100%; display: flex; align-items: center; justify-content: flex-start;">
-                            <div class="fade-in" style="max-width: 600px; padding: var(--space-xl);">
-                                <h4 style="color: var(--ph-blue-accent); font-family: 'Oxanium'; text-transform: uppercase; letter-spacing: 2px; margin-bottom: var(--space-sm);">TOUR DESTACADO</h4>
-                                <h2 style="font-size: clamp(2rem, 5vw, 4rem); line-height: 1.1; margin-bottom: var(--space-md); text-transform: uppercase;">${tour.title}</h2>
-                                <a href="tours.html" class="ph-button ph-button--primary ph-button--glow">VER DETALLES Y FECHAS</a>
-                            </div>
+                <div class="ph-featured-tour">
+                    <div class="ph-featured-tour__bg" style="background-image: url('${tour.coverImage}');"></div>
+                    <div class="ph-featured-tour__overlay"></div>
+                    <div class="container ph-featured-tour__content">
+                        <div class="fade-in">
+                            <span class="ph-featured-tour__tag">TOUR DESTACADO</span>
+                            <h2 class="ph-featured-tour__title">${tour.title}</h2>
+                            <a href="tours.html" class="ph-button ph-button--primary ph-button--glow">VER DETALLES Y FECHAS</a>
                         </div>
                     </div>
-                `;
+                </div>
+            `;
           }
         }
 

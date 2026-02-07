@@ -20,7 +20,7 @@ function toggleInlineAlbumForm(artistIndex) {
         }
     } else {
         formContainer.style.display = 'none';
-        toggleText.textContent = '+ AGREGAR ÁLBUM';
+        toggleText.textContent = '+ AGREGAR ALBUM';
     }
 }
 
@@ -186,7 +186,7 @@ async function handleInlineAlbumSubmit(artistIndex) {
     // Refresh the albums list
     renderArtistAlbums(artists[artistIndex], artistIndex);
 
-    alert('✅ Álbum agregado exitosamente!');
+    alert('✅ Album agregado exitosamente!');
 }
 
 // Handle inline merch form submission

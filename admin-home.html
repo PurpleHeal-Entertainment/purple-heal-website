@@ -13,13 +13,21 @@
     <link rel="stylesheet" href="css/components.css">
 
     <style>
+        .ph-button {
+            border-radius: 50px !important;
+            /* Pill shape on desktop */
+            transition: all 0.3s ease;
+        }
+
         /* Exact layout from admin-tours.html */
         .admin-container {
             min-height: 100vh;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
-            padding: var(--space-2xl);
+            padding: var(--space-xl);
+            width: 100%;
+            overflow-x: hidden;
         }
 
         .admin-login {
@@ -39,16 +47,17 @@
 
         .admin-container:has(.admin-panel.active) {
             align-items: flex-start;
-            padding-top: var(--space-2xl);
+            padding-top: var(--space-xl);
         }
 
         .admin-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: var(--space-3xl);
+            margin-bottom: var(--space-2xl);
             padding-bottom: var(--space-lg);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 20px;
         }
 
         /* Tabs Navigation */
@@ -57,6 +66,18 @@
             gap: var(--space-md);
             margin-bottom: var(--space-md);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-x: auto;
+            scrollbar-width: none;
+            /* Hide scrollbar Firefox */
+            -ms-overflow-style: none;
+            /* Hide scrollbar IE/Edge */
+            white-space: nowrap;
+            padding-bottom: 5px;
+        }
+
+        .admin-tabs::-webkit-scrollbar {
+            display: none;
+            /* Hide scrollbar Chrome/Safari */
         }
 
         .admin-tab {
@@ -71,6 +92,7 @@
             transition: all var(--transition-base);
             text-decoration: none;
             display: inline-block;
+            flex-shrink: 0;
         }
 
         .admin-tab:hover {
@@ -85,7 +107,7 @@
         /* Config Specific styles */
         .config-block {
             background: rgba(255, 255, 255, 0.03);
-            padding: var(--space-xl);
+            padding: var(--space-lg);
             border-radius: var(--radius-lg);
             border: 1px solid rgba(255, 255, 255, 0.1);
             margin-bottom: var(--space-xl);
@@ -162,10 +184,156 @@
             font-size: var(--fs-base);
         }
 
-        /* Fix for white text on white background in dropdowns */
         select option {
             background-color: #1a191f;
             color: white;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            align-items: start;
+        }
+
+        .config-block__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+
+        .admin-section {
+            margin-top: 40px;
+            border: 1px solid var(--ph-purple-primary);
+            background: rgba(20, 0, 40, 0.4);
+            padding: 30px;
+            border-radius: 20px;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 12px;
+                display: block !important;
+                overflow-x: hidden;
+            }
+
+            .admin-panel {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            .admin-panel h2,
+            .admin-panel h3,
+            .admin-panel h4 {
+                font-size: 1.1rem !important;
+                white-space: normal !important;
+                word-wrap: break-word !important;
+                line-height: 1.3 !important;
+                text-align: left;
+            }
+
+            .admin-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .admin-header h1 {
+                font-size: var(--fs-xl) !important;
+                margin: 0;
+            }
+
+            /* Modern Button Fixes */
+            .ph-button {
+                border-radius: var(--radius-md) !important;
+                padding: 12px 20px !important;
+                font-size: var(--fs-sm) !important;
+                min-height: 48px;
+                text-align: center;
+                width: 100% !important;
+                min-width: 0 !important;
+            }
+
+            .admin-header .ph-button {
+                width: 100%;
+            }
+
+            .grid-layout {
+                grid-template-columns: 1fr !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 15px;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            .grid-layout>div,
+            .grid>div {
+                width: 100% !important;
+                min-width: 0 !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+
+            .grid {
+                display: block !important;
+                width: 100% !important;
+            }
+
+            .form-input,
+            .form-select {
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                padding: 10px 12px !important;
+                min-width: 0 !important;
+            }
+
+            /* GitHub Sync Row Fix */
+            .form-group div[style*="display: flex"] {
+                flex-direction: column !important;
+                gap: 12px !important;
+                width: 100% !important;
+            }
+
+            .form-group div[style*="display: flex"] input {
+                width: 100% !important;
+            }
+
+            .form-group div[style*="display: flex"] button {
+                width: 100% !important;
+                min-width: 0 !important;
+            }
+
+            .config-block {
+                padding: 15px;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+
+            .config-block__header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .admin-section {
+                padding: 15px !important;
+                margin-top: 30px !important;
+            }
+
+            .admin-section h2 {
+                font-size: 1.1rem !important;
+            }
+
+            .ph-button--glow {
+                width: 100% !important;
+                min-width: 0 !important;
+            }
         }
     </style>
 </head>
@@ -197,16 +365,14 @@
 
             <form id="homeConfigForm">
 
-                <div class="grid-layout"
-                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start;">
+                <div class="grid-layout">
 
                     <!-- LEFT COLUMN -->
                     <div style="display: flex; flex-direction: column; gap: 20px;">
 
                         <!-- STATS -->
                         <div class="config-block" style="margin: 0;">
-                            <div
-                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <div class="config-block__header">
                                 <h3 style="margin: 0; color: white;">BLOQUE DE ESTADISTICAS</h3>
                                 <label class="switch">
                                     <input type="checkbox" id="showStats">
@@ -238,7 +404,7 @@
 
                         <!-- JOIN SECTION TOGGLE -->
                         <div class="config-block" style="margin: 0;">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div class="config-block__header">
                                 <div>
                                     <h3 style="margin: 0; color: white;">SECCION "BUSCAMOS TALENTOS"</h3>
                                     <p style="color: #888; font-size: 0.8em; margin-top: 5px;">Muestra u oculta la
@@ -313,8 +479,7 @@
                             <!-- Purple Backstage -->
                             <div
                                 style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                                <div
-                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <div class="config-block__header">
                                     <div>
                                         <h4 style="margin: 0; color: #b491cc; font-family: var(--font-primary);">PURPLE
                                             BACKSTAGE
@@ -337,8 +502,7 @@
 
                             <!-- Smart Promo Configuration -->
                             <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
-                                <div
-                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <div class="config-block__header">
                                     <div>
                                         <h4 style="margin: 0; color: #307FE2; font-family: var(--font-primary);">
                                             CONFIGURADOR DE
@@ -366,7 +530,7 @@
                                     </div>
                                 </div>
                                 <div style="margin-bottom: 15px;">
-                                    <label class="form-label">Descripción</label>
+                                    <label class="form-label">Descripcion</label>
                                     <input type="text" class="form-input" id="promoDescription"
                                         placeholder="Ej: Los álbumes de tus artistas favoritos ahora con descuento...">
                                 </div>
@@ -401,11 +565,79 @@
 
                 <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
                     <button type="submit" class="ph-button ph-button--primary ph-button--glow"
-                        style="min-width: 250px;">
+                        style="min-width: 250px; width: var(--btn-width, auto);">
                         GUARDAR CAMBIOS
                     </button>
                 </div>
             </form>
+
+            <!-- GITHUB SYNC SECTION -->
+            <div class="admin-section fade-in">
+                <h2 class="admin-section__title"
+                    style="display: flex; align-items: center; gap: 10px; color: white; margin-bottom: 20px;">
+                    <span style="font-size: 1.5rem;">☁️</span> SYNCHRONIZATION
+                </h2>
+                <p style="color: var(--ph-gray-lighter); margin-bottom: 20px;">
+                    Conecta con GitHub para guardar tus cambios en la nube y actualizar la página web pública.
+                </p>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label class="form-label"
+                        style="display: block; color: var(--ph-purple-lighter); margin-bottom: 8px;">Configuración del
+                        Repositorio</label>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                        <div>
+                            <small style="color: #aaa; display: block; margin-bottom: 4px;">Usuario GitHub
+                                (Owner)</small>
+                            <input type="text" id="githubOwner" class="form-input"
+                                placeholder="Ej: PurpleHeal-Entertainment"
+                                style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white;">
+                        </div>
+                        <div>
+                            <small style="color: #aaa; display: block; margin-bottom: 4px;">Nombre del Repo</small>
+                            <input type="text" id="githubRepo" class="form-input" placeholder="Ej: purple-heal-website"
+                                style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white;">
+                        </div>
+                    </div>
+
+                    <label class="form-label"
+                        style="display: block; color: var(--ph-purple-lighter); margin-bottom: 8px;">GitHub Personal
+                        Access
+                        Token (PAT)</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="password" id="githubToken" class="form-input" placeholder="ghp_xxxxxxxxxxxx..."
+                            style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white;">
+                        <button type="button" id="btnSaveToken" class="ph-button ph-button--outline"
+                            style="min-width: 120px; border: 1px solid var(--ph-purple-light); color: var(--ph-purple-light); background: transparent; cursor: pointer; border-radius: 8px;">
+                            GUARDAR
+                        </button>
+                    </div>
+                    <p class="form-hint" style="font-size: 0.8rem; color: #888; margin-top: 5px;">Tu configuración se
+                        guarda en
+                        este
+                        navegador.</p>
+                </div>
+
+                <div class="form-group"
+                    style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+                        <div>
+                            <h3 style="color: white; margin-bottom: 5px; font-size: 1.1rem;">Sincronizar Datos</h3>
+                            <p style="font-size: 0.9rem; color: #aaa;">Sube Artistas, Tours y Configuración a la web.
+                            </p>
+                        </div>
+                        <button type="button" id="btnSyncNow" class="ph-button ph-button--primary ph-button--glow"
+                            style="background: var(--ph-purple-primary); color: white; border: none; padding: 12px 24px; cursor: pointer; font-weight: bold; box-shadow: 0 0 15px rgba(157, 78, 221, 0.3);">
+                            <span>🔄 SINCRONIZAR AHORA</span>
+                        </button>
+                    </div>
+                    <div id="syncStatus"
+                        style="margin-top: 15px; font-family: monospace; color: var(--ph-blue-accent); min-height: 20px;">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -413,8 +645,80 @@
     <!-- Scripts -->
     <script src="js/storage-db.js"></script>
     <script src="js/admin-auth.js"></script>
+    <script src="js/github-sync.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
+            // --- GITHUB SYNC LOGIC ---
+            const tokenInput = document.getElementById('githubToken');
+            const ownerInput = document.getElementById('githubOwner');
+            const repoInput = document.getElementById('githubRepo');
+            const statusEl = document.getElementById('syncStatus');
+
+            // 1. Load Config & Token if exists
+            if (GithubSync.hasToken()) {
+                tokenInput.value = GithubSync.getToken();
+            }
+
+            const savedConfig = GithubSync.getConfig();
+            if (savedConfig) {
+                ownerInput.value = savedConfig.OWNER || '';
+                repoInput.value = savedConfig.REPO || '';
+            }
+
+            // 2. Save Config Action
+            document.getElementById('btnSaveToken').addEventListener('click', () => {
+                const token = tokenInput.value.trim();
+                const owner = ownerInput.value.trim();
+                const repo = repoInput.value.trim();
+
+                if (!token || !owner || !repo) {
+                    alert('Por favor completa todos los campos (Usuario, Repo y Token)');
+                    return;
+                }
+
+                GithubSync.saveToken(token);
+                GithubSync.saveConfig({
+                    OWNER: owner,
+                    REPO: repo,
+                    BRANCH: 'main' // Defaulting to main
+                });
+
+                alert('Configuración guardada exitosamente.');
+            });
+
+            // 3. Sync Action
+            document.getElementById('btnSyncNow').addEventListener('click', async () => {
+                if (!GithubSync.hasToken()) {
+                    alert('Primero debes guardar un GitHub Token.');
+                    return;
+                }
+
+                const btn = document.getElementById('btnSyncNow');
+                const originalText = btn.innerHTML;
+
+                try {
+                    btn.disabled = true;
+                    btn.innerHTML = '⏳ SINCRONIZANDO...';
+                    statusEl.innerText = 'Iniciando sincronización...';
+
+                    await GithubSync.syncAll((msg) => {
+                        statusEl.innerText = msg;
+                    });
+
+                    btn.innerHTML = '✅ LISTO';
+                    statusEl.innerText = 'Sincronización Exitosa. Los cambios aparecerán en la web en unos minutos.';
+                    setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; }, 3000);
+
+                } catch (error) {
+                    console.error(error);
+                    btn.innerHTML = '❌ ERROR';
+                    statusEl.innerText = 'Error: ' + error.message;
+                    setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; }, 3000);
+                }
+            });
+
+            // --- END GITHUB SYNC LOGIC ---
+
             // Auth Check logic adapted for layout
             if (!checkAuth()) {
                 document.getElementById('loginForm').style.display = 'block';

@@ -89,7 +89,12 @@ async function loadArtistProducts(artistId) {
                 `;
             }).join('');
         } else {
-            albumsContainer.innerHTML = '<p style="text-align: center; color: var(--ph-gray-lighter);">No hay albumes disponibles</p>';
+            // Reset layout for empty state to match page container alignment
+            albumsContainer.style.display = 'block';
+            albumsContainer.style.margin = '0';
+            albumsContainer.style.padding = '40px 0';
+            albumsContainer.style.width = '100%';
+            albumsContainer.innerHTML = '<div style="text-align: center; color: var(--ph-gray-lighter); font-family: var(--font-alt);">No hay albumes disponibles</div>';
         }
     }
 
@@ -146,52 +151,57 @@ async function loadArtistProducts(artistId) {
                 `;
             }).join('');
         } else {
-            merchContainer.innerHTML = '<p style="text-align: center; color: var(--ph-gray-lighter);">No hay merchandising disponible</p>';
+            // Reset layout for empty state to match page container alignment
+            merchContainer.style.display = 'block';
+            merchContainer.style.margin = '0';
+            merchContainer.style.padding = '40px 0';
+            merchContainer.style.width = '100%';
+            merchContainer.innerHTML = '<div style="text-align: center; color: var(--ph-gray-lighter); font-family: var(--font-alt);">No hay merchandising disponible</div>';
         }
+
+
+        // Setup Sliders
+        setupSlider('albumsGrid', 'prevAlbums', 'nextAlbums');
+        setupSlider('merchGrid', 'prevMerch', 'nextMerch');
     }
 
+    // Call when page loads
+    window.loadArtistProducts = loadArtistProducts;
 
-    // Setup Sliders
-    setupSlider('albumsGrid', 'prevAlbums', 'nextAlbums');
-    setupSlider('merchGrid', 'prevMerch', 'nextMerch');
-}
+    // --- SLIDER LOGIC ---
+    function setupSlider(trackId, prevBtnId, nextBtnId) {
+        const track = document.getElementById(trackId);
+        const prevBtn = document.getElementById(prevBtnId);
+        const nextBtn = document.getElementById(nextBtnId);
 
-// Call when page loads
-window.loadArtistProducts = loadArtistProducts;
+        if (!track || !prevBtn || !nextBtn) return;
 
-// --- SLIDER LOGIC ---
-function setupSlider(trackId, prevBtnId, nextBtnId) {
-    const track = document.getElementById(trackId);
-    const prevBtn = document.getElementById(prevBtnId);
-    const nextBtn = document.getElementById(nextBtnId);
+        // Hide buttons if no overflow
+        // We need to wait for images/rendering or just check scrollWidth immediately?
+        // A slight delay or check after a frame might be better.
+        setTimeout(() => {
+            if (track.scrollWidth <= track.clientWidth) {
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+            } else {
+                // Restore flex/block if they were hidden (css has display: flex)
+                // Actually CSS has them absolute. We can just removing inline display:none
+                prevBtn.style.display = '';
+                nextBtn.style.display = '';
+            }
+        }, 500);
 
-    if (!track || !prevBtn || !nextBtn) return;
+        // Scroll amount = width of card + gap (approx 300px + 32px)
+        const scrollAmount = 320;
 
-    // Hide buttons if no overflow
-    // We need to wait for images/rendering or just check scrollWidth immediately?
-    // A slight delay or check after a frame might be better.
-    setTimeout(() => {
-        if (track.scrollWidth <= track.clientWidth) {
-            prevBtn.style.display = 'none';
-            nextBtn.style.display = 'none';
-        } else {
-            // Restore flex/block if they were hidden (css has display: flex)
-            // Actually CSS has them absolute. We can just removing inline display:none
-            prevBtn.style.display = '';
-            nextBtn.style.display = '';
-        }
-    }, 500);
+        prevBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            track.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        });
 
-    // Scroll amount = width of card + gap (approx 300px + 32px)
-    const scrollAmount = 320;
-
-    prevBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        track.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-    });
-
-    nextBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    });
+        nextBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        });
+    }
 }

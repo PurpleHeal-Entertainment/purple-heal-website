@@ -137,7 +137,7 @@ function displayProduct(product, type, artist, config = {}) {
         metaContainer.innerHTML = `
             ${product.category ? `
                 <div class="meta-item">
-                    <span class="meta-label">CATEGORÍA:</span>
+                    <span class="meta-label">CATEGORIA:</span>
                     <span class="meta-value">${product.category}</span>
                 </div>
             ` : ''}

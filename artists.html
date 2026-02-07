@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Descubre a todos los artistas de Purple Heal Entertainment">
     <title>Artistas | Purple Heal Entertainment</title>
 
@@ -18,115 +18,118 @@
 </head>
 
 <body>
-    <!-- Navigation -->
-    <nav class="ph-nav" id="navbar">
-        <div class="container ph-nav__container">
-            <a href="index.html">
-                <img src="assets/logos/PURPLE HEAL LOGO TEXTO BLANCO OPCION 2.svg" alt="Purple Heal Logo"
-                    class="ph-nav__logo">
-            </a>
+    <div class="site-wrapper">
+        <!-- Navigation -->
+        <nav class="ph-nav" id="navbar">
+            <div class="container ph-nav__container">
+                <a href="index.html">
+                    <img src="assets/logos/PURPLE HEAL LOGO TEXTO BLANCO OPCION 2.svg" alt="Purple Heal Logo"
+                        class="ph-nav__logo">
+                </a>
 
-            <div class="ph-nav__menu">
-                <a href="index.html" class="ph-nav__link">Inicio</a>
-                <a href="artists.html" class="ph-nav__link active">Artistas</a>
-                <a href="tours.html" class="ph-nav__link">Tours</a>
-                <a href="shop.html" class="ph-nav__link" id="nav-shop" style="display: none;">Tienda</a>
-                <a href="about.html" class="ph-nav__link">Nosotros</a>
+                <div class="ph-nav__menu">
+                    <a href="index.html" class="ph-nav__link">Inicio</a>
+                    <a href="artists.html" class="ph-nav__link active">Artistas</a>
+                    <a href="tours.html" class="ph-nav__link">Tours</a>
+                    <a href="shop.html" class="ph-nav__link" id="nav-shop" style="display: none;">Tienda</a>
+                    <a href="about.html" class="ph-nav__link">Nosotros</a>
+                </div>
+
+                <div class="ph-nav__toggle" id="nav-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
             </div>
+        </nav>
 
-            <div class="ph-nav__toggle" id="nav-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Mobile Menu -->
-    <div class="ph-mobile-menu">
-        <div class="ph-mobile-menu__content">
-            <a href="index.html" class="ph-mobile-menu__link">Inicio</a>
-            <a href="artists.html" class="ph-mobile-menu__link active">Artistas</a>
-            <a href="tours.html" class="ph-mobile-menu__link">Tours</a>
-            <a href="tours.html" class="ph-mobile-menu__link">Tours</a>
-            <a href="shop.html" class="ph-mobile-menu__link" id="nav-shop-mobile" style="display: none;">Tienda</a>
-            <a href="about.html" class="ph-mobile-menu__link">Nosotros</a>
-        </div>
-    </div>
-
-    <!-- Artists Page Main Section -->
-    <section class="hero fade-in" style="padding-top: 100px; padding-bottom: var(--space-3xl); min-height: 60vh;">
-        <div class="container">
-            <!-- Header Text -->
-            <div class="text-center fade-in" style="margin-bottom: var(--space-xl);">
-                <h1 class="hero__title">
-                    NUESTROS <span class="text-gradient">ARTISTAS</span>
-                </h1>
-                <p class="hero__subtitle" style="max-width: 700px; margin: 0 auto; margin-bottom: 0;">
-                    Conoce a los talentosos creadores que están revolucionando la escena musical.
-                    Cada uno con su estilo único y su pasión incomparable.
-                </p>
-            </div>
-
-            <!-- Artists Grid -->
-            <div class="grid grid--3 artists-grid scale-in" id="artistsGrid">
-                <!-- Artists will be loaded dynamically from IndexedDB -->
+        <!-- Mobile Menu -->
+        <div class="ph-mobile-menu">
+            <div class="ph-mobile-menu__content">
+                <a href="index.html" class="ph-mobile-menu__link">Inicio</a>
+                <a href="artists.html" class="ph-mobile-menu__link active">Artistas</a>
+                <a href="tours.html" class="ph-mobile-menu__link">Tours</a>
+                <a href="shop.html" class="ph-mobile-menu__link" id="nav-shop-mobile" style="display: none;">Tienda</a>
+                <a href="about.html" class="ph-mobile-menu__link">Nosotros</a>
             </div>
         </div>
-    </section>
 
-    <!-- Call to Action target -->
-    <section id="join-section" style="background: rgba(0, 0, 0, 0.3);">
-        <div class="container text-center">
-            <h2>BUSCAMOS NUEVOS TALENTOS</h2>
-            <p
-                style="font-size: var(--fs-lg); color: var(--ph-gray-lighter); max-width: 800px; margin: 0 auto var(--space-2xl);">
-                Purple Heal Entertainment busca nuevos talentos en fechas específicas. Fuera de temporada, puedes enviar
-                tu demo a nuestro correo como método alternativo; ten en cuenta que la revisión no está garantizada y
-                dependerá de nuestra disponibilidad (¡o de tu suerte!).
-            </p>
-            <a href="mailto:purplehealent@gmail.com" class="ph-button ph-button--gold">Envia tu Demo</a>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="ph-footer">
-        <div class="container">
-            <div class="ph-footer__content">
-                <div class="ph-footer__section">
-                    <h3>Purple Heal Entertainment</h3>
-                    <p style="color: var(--ph-gray-light); margin-top: var(--space-sm);">
-                        Creando el futuro de la música, un artista a la vez.
+        <!-- Artists Page Main Section -->
+        <section class="hero fade-in" style="padding-top: 100px; padding-bottom: var(--space-3xl); min-height: 60vh;">
+            <div class="container">
+                <!-- Header Text -->
+                <div class="text-center fade-in" style="margin-bottom: var(--space-xl);">
+                    <h1 class="hero__title">
+                        NUESTROS <span class="text-gradient">ARTISTAS</span>
+                    </h1>
+                    <p class="hero__subtitle" style="max-width: 700px; margin: 0 auto; margin-bottom: 0;">
+                        Conoce a los talentosos creadores que están revolucionando la escena musical.
+                        Cada uno con su estilo único y su pasión incomparable.
                     </p>
                 </div>
 
-                <div class="ph-footer__section">
-                    <h3>Enlaces Rapidos</h3>
-                    <div class="ph-footer__links">
-                        <a href="index.html" class="ph-footer__link">Home</a>
-                        <a href="artists.html" class="ph-footer__link">Artistas</a>
-                        <a href="index.html#about" class="ph-footer__link">Nosotros</a>
-                        <a href="index.html#contact" class="ph-footer__link">Contacto</a>
+                <!-- Artists Grid -->
+                <div class="grid grid--3 artists-grid scale-in" id="artistsGrid">
+                    <!-- Artists will be loaded dynamically from IndexedDB -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action target -->
+        <section id="join-section" style="background: rgba(0, 0, 0, 0.3);">
+            <div class="container text-center">
+                <h2>BUSCAMOS NUEVOS TALENTOS</h2>
+                <p
+                    style="font-size: var(--fs-lg); color: var(--ph-gray-lighter); max-width: 800px; margin: 0 auto var(--space-2xl);">
+                    Purple Heal Entertainment busca nuevos talentos en fechas específicas. Fuera de temporada, puedes
+                    enviar
+                    tu demo a nuestro correo como método alternativo; ten en cuenta que la revisión no está garantizada
+                    y
+                    dependerá de nuestra disponibilidad (¡o de tu suerte!).
+                </p>
+                <a href="mailto:purplehealent@gmail.com" class="ph-button ph-button--gold">Envia tu Demo</a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="ph-footer">
+            <div class="container">
+                <div class="ph-footer__content">
+                    <div class="ph-footer__section">
+                        <h3>Purple Heal Entertainment</h3>
+                        <p style="color: var(--ph-gray-light); margin-top: var(--space-sm);">
+                            Creando el futuro de la música, un artista a la vez.
+                        </p>
+                    </div>
+
+                    <div class="ph-footer__section">
+                        <h3>Enlaces Rapidos</h3>
+                        <div class="ph-footer__links">
+                            <a href="index.html" class="ph-footer__link">Home</a>
+                            <a href="artists.html" class="ph-footer__link">Artistas</a>
+                            <a href="index.html#about" class="ph-footer__link">Nosotros</a>
+                            <a href="index.html#contact" class="ph-footer__link">Contacto</a>
+                        </div>
+                    </div>
+
+                    <div class="ph-footer__section">
+                        <h3>Siguenos</h3>
+                        <div class="ph-footer__links">
+                            <a href="https://www.instagram.com/purpleheal_ent/" class="ph-footer__link"
+                                target="_blank">Instagram</a>
+                            <a href="https://www.x.com/PURPLEHEAL" class="ph-footer__link" target="_blank">Twitter</a>
+                            <a href="https://www.youtube.com/@purplehealent" class="ph-footer__link"
+                                target="_blank">YouTube</a>
+                        </div>
                     </div>
                 </div>
 
-                <div class="ph-footer__section">
-                    <h3>Siguenos</h3>
-                    <div class="ph-footer__links">
-                        <a href="https://www.instagram.com/purpleheal_ent/" class="ph-footer__link"
-                            target="_blank">Instagram</a>
-                        <a href="https://www.x.com/PURPLEHEAL" class="ph-footer__link" target="_blank">Twitter</a>
-                        <a href="https://www.youtube.com/@purplehealent" class="ph-footer__link"
-                            target="_blank">YouTube</a>
-                    </div>
+                <div class="ph-footer__bottom">
+                    <p>&copy; 2026 Purple Heal Entertainment. Todos los derechos reservados.</p>
                 </div>
             </div>
-
-            <div class="ph-footer__bottom">
-                <p>&copy; 2026 Purple Heal Entertainment. Todos los derechos reservados.</p>
-            </div>
-        </div>
-    </footer>
+        </footer>
+    </div>
 
     <!-- JavaScript -->
     <script src="js/storage-db.js?v=2.1"></script>

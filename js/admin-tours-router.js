@@ -476,12 +476,12 @@ async function renderToursList() {
                 <div style="height:120px; background:url('${t.coverImage}') center/cover; position:relative;">
                      <!-- Optional: Status overlay -->
                 </div>
-                <div style="padding:15px; display:flex; justify-content:space-between; align-items:center;">
+                <div class="admin-tour-card-footer">
                     <div>
                         <h3 style="margin:0;">${t.title} <small style="color:gray; font-size:0.6em;">#${t.id}</small></h3>
                         <p style="margin:5px 0 0 0; color: #aaa; font-size:0.9em;">${t.dates ? t.dates.length : 0} Fechas</p>
                     </div>
-                    <div style="display:flex; gap:10px;">
+                    <div class="admin-tour-actions">
                         <button onclick="navigateToEdit(${t.id})" class="ph-button ph-button--outline">EDITAR</button>
                         <button onclick="deleteTour(${t.id})" class="ph-button ph-button--outline" style="border-color: #e74c3c; color: #e74c3c;">ELIMINAR</button>
                     </div>

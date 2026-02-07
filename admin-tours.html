@@ -114,6 +114,15 @@
             gap: var(--space-md);
             margin-bottom: var(--space-md);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            white-space: nowrap;
+            padding-bottom: 5px;
+        }
+
+        .admin-tabs::-webkit-scrollbar {
+            display: none;
         }
 
         .admin-tab {
@@ -127,9 +136,8 @@
             cursor: pointer;
             transition: all var(--transition-base);
             text-decoration: none;
-            /* For A tags */
             display: inline-block;
-            /* For A tags */
+            flex-shrink: 0;
         }
 
         .admin-tab:hover {
@@ -179,6 +187,104 @@
             margin-top: var(--space-md);
             border-radius: var(--radius-md);
             border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive Date Interaction Classes */
+        .form-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tour-date-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .tour-date-item .actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+
+            /* Modern Button Fixes */
+            .ph-button {
+                border-radius: var(--radius-md) !important;
+                padding: 12px 20px !important;
+                font-size: var(--fs-sm) !important;
+                min-height: 48px;
+                text-align: center;
+            }
+
+            .admin-container {
+                padding: var(--space-md);
+            }
+
+            .admin-container:has(.admin-panel.active) {
+                padding-top: var(--space-md);
+            }
+
+            .admin-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .admin-header h1 {
+                font-size: var(--fs-xl) !important;
+                margin: 0;
+            }
+
+            .admin-header .ph-button {
+                width: 100%;
+            }
+
+            .tour-form-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .dates-input-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .ph-button--glow {
+                width: 100%;
+            }
+
+            .ph-card__content {
+                padding: var(--space-md);
+            }
+
+            .tab-header {
+                flex-direction: column;
+                align-items: stretch !important;
+                gap: 15px;
+            }
+
+            .form-actions {
+                flex-direction: column !important;
+            }
+
+            .tour-date-item {
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+            }
+
+            .tour-date-item .actions {
+                width: 100%;
+                justify-content: space-between;
+                margin-top: 10px;
+            }
         }
     </style>
 
@@ -244,7 +350,7 @@
             <div id="tours-tab" class="tab-content active" style="display: block;">
                 <div class="ph-card" style="margin-bottom: var(--space-2xl);">
                     <div class="ph-card__content">
-                        <div
+                        <div class="tab-header"
                             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xl);">
                             <h3 style="text-transform: uppercase; margin: 0;">GESTIONAR TOURS</h3>
                             <button onclick="navigateToCreate()" class="ph-button ph-button--primary ph-button--glow"
@@ -271,10 +377,10 @@
                             </div>
                             <form id="tourForm">
                                 <!-- Tour Details -->
-                                <div
+                                <div class="tour-form-grid"
                                     style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-bottom: var(--space-xl);">
                                     <div class="form-group">
-                                        <label class="form-label">TÍTULO DEL TOUR / GIRA</label>
+                                        <label class="form-label">TITULO DEL TOUR / GIRA</label>
                                         <input type="text" class="form-input" id="tourTitle"
                                             placeholder="Ej: LATAM TOUR 2026">
                                     </div>
@@ -302,7 +408,7 @@
                                     <!-- Add Date Inputs -->
                                     <div
                                         style="background: rgba(255,255,255,0.03); padding: var(--space-md); border-radius: var(--radius-md); margin-bottom: var(--space-md);">
-                                        <div
+                                        <div class="dates-input-grid"
                                             style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-md); margin-bottom: var(--space-md);">
                                             <div class="form-group" style="margin-bottom: 0;">
                                                 <label class="form-label">FECHA</label>
@@ -314,7 +420,7 @@
                                                     placeholder="Ej: Estadio Monumental">
                                             </div>
                                             <div class="form-group" style="margin-bottom: 0;">
-                                                <label class="form-label">CIUDAD / PAÍS</label>
+                                                <label class="form-label">CIUDAD / PAIS</label>
                                                 <input type="text" class="form-input" id="cityInput"
                                                     placeholder="Ej: Buenos Aires, Argentina">
                                             </div>
@@ -335,16 +441,15 @@
                                                 placeholder="https://ticketmaster.com/...">
                                         </div>
 
-                                        <div style="display:flex; gap:10px;">
-                                            <button type="button" onclick="addTourDate()"
-                                                class="ph-button ph-button--outline"
-                                                style="flex: 1; border-style: dashed;">
+                                        <div class="form-actions">
+                                            <button type="button" id="addDateBtn" class="ph-button ph-button--outline"
+                                                onclick="addTourDate()" style="flex: 1; border-style: dashed;">
                                                 + AGREGAR FECHA
                                             </button>
                                             <button type="button" id="cancelDateEditBtn" onclick="cancelDateEdit()"
                                                 class="ph-button ph-button--outline"
                                                 style="display: none; border-color: #e74c3c; color: #e74c3c;">
-                                                CANCELAR EDICIÓN
+                                                CANCELAR EDICION
                                             </button>
                                         </div>
                                         <p id="dateError" class="error-message"

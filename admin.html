@@ -13,12 +13,25 @@
     <link rel="stylesheet" href="css/components.css">
 
     <style>
+        /* Modern Button Fixes */
+        .ph-button {
+            border-radius: 50px !important;
+            /* Pill shape on desktop */
+            padding: 12px 24px !important;
+            font-size: var(--fs-sm) !important;
+            min-height: 48px;
+            text-align: center;
+            line-height: 1.2;
+            transition: all 0.3s ease;
+        }
+
         .admin-container {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: var(--space-2xl);
+            padding: var(--space-md);
+            /* Always use small padding on admin */
         }
 
         .admin-login {
@@ -39,16 +52,17 @@
         /* Fix centering issue - align to top when panel is shown */
         .admin-container:has(.admin-panel.active) {
             align-items: flex-start;
-            padding-top: var(--space-2xl);
+            padding-top: var(--space-xl);
         }
 
         .admin-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: var(--space-3xl);
+            margin-bottom: var(--space-2xl);
             padding-bottom: var(--space-lg);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 20px;
         }
 
         .form-group {
@@ -148,6 +162,19 @@
             align-items: center;
         }
 
+        .tab-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .admin-card-actions {
+            display: flex;
+            gap: var(--space-sm);
+            justify-content: flex-end;
+        }
+
         .artist-item h3 {
             margin: 0;
             text-transform: none;
@@ -229,6 +256,15 @@
             gap: var(--space-md);
             margin-bottom: var(--space-md);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            white-space: nowrap;
+            padding-bottom: 5px;
+        }
+
+        .admin-tabs::-webkit-scrollbar {
+            display: none;
         }
 
         .admin-tab {
@@ -242,9 +278,8 @@
             cursor: pointer;
             transition: all var(--transition-base);
             text-decoration: none;
-            /* For A tags */
             display: inline-block;
-            /* For A tags */
+            flex-shrink: 0;
         }
 
         .admin-tab:hover {
@@ -259,12 +294,180 @@
         /* Tabs container removed */
 
 
+        /* Tab Transitions */
+        .tab-content {
+            display: none !important;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
         .tab-content.active {
             display: block !important;
-            position: static !important;
-            visibility: visible !important;
-            height: auto !important;
-            overflow: visible !important;
+            opacity: 1;
+        }
+
+        /* Responsive Utility Classes for JS Templates */
+        .admin-profile-grid {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: var(--space-3xl);
+            margin-bottom: var(--space-3xl);
+        }
+
+        .admin-image-preview-container {
+            width: 380px;
+            height: 507px;
+            background: var(--ph-gray-darker);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 2px dashed rgba(155, 89, 182, 0.3);
+            position: relative;
+        }
+
+        .admin-form-grid {
+            display: grid;
+            grid-template-columns: 500px 1fr;
+            gap: 60px;
+        }
+
+        /* Horizontal Scroll for Mobile Products */
+        .admin-horizontal-slider {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--space-md);
+            margin-top: var(--space-lg);
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 1024px) {
+
+            .admin-profile-grid,
+            .admin-form-grid {
+                grid-template-columns: 1fr !important;
+                gap: var(--space-xl);
+            }
+
+            .admin-image-preview-container {
+                width: 100% !important;
+                height: auto !important;
+                aspect-ratio: 3/4;
+            }
+
+            .admin-horizontal-slider {
+                display: flex !important;
+                flex-wrap: nowrap !important;
+                overflow-x: auto !important;
+                scroll-snap-type: x mandatory;
+                padding-bottom: 20px;
+                gap: 15px;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                margin-left: -10px;
+                margin-right: -10px;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
+            .admin-horizontal-slider::-webkit-scrollbar {
+                display: none;
+            }
+
+            .admin-horizontal-slider>div {
+                flex: 0 0 85% !important;
+                min-width: 280px;
+                scroll-snap-align: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --fs-2xl: 1.25rem;
+                /* Force smaller titles on mobile */
+                --fs-xl: 1.1rem;
+            }
+
+            .admin-container {
+                padding: 10px;
+            }
+
+            .ph-card__content {
+                padding: 15px !important;
+            }
+
+            .admin-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 15px;
+                margin-bottom: var(--space-xl);
+            }
+
+            .admin-header h1 {
+                font-size: var(--fs-xl) !important;
+                margin: 0;
+            }
+
+            .ph-button {
+                border-radius: var(--radius-md) !important;
+                /* Square/Rounded-Rectangle only on mobile */
+                width: 100%;
+            }
+
+            .admin-header .ph-button {
+                width: 100%;
+            }
+
+            .admin-card-actions {
+                justify-content: center !important;
+                width: 100%;
+            }
+
+            .artist-item {
+                flex-direction: column;
+                align-items: center !important;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .tab-header {
+                display: flex !important;
+                flex-direction: column;
+                align-items: center !important;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .tab-header h3 {
+                font-size: 1.2rem;
+                text-align: center;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .form-actions .ph-button {
+                width: 100%;
+            }
+
+            /* Fix overlaps in artist profile view */
+            #artist-view h2,
+            #artist-view h3 {
+                font-size: 1.2rem !important;
+                margin-bottom: 15px;
+            }
+
+            /* Responsive Grids for specific sections */
+            .grid-2-mobile {
+                grid-template-columns: 1fr !important;
+            }
+
+            /* Better button spacing for dynamic lists */
+            .admin-tab-actions {
+                flex-direction: column;
+                width: 100%;
+            }
         }
     </style>
 
@@ -334,7 +537,7 @@
                 <!-- Artists List Section -->
                 <div class="ph-card" style="margin-bottom: var(--space-2xl);">
                     <div class="ph-card__content">
-                        <div
+                        <div class="tab-header"
                             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xl);">
                             <h3 style="text-transform: uppercase; margin: 0;">MIS ARTISTAS</h3>
                             <button onclick="showAddArtistForm()" class="ph-button ph-button--primary">
@@ -421,7 +624,8 @@
 
                                     <div id="artistFormMessage"></div>
 
-                                    <div style="display: flex; gap: var(--space-md); margin-top: var(--space-lg);">
+                                    <div class="form-actions"
+                                        style="display: flex; gap: var(--space-md); margin-top: var(--space-lg);">
                                         <button type="button" onclick="hideAddArtistForm()"
                                             class="ph-button ph-button--outline" style="flex: 1;">
                                             CANCELAR
@@ -429,7 +633,6 @@
                                         <button type="submit" class="ph-button ph-button--primary" style="flex: 1;">
                                             GUARDAR ARTISTA
                                         </button>
-
                                     </div>
                                 </form>
                             </div>
