@@ -72,10 +72,13 @@ const GithubSync = {
         }
 
         // Fix: Use loop instead of spread syntax to avoid "Maximum call stack size exceeded"
+        // Optimization: Process in chunks to avoid UI freeze and slow concatenation
         const unicodeContent = new TextEncoder().encode(content);
         let binary = '';
-        for (let i = 0; i < unicodeContent.length; i++) {
-            binary += String.fromCharCode(unicodeContent[i]);
+        const CHUNK_SIZE = 32768; // 32KB chunks
+
+        for (let i = 0; i < unicodeContent.length; i += CHUNK_SIZE) {
+            binary += String.fromCharCode.apply(null, unicodeContent.subarray(i, i + CHUNK_SIZE));
         }
         const base64Content = btoa(binary);
 
