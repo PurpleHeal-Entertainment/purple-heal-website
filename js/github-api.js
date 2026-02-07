@@ -47,8 +47,7 @@ const GithubSync = {
         const response = await fetch(url, {
             headers: {
                 'Authorization': `token ${token}`,
-                'Accept': 'application/vnd.github.v3+json',
-                'Cache-Control': 'no-cache'
+                'Accept': 'application/vnd.github.v3+json'
             }
         });
 
@@ -72,8 +71,13 @@ const GithubSync = {
             console.warn("Could not get SHA (might be new file):", e);
         }
 
+        // Fix: Use loop instead of spread syntax to avoid "Maximum call stack size exceeded"
         const unicodeContent = new TextEncoder().encode(content);
-        const base64Content = btoa(String.fromCharCode(...unicodeContent));
+        let binary = '';
+        for (let i = 0; i < unicodeContent.length; i++) {
+            binary += String.fromCharCode(unicodeContent[i]);
+        }
+        const base64Content = btoa(binary);
 
         const body = {
             message: message || `update ${path}`,
