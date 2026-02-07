@@ -263,12 +263,9 @@ async function getStorageInfo() {
 // ==========================================
 
 // Load all tours
-function getAllToursDB() {
+async function getAllToursDB() {
+    if (!db) await initDB();
     return new Promise((resolve, reject) => {
-        if (!db) {
-            initDB().then(() => getAllToursDB().then(resolve).catch(reject));
-            return;
-        }
         const transaction = db.transaction(['tours'], 'readonly');
         const store = transaction.objectStore('tours');
         const request = store.getAll();
@@ -279,14 +276,9 @@ function getAllToursDB() {
 }
 
 // Save a single tour (add or update)
-// Save a single tour (add or update)
-function saveTourDB(tour) {
+async function saveTourDB(tour) {
+    if (!db) await initDB();
     return new Promise((resolve, reject) => {
-        if (!db) {
-            initDB().then(() => saveTourDB(tour).then(resolve).catch(reject));
-            return;
-        }
-
         // Use structuredClone/Copy to detach from any proxies
         const tourCopy = JSON.parse(JSON.stringify(tour));
 
@@ -316,12 +308,9 @@ function saveTourDB(tour) {
 }
 
 // Delete a tour
-function deleteTourDB(id) {
+async function deleteTourDB(id) {
+    if (!db) await initDB();
     return new Promise((resolve, reject) => {
-        if (!db) {
-            initDB().then(() => deleteTourDB(id).then(resolve).catch(reject));
-            return;
-        }
         const transaction = db.transaction(['tours'], 'readwrite');
         const store = transaction.objectStore('tours');
         console.log('🗑️ DB: Requesting DELETE for ID:', id);
@@ -340,12 +329,9 @@ function deleteTourDB(id) {
 }
 
 // Get single tour by ID (Optimized)
-function getTourByIdDB(id) {
+async function getTourByIdDB(id) {
+    if (!db) await initDB();
     return new Promise((resolve, reject) => {
-        if (!db) {
-            initDB().then(() => getTourByIdDB(id).then(resolve).catch(reject));
-            return;
-        }
         const transaction = db.transaction(['tours'], 'readonly');
         const store = transaction.objectStore('tours');
         const request = store.get(Number(id));
@@ -362,12 +348,9 @@ function getTourByIdDB(id) {
 // SITE CONFIG (Home Customization)
 // ==========================================
 
-function saveSiteConfig(config) {
+async function saveSiteConfig(config) {
+    if (!db) await initDB();
     return new Promise((resolve, reject) => {
-        if (!db) {
-            initDB().then(() => saveSiteConfig(config).then(resolve).catch(reject));
-            return;
-        }
         // Force ID to ensure singleton
         config.id = 'home_settings';
 
@@ -380,12 +363,9 @@ function saveSiteConfig(config) {
     });
 }
 
-function getSiteConfig() {
+async function getSiteConfig() {
+    if (!db) await initDB();
     return new Promise((resolve, reject) => {
-        if (!db) {
-            initDB().then(() => getSiteConfig().then(resolve).catch(reject));
-            return;
-        }
         const transaction = db.transaction(['site_config'], 'readonly');
         const store = transaction.objectStore('site_config');
         const request = store.get('home_settings');
@@ -423,12 +403,9 @@ window.saveSiteConfig = saveSiteConfig;
 // USER MANAGEMENT FUNCTIONS (RBAC)
 // ==========================================
 
-function getAllUsersDB() {
+async function getAllUsersDB() {
+    if (!db) await initDB();
     return new Promise((resolve, reject) => {
-        if (!db) {
-            initDB().then(() => getAllUsersDB().then(resolve).catch(reject));
-            return;
-        }
         const transaction = db.transaction(['users'], 'readonly');
         const store = transaction.objectStore('users');
         const request = store.getAll();
@@ -438,12 +415,9 @@ function getAllUsersDB() {
     });
 }
 
-function getUserDB(username) {
+async function getUserDB(username) {
+    if (!db) await initDB();
     return new Promise((resolve, reject) => {
-        if (!db) {
-            initDB().then(() => getUserDB(username).then(resolve).catch(reject));
-            return;
-        }
         const transaction = db.transaction(['users'], 'readonly');
         const store = transaction.objectStore('users');
         const request = store.get(username);
@@ -453,12 +427,9 @@ function getUserDB(username) {
     });
 }
 
-function saveUserDB(user) {
+async function saveUserDB(user) {
+    if (!db) await initDB();
     return new Promise((resolve, reject) => {
-        if (!db) {
-            initDB().then(() => saveUserDB(user).then(resolve).catch(reject));
-            return;
-        }
         if (!user.username || !user.password || !user.role) {
             reject(new Error('Invalid user data'));
             return;
@@ -473,12 +444,9 @@ function saveUserDB(user) {
     });
 }
 
-function deleteUserDB(username) {
+async function deleteUserDB(username) {
+    if (!db) await initDB();
     return new Promise((resolve, reject) => {
-        if (!db) {
-            initDB().then(() => deleteUserDB(username).then(resolve).catch(reject));
-            return;
-        }
         if (username === 'admin') {
             reject(new Error('Cannot delete main admin account'));
             return;
