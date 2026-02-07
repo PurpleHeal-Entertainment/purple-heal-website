@@ -136,132 +136,130 @@ const GithubSync = {
 
 window.GithubSync = GithubSync;
 
-getToken: () => {
-    return localStorage.getItem('ph_github_token');
+
+
+hasToken: () => {
+    return !!localStorage.getItem('ph_github_token');
 },
 
-    hasToken: () => {
-        return !!localStorage.getItem('ph_github_token');
+    removeToken: () => {
+        localStorage.removeItem('ph_github_token');
     },
 
-        removeToken: () => {
-            localStorage.removeItem('ph_github_token');
+        // --- API Interactions ---
+
+        /**
+         * Get the SHA of a file (needed to update it)
+         */
+        getObjSHA: async (path) => {
+            const token = GithubSync.getToken();
+            if (!token) throw new Error("No GitHub Token found. Please configure it in settings.");
+
+            const url = `https://api.github.com/repos/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/contents/${path}?ref=${GITHUB_CONFIG.BRANCH}`;
+
+            const response = await fetch(url, {
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Cache-Control': 'no-cache'
+                }
+            });
+
+            if (response.status === 404) return null; // File doesn't exist yet
+            if (!response.ok) throw new Error(`GitHub API Error: ${response.statusText}`);
+
+            const data = await response.json();
+            return data.sha;
         },
 
-            // --- API Interactions ---
-
             /**
-             * Get the SHA of a file (needed to update it)
+             * Upload/Update a single file
              */
-            getObjSHA: async (path) => {
+            uploadFile: async (path, content, message) => {
                 const token = GithubSync.getToken();
-                if (!token) throw new Error("No GitHub Token found. Please configure it in settings.");
+                if (!token) throw new Error("No GitHub Token found.");
 
-                const url = `https://api.github.com/repos/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/contents/${path}?ref=${GITHUB_CONFIG.BRANCH}`;
+                // 1. Get current SHA (if exists) to update
+                let sha = null;
+                try {
+                    sha = await GithubSync.getObjSHA(path);
+                } catch (e) {
+                    console.warn("Could not get SHA (might be new file):", e);
+                }
+
+                // 2. Prepare Payload
+                // GitHub API requires content to be Base64 encoded
+                // Standard btoa fails with Unicode strings (emojis, accents)
+                // Utf8 safe encoding:
+                const unicodeContent = new TextEncoder().encode(content);
+                const base64Content = btoa(String.fromCharCode(...unicodeContent));
+
+                const body = {
+                    message: message || `update ${path}`,
+                    content: base64Content,
+                    branch: GITHUB_CONFIG.BRANCH
+                };
+                if (sha) body.sha = sha;
+
+                // 3. Send PUT request
+                const url = `https://api.github.com/repos/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/contents/${path}`;
 
                 const response = await fetch(url, {
+                    method: 'PUT',
                     headers: {
                         'Authorization': `token ${token}`,
                         'Accept': 'application/vnd.github.v3+json',
-                        'Cache-Control': 'no-cache'
-                    }
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
                 });
 
-                if (response.status === 404) return null; // File doesn't exist yet
-                if (!response.ok) throw new Error(`GitHub API Error: ${response.statusText}`);
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(`Upload Failed: ${errData.message}`);
+                }
 
-                const data = await response.json();
-                return data.sha;
+                return await response.json();
             },
 
                 /**
-                 * Upload/Update a single file
+                 * Sync ALL local IndexedDB data to GitHub
                  */
-                uploadFile: async (path, content, message) => {
-                    const token = GithubSync.getToken();
-                    if (!token) throw new Error("No GitHub Token found.");
-
-                    // 1. Get current SHA (if exists) to update
-                    let sha = null;
+                syncAll: async (progressCallback) => {
                     try {
-                        sha = await GithubSync.getObjSHA(path);
-                    } catch (e) {
-                        console.warn("Could not get SHA (might be new file):", e);
-                    }
+                        if (progressCallback) progressCallback("Leyendo datos locales...");
 
-                    // 2. Prepare Payload
-                    // GitHub API requires content to be Base64 encoded
-                    // Standard btoa fails with Unicode strings (emojis, accents)
-                    // Utf8 safe encoding:
-                    const unicodeContent = new TextEncoder().encode(content);
-                    const base64Content = btoa(String.fromCharCode(...unicodeContent));
+                        // 1. Gather Data from DB
+                        const artists = await loadArtistsDB();
+                        const tours = await (window.getAllToursDB ? window.getAllToursDB() : []);
+                        const config = await (window.getSiteConfig ? window.getSiteConfig() : {});
+                        const users = await (window.getAllUsersDB ? window.getAllUsersDB() : []);
 
-                    const body = {
-                        message: message || `update ${path}`,
-                        content: base64Content,
-                        branch: GITHUB_CONFIG.BRANCH
-                    };
-                    if (sha) body.sha = sha;
+                        // 2. Define files to sync
+                        const filesToSync = [
+                            { path: 'data/artists.json', content: JSON.stringify(artists, null, 2) },
+                            { path: 'data/tours.json', content: JSON.stringify(tours, null, 2) },
+                            { path: 'data/site_config.json', content: JSON.stringify(config, null, 2) },
+                            { path: 'data/users.json', content: JSON.stringify(users, null, 2) }
+                        ];
 
-                    // 3. Send PUT request
-                    const url = `https://api.github.com/repos/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/contents/${path}`;
-
-                    const response = await fetch(url, {
-                        method: 'PUT',
-                        headers: {
-                            'Authorization': `token ${token}`,
-                            'Accept': 'application/vnd.github.v3+json',
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(body)
-                    });
-
-                    if (!response.ok) {
-                        const errData = await response.json();
-                        throw new Error(`Upload Failed: ${errData.message}`);
-                    }
-
-                    return await response.json();
-                },
-
-                    /**
-                     * Sync ALL local IndexedDB data to GitHub
-                     */
-                    syncAll: async (progressCallback) => {
-                        try {
-                            if (progressCallback) progressCallback("Leyendo datos locales...");
-
-                            // 1. Gather Data from DB
-                            const artists = await loadArtistsDB();
-                            const tours = await (window.getAllToursDB ? window.getAllToursDB() : []);
-                            const config = await (window.getSiteConfig ? window.getSiteConfig() : {});
-                            const users = await (window.getAllUsersDB ? window.getAllUsersDB() : []);
-
-                            // 2. Define files to sync
-                            const filesToSync = [
-                                { path: 'data/artists.json', content: JSON.stringify(artists, null, 2) },
-                                { path: 'data/tours.json', content: JSON.stringify(tours, null, 2) },
-                                { path: 'data/site_config.json', content: JSON.stringify(config, null, 2) },
-                                { path: 'data/users.json', content: JSON.stringify(users, null, 2) }
-                            ];
-
-                            // 3. Upload loop
-                            let count = 0;
-                            for (const file of filesToSync) {
-                                if (progressCallback) progressCallback(`Subiendo ${file.path}...`);
-                                await GithubSync.uploadFile(file.path, file.content, `feat: update ${file.path} from Admin Panel`);
-                                count++;
-                            }
-
-                            if (progressCallback) progressCallback("¡Sincronización completada!");
-                            return true;
-
-                        } catch (error) {
-                            console.error("Sync Error:", error);
-                            if (progressCallback) progressCallback(`Error: ${error.message}`);
-                            throw error;
+                        // 3. Upload loop
+                        let count = 0;
+                        for (const file of filesToSync) {
+                            if (progressCallback) progressCallback(`Subiendo ${file.path}...`);
+                            await GithubSync.uploadFile(file.path, file.content, `feat: update ${file.path} from Admin Panel`);
+                            count++;
                         }
+
+                        if (progressCallback) progressCallback("¡Sincronización completada!");
+                        return true;
+
+                    } catch (error) {
+                        console.error("Sync Error:", error);
+                        if (progressCallback) progressCallback(`Error: ${error.message}`);
+                        throw error;
                     }
+                }
 };
 
 // Expose globally
