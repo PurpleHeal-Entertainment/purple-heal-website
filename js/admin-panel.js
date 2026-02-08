@@ -561,6 +561,8 @@ async function saveArtistProfile(event, artistIndex) {
 
     if (currentArtistImage) {
         artist.image = currentArtistImage;
+        // CRITICAL FIX: Update imageData as well to prevent old heavy data from persisting
+        artist.imageData = currentArtistImage;
     }
 
     await saveArtists(artists);
