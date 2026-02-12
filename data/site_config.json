@@ -1,5 +1,5 @@
 {
-  "showStats": true,
+  "showStats": false,
   "showJoinSection": false,
   "showContact": false,
   "showStore": false,
@@ -13,11 +13,11 @@
   "backstageLink": "",
   "stats": [
     {
-      "number": "8+",
+      "number": "123",
       "label": "Artistas Talentosos"
     },
     {
-      "number": "20+",
+      "number": "2424",
       "label": "Lanzamientos Musicales"
     },
     {
