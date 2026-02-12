@@ -599,6 +599,104 @@ async function saveArtistProfile(event, artistIndex) {
     showArtistProfile(artists[artistIndex], artistIndex);
 }
 
+// ----------------------------------------------------
+// MISSING RENDER FUNCTIONS (FIX)
+// ----------------------------------------------------
+
+function renderArtistAlbums(artist, artistIndex) {
+    if (!artist.albums || artist.albums.length === 0) {
+        return '<p class="text-center" style="color: var(--ph-gray-lighter); padding: var(--space-md);">No hay álbumes registrados.</p>';
+    }
+
+    return `
+        <div class="admin-grid">
+            ${artist.albums.map((album, idx) => `
+                <div class="ph-card" style="border: 1px solid rgba(255,255,255,0.1);">
+                    <div class="ph-card__content" style="padding: var(--space-md);">
+                        <div style="display: flex; gap: var(--space-md);">
+                            <!-- Image -->
+                            <div style="width: 80px; height: 80px; background: #000; border-radius: 4px; overflow: hidden; flex-shrink: 0;">
+                                ${album.images && album.images[0] ?
+            `<img src="${album.images[0]}" style="width: 100%; height: 100%; object-fit: cover;">` :
+            '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #333;">💿</div>'
+        }
+                            </div>
+                            
+                            <!-- Info -->
+                            <div style="flex: 1; min-width: 0;">
+                                <h4 style="margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${album.title}</h4>
+                                <p style="color: var(--ph-gray-lighter); font-size: var(--fs-xs); margin-top: 4px;">
+                                    ${album.year || (album.releaseDate ? album.releaseDate.split('-')[0] : '????')} • ${album.type || 'Album'}
+                                </p>
+                                <p style="color: var(--ph-purple-light); font-size: var(--fs-xs); font-weight: bold; margin-top: 4px;">
+                                    $${album.price}
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md); border-top: 1px solid rgba(255,255,255,0.1); padding-top: var(--space-sm);">
+                            <button onclick="showAlbumForm(${artistIndex}, ${idx})" class="ph-button ph-button--outline" style="flex: 1; padding: 4px; font-size: var(--fs-xs);">
+                                EDITAR
+                            </button>
+                            <button onclick="deleteAlbum(${artistIndex}, ${idx})" class="ph-button ph-button--outline" style="flex: 0 0 auto; padding: 4px 8px; font-size: var(--fs-xs); border-color: #e74c3c; color: #e74c3c;">
+                                🗑️
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+function renderArtistMerch(artist, artistIndex) {
+    if (!artist.merch || artist.merch.length === 0) {
+        return '<p class="text-center" style="color: var(--ph-gray-lighter); padding: var(--space-md);">No hay productos registrados.</p>';
+    }
+
+    return `
+        <div class="admin-grid">
+            ${artist.merch.map((product, idx) => `
+                <div class="ph-card" style="border: 1px solid rgba(255,255,255,0.1);">
+                    <div class="ph-card__content" style="padding: var(--space-md);">
+                        <div style="display: flex; gap: var(--space-md);">
+                            <!-- Image -->
+                            <div style="width: 80px; height: 80px; background: #000; border-radius: 4px; overflow: hidden; flex-shrink: 0;">
+                                ${product.images && product.images[0] ?
+            `<img src="${product.images[0]}" style="width: 100%; height: 100%; object-fit: cover;">` :
+            '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #333;">👕</div>'
+        }
+                            </div>
+                            
+                            <!-- Info -->
+                            <div style="flex: 1; min-width: 0;">
+                                <h4 style="margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${product.name}</h4>
+                                <p style="color: var(--ph-gray-lighter); font-size: var(--fs-xs); margin-top: 4px;">
+                                    ${product.category} • ${product.stock}
+                                </p>
+                                <p style="color: var(--ph-purple-light); font-size: var(--fs-xs); font-weight: bold; margin-top: 4px;">
+                                    $${product.price}
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md); border-top: 1px solid rgba(255,255,255,0.1); padding-top: var(--space-sm);">
+                            <button onclick="showMerchForm(${artistIndex}, ${idx})" class="ph-button ph-button--outline" style="flex: 1; padding: 4px; font-size: var(--fs-xs);">
+                                EDITAR
+                            </button>
+                            <button onclick="deleteMerch(${artistIndex}, ${idx})" class="ph-button ph-button--outline" style="flex: 0 0 auto; padding: 4px 8px; font-size: var(--fs-xs); border-color: #e74c3c; color: #e74c3c;">
+                                🗑️
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
 // ...
 
 // Delete album
