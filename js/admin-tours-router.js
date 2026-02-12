@@ -90,7 +90,7 @@ async function enterEditMode(id) {
         console.log('🔄 Fetching data for Edit Mode ID:', id);
 
         // Safety: Use ContentManager
-        const allTours = window.ContentManager ? window.ContentManager.tours : [];
+        const allTours = await window.ContentManager.getTours();
         const tour = allTours.find(t => Number(t.id) === Number(id));
 
         if (!tour) {
@@ -381,6 +381,10 @@ async function handleTourSubmit(e) {
             createdAt: new Date().toISOString()
         };
 
+        // Fetch latest list from Cloud
+        let tours = await window.ContentManager.getTours();
+        if (!Array.isArray(tours)) tours = [];
+
         if (currentEditingTourId) {
             // EDIT MODE: UPDATE EXISTING
             const rawId = Number(currentEditingTourId);
@@ -388,10 +392,11 @@ async function handleTourSubmit(e) {
             console.log('UPDATING Existing Tour ID:', rawId);
 
             // --- ContentManager Update Logic ---
-            const tours = window.ContentManager ? window.ContentManager.tours : [];
             const index = tours.findIndex(t => Number(t.id) === rawId);
             if (index !== -1) {
                 tours[index] = tourToSave; // Update in place
+            } else {
+                tours.push(tourToSave); // Fallback Append
             }
             await window.ContentManager.saveTours(tours);
             // -----------------------------------
@@ -400,8 +405,7 @@ async function handleTourSubmit(e) {
             // CREATE MODE: GAP-FILLING ID CALCULATION
             console.log('CREATING New Tour - Calculating ID...');
             try {
-                const existingTours = window.ContentManager ? window.ContentManager.tours : [];
-                const existingIds = existingTours.map(t => Number(t.id));
+                const existingIds = tours.map(t => Number(t.id));
 
                 // Find lowest missing positive integer
                 let nextId = 1;
@@ -413,22 +417,20 @@ async function handleTourSubmit(e) {
                 console.log('   -> Assigned Gap/Next ID:', nextId);
 
                 // --- ContentManager Create Logic ---
-                existingTours.push(tourToSave);
-                await window.ContentManager.saveTours(existingTours);
+                tours.push(tourToSave);
+                await window.ContentManager.saveTours(tours);
                 // -----------------------------------
 
             } catch (idErr) {
                 console.error('Error calculating ID:', idErr);
+                throw idErr;
             }
         }
 
         console.log('Sending Object to Cloud:', tourToSave);
 
-        // Use standard save (Removed legacy)
-        // await saveTourDB(tourToSave);
-
         // SUCCESS - SHOW MESSAGE THEN REDIRECT
-        showFormMessage('TOUR GUARDADO EXITOSAMENTE. Redirigiendo...', 'success');
+        showFormMessage('TOUR GUARDADO EN LA NUBE. Redirigiendo...', 'success');
 
         setTimeout(() => {
             // FORCE REDIRECT TO CLEAN URL (List Mode)
@@ -449,7 +451,7 @@ window.handleTourSubmit = handleTourSubmit;
 async function dumpAllData() {
     console.log('📦 DUMPING CLOUD CONTENTS...');
     try {
-        const tours = window.ContentManager ? window.ContentManager.tours : [];
+        const tours = await window.ContentManager.getTours();
         console.log('--- RAW DB DATA START ---');
         console.log(JSON.stringify(tours, null, 2));
         console.log('--- RAW DB DATA END ---');
@@ -459,7 +461,7 @@ async function dumpAllData() {
             console.log(`ID: ${t.id} | Title: ${t.title} | Dates: ${t.dates ? t.dates.length : 0} | Cover: ${t.coverImage ? 'Yes (' + t.coverImage.length + ' chars)' : 'No'}`);
         });
 
-        alert(`Hay ${tours.length} tours en la base de datos. Revisa la consola verde para ver si tienen datos.`);
+        alert(`Hay ${tours.length} tours en la nube.`);
     } catch (e) {
         console.error(e);
         alert('Error dumping data');
@@ -474,10 +476,10 @@ async function renderToursList() {
     const c = document.getElementById('tours-list');
     if (!c) return;
 
-    c.innerHTML = '<p style="text-align:center; padding:20px;">Cargando tours...</p>';
+    c.innerHTML = '<p style="text-align:center; padding:20px;">Cargando tours de la nube...</p>';
     try {
         // Use ContentManager
-        const tours = window.ContentManager ? window.ContentManager.tours : [];
+        const tours = await window.ContentManager.getTours();
 
         if (!tours || tours.length === 0) {
             c.innerHTML = '<p style="text-align:center; padding:20px;">No hay tours creados.</p>';
@@ -507,12 +509,13 @@ async function renderToursList() {
 async function deleteTour(id) {
     if (confirm('¿Eliminar tour #' + id + '?')) {
         try {
-            // await deleteTourDB(Number(id));
-            const tours = window.ContentManager ? window.ContentManager.tours : [];
+            const tours = await window.ContentManager.getTours();
             const newTours = tours.filter(t => Number(t.id) !== Number(id));
             await window.ContentManager.saveTours(newTours);
 
-            window.location.reload(); // Simple reload works for list
+            // Reload UI
+            await renderToursList();
+            showFormMessage('Tour eliminado.', 'success');
         } catch (e) {
             alert('Error deleting: ' + e.message);
         }
