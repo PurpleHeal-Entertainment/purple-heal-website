@@ -200,24 +200,47 @@ function renderArtistsList(artists) {
         return;
     }
 
-    container.innerHTML = artists.map((artist, index) => `
-        <div class="artist-item">
-            <div>
-                <h3>${artist.name}</h3>
-                <p style="color: var(--ph-gray-lighter); font-size: var(--fs-sm); margin-top: var(--space-xs);">
-                    ${artist.genre || 'Sin genero'} | ${artist.albums?.length || 0} albumes | ${artist.merch?.length || 0} productos
-                </p>
+    container.innerHTML = artists.map((artist, index) => {
+        try {
+            // Guard against null/undefined artist
+            if (!artist) return '';
+
+            return `
+            <div class="artist-item">
+                <div>
+                    <h3>${artist.name || 'Sin Nombre (Error de Datos)'}</h3>
+                    <p style="color: var(--ph-gray-lighter); font-size: var(--fs-sm); margin-top: var(--space-xs);">
+                        ${artist.genre || 'Sin genero'} | ${artist.albums?.length || 0} albumes | ${artist.merch?.length || 0} productos
+                    </p>
+                </div>
+                <div class="admin-card-actions">
+                    <button onclick="editArtist(${index})" class="ph-button ph-button--outline" style="padding: var(--space-sm) var(--space-md);">
+                        EDITAR
+                    </button>
+                    <button onclick="deleteArtist(${index})" class="ph-button ph-button--outline" style="padding: var(--space-sm) var(--space-md); border-color: #e74c3c; color: #e74c3c;">
+                        ELIMINAR
+                    </button>
+                </div>
             </div>
-            <div class="admin-card-actions">
-                <button onclick="editArtist(${index})" class="ph-button ph-button--outline" style="padding: var(--space-sm) var(--space-md);">
-                    EDITAR
-                </button>
-                <button onclick="deleteArtist(${index})" class="ph-button ph-button--outline" style="padding: var(--space-sm) var(--space-md); border-color: #e74c3c; color: #e74c3c;">
-                    ELIMINAR
-                </button>
-            </div>
-        </div>
-    `).join('');
+            `;
+        } catch (err) {
+            console.error('Error rendering artist at index ' + index, err);
+            return `
+            <div class="artist-item" style="border-color: #e74c3c;">
+                <div>
+                    <h3 style="color: #e74c3c;">DATOS CORRUPTOS (${index})</h3>
+                    <p style="color: var(--ph-gray-lighter); font-size: var(--fs-sm);">
+                        Este artista tiene datos inválidos. Elimínalo para arreglar el Sync.
+                    </p>
+                </div>
+                <div class="admin-card-actions">
+                    <button onclick="deleteArtist(${index})" class="ph-button ph-button--outline" style="border-color: #e74c3c; color: #e74c3c;">
+                        ELIMINAR
+                    </button>
+                </div>
+            </div>`;
+        }
+    }).join('');
 }
 
 // Delete artist
