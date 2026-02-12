@@ -4,19 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administracion - Artistas - Purple Heal</title>
+    <title>Panel de Administracion - Purple Heal</title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/components.css">
-
-    <!-- Security Check (Blocking) -->
-    <script type="module">
-        import AuthManager from './js/auth-manager.js';
-        AuthManager.checkAuth(true); // Redirect if not logged in
-    </script>
 
     <style>
         /* Modern Button Fixes */
@@ -446,7 +440,6 @@
             .tab-header h3 {
                 font-size: 1.2rem;
                 text-align: center;
-                margin: 0;
             }
 
             .form-actions {
@@ -484,10 +477,41 @@
 <body>
 
     <div class="admin-container">
-        <!-- Login Form Fallback -->
+        <!-- Login Form -->
         <div class="admin-login" id="loginForm">
-            <!-- Simplified login check trigger -->
-            <p style="text-align: center; color: #666;">Verificando Acceso...</p>
+            <div class="ph-card">
+                <div class="ph-card__content">
+                    <div style="text-align: center; margin-bottom: var(--space-2xl);">
+                        <img src="assets/logos/PURPLE HEAL LOGO PURPURA EN PNG.png" alt="Purple Heal"
+                            style="max-width: 90px; display: block; margin: 0 auto;">
+                        <h2 style="margin-top: var(--space-lg); text-transform: uppercase; font-size: var(--fs-xl);">
+                            PANEL DE ADMINISTRACION</h2>
+                    </div>
+
+                    <form id="loginFormElement">
+                        <div class="form-group">
+                            <label class="form-label">USUARIO</label>
+                            <input type="text" class="form-input" id="username" autocomplete="username" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">CONTRASENA</label>
+                            <input type="password" class="form-input" id="password" autocomplete="current-password"
+                                required>
+                            <div id="capsLockWarning" class="error-message" style="display: none;">
+                                ⚠️ MAYUSCULAS ACTIVADAS
+                            </div>
+                        </div>
+
+                        <div id="loginError" class="error-message" style="display: none;"></div>
+
+                        <button type="submit" class="ph-button ph-button--primary"
+                            style="width: 100%; margin-top: var(--space-lg);">
+                            INICIAR SESION
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <!-- Admin Panel -->
@@ -497,7 +521,7 @@
                 <button class="ph-button ph-button--outline" id="logoutBtn">CERRAR SESION</button>
             </div>
 
-            <!-- Tab Navigation (LINKS) -->
+            <!-- Tab Navigation (LINKS) - Updated -->
             <div class="admin-tabs">
                 <button class="admin-tab active">ARTISTAS</button> <!-- Current Page -->
                 <a href="admin-tours.html" class="admin-tab">TOURS</a>
@@ -505,9 +529,12 @@
                 <a href="admin-users.html" class="admin-tab" id="nav-users" style="display: none;">USUARIOS</a>
             </div>
 
-            <!-- Artists List Section -->
+            <!-- Single Artists Section (no tabs needed) -->
+
+            <!-- Artists Tab Content -->
             <div id="artists-tab" class="tab-content active" style="display: block;">
 
+                <!-- Artists List Section -->
                 <div class="ph-card" style="margin-bottom: var(--space-2xl);">
                     <div class="ph-card__content">
                         <div class="tab-header"
@@ -524,6 +551,8 @@
 
                 <!-- Add Artist Form (initially hidden) -->
                 <div id="add-artist-form-container" style="display: none;">
+
+                    <!-- Artists Section -->
                     <div id="artists-section">
                         <div class="ph-card">
                             <div class="ph-card__content">
@@ -563,27 +592,30 @@
                                         <img id="artistImagePreview" class="image-preview" style="display: none;">
                                     </div>
 
-                                    <!-- Social Links -->
                                     <div class="form-group">
                                         <label class="form-label">SPOTIFY URL (OPCIONAL)</label>
                                         <input type="url" class="form-input" id="artistSpotify"
                                             placeholder="https://open.spotify.com/artist/...">
                                     </div>
+
                                     <div class="form-group">
                                         <label class="form-label">YOUTUBE URL (OPCIONAL)</label>
                                         <input type="url" class="form-input" id="artistYoutube"
                                             placeholder="https://youtube.com/...">
                                     </div>
+
                                     <div class="form-group">
                                         <label class="form-label">APPLE MUSIC URL (OPCIONAL)</label>
                                         <input type="url" class="form-input" id="artistAppleMusic"
                                             placeholder="https://music.apple.com/...">
                                     </div>
+
                                     <div class="form-group">
                                         <label class="form-label">INSTAGRAM URL (OPCIONAL)</label>
                                         <input type="url" class="form-input" id="artistInstagram"
                                             placeholder="https://instagram.com/...">
                                     </div>
+
                                     <div class="form-group">
                                         <label class="form-label">TIKTOK URL (OPCIONAL)</label>
                                         <input type="url" class="form-input" id="artistTiktok"
@@ -608,68 +640,49 @@
                     </div>
                 </div>
             </div>
+        </div> <!-- Close artists-tab -->
 
-            <!-- Dynamic content containers -->
-            <div id="artist-profile-view" style="display: none; position: absolute;"></div>
-            <div id="album-edit-view" style="display: none; position: absolute;"></div>
-            <div id="merch-edit-view" style="display: none; position: absolute;"></div>
+
+        <div id="artist-profile-view" style="display: none; position: absolute;">
+            <!-- This will be populated dynamically by JavaScript -->
+        </div>
+
+        <!-- Album Add/Edit View (opens when adding/editing album) -->
+        <div id="album-edit-view" style="display: none; position: absolute;">
+            <!-- This will be populated dynamically by JavaScript -->
+        </div>
+
+        <!-- Merch Add/Edit View (opens when adding/editing merch) -->
+        <div id="merch-edit-view" style="display: none; position: absolute;">
+            <!-- This will be populated dynamically by JavaScript -->
         </div>
     </div>
+    </div>
 
-    <!-- Scripts -->
-    <script src="js/storage-db.js"></script> <!-- Keep for legacy read support if needed locally -->
-    <script src="js/inline-forms-helper.js?v=2.2"></script>
-    <script src="js/admin-panel.js?v=2.3"></script>
+    <script src="js/storage-db.js?v=2.1"></script>
+    <script src="js/inline-forms-helper.js?v=2.1"></script>
+    <script src="js/admin-auth.js?v=2.1"></script>
+    <script src="js/admin-panel.js?v=2.2"></script>
+    <script>
+        // Initialize IndexedDB and migrate data on page load
+        document.addEventListener('DOMContentLoaded', async function () {
+            console.log('🔧 Initializing admin panel...');
+            await initDB();
+            console.log('✅ DB initialized');
+            await migrateFromLocalStorage();
+            console.log('✅ Migration complete');
+            await getStorageInfo(); // Show storage usage in console
 
-    <script type="module">
-        import ContentManager from './js/content-manager.js';
-        import AuthManager from './js/auth-manager.js';
-
-        // Wait for Auth + CMS Init
-        document.addEventListener('DOMContentLoaded', async () => {
-
-            // 1. UI Setup
-            const user = AuthManager.getCurrentUser();
-
-            // 2. Init Content Manager (Fetches Token)
-            try {
-                await ContentManager.init();
-                console.log("CMS Ready");
-
-                // Show Admin Panel
-                document.getElementById('loginForm').style.display = 'none';
-                document.getElementById('adminPanel').classList.add('active');
-
-                // 3. Init UI (Legacy function)
-                if (typeof window.initAdmin === 'function') {
-                    await window.initAdmin();
-                }
-
-                // 4. Role Check
-                const currentUser = AuthManager.getCurrentUser();
-                if (currentUser) {
-                    const role = await AuthManager.getUserRole(currentUser.email);
-                    if (role === 'admin') {
-                        const usersTab = document.getElementById('nav-users');
-                        if (usersTab) usersTab.style.display = 'inline-block';
-                    }
-                }
-
-            } catch (e) {
-                console.error("CMS Init Failed:", e);
-                if (e === "No user") {
-                    window.location.href = 'admin-login.html';
-                }
+            // Now initialize the admin panel
+            if (typeof initAdmin === 'function') {
+                console.log('🚀 Calling initAdmin...');
+                await initAdmin();
+            } else {
+                console.error('❌ initAdmin function not found!');
             }
         });
-
-        // Logout Binding
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            AuthManager.logout();
-        });
     </script>
-
-    <!-- Delete Confirmation Modal -->
+    <!-- Delete Confirmation Modal (Moved to root) -->
     <div id="deleteModal"
         style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center;">
         <div class="ph-card"
@@ -678,8 +691,15 @@
                 <h3 style="color: #e74c3c; margin-bottom: var(--space-md); text-transform: uppercase;">⚠️ Zona de
                     Peligro</h3>
                 <p style="color: var(--ph-gray-lighter); margin-bottom: var(--space-lg);">
-                    Esta acción es irreversible. ¿Estás seguro de que deseas eliminar este elemento?
+                    Esta acción es irreversible. Para confirmar, ingresa tu contraseña de administrador via
+                    <strong>Purple Verify™</strong>.
                 </p>
+
+                <input type="password" id="deletePasswordInput" class="form-input" placeholder="Contraseña de Admin"
+                    style="margin-bottom: var(--space-sm); text-align: center;">
+                <div id="deleteCapsLockWarning" class="error-message"
+                    style="display: none; margin-bottom: var(--space-lg); font-size: 0.8rem;">⚠️ MAYUSCULAS ACTIVADAS
+                </div>
 
                 <div style="display: flex; gap: var(--space-md);">
                     <button type="button" id="cancelDeleteBtn" class="ph-button ph-button--outline"
@@ -690,7 +710,6 @@
             </div>
         </div>
     </div>
-
 </body>
 
 </html>

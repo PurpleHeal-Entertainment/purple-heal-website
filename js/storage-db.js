@@ -28,28 +28,7 @@ function initDB() {
             db = request.result;
             console.log('IndexedDB initialized successfully ✅');
 
-            // Self-Healing: Check for Admin in background
-            if (db.objectStoreNames.contains('users')) {
-                try {
-                    const tx = db.transaction(['users'], 'readwrite');
-                    const store = tx.objectStore('users');
-                    const adminReq = store.get('admin');
-
-                    adminReq.onsuccess = () => {
-                        if (!adminReq.result) {
-                            console.log('🚨 Admin missing! Re-creating...');
-                            store.put({
-                                username: 'admin',
-                                password: 'Artto,healthesoul-29112001',
-                                role: 'admin',
-                                createdAt: new Date().toISOString()
-                            });
-                        }
-                    };
-                } catch (e) {
-                    console.error('Error checking admin user:', e);
-                }
-            }
+            // Admin check removed for security. Public site does not need admin user.
 
             resolve(db);
         };
@@ -77,47 +56,94 @@ function initDB() {
                 console.log('Site Config store created ✅');
             }
 
-            // Create users store (New RBAC System)
-            if (!db.objectStoreNames.contains('users')) {
-                const usersStore = db.createObjectStore('users', { keyPath: 'username' });
-                console.log('Users store created ✅');
-
-                // Initialize Default Admin directly in the upgrade transaction
-                usersStore.add({
-                    username: 'admin',
-                    password: 'Artto,healthesoul-29112001',
-                    role: 'admin',
-                    createdAt: new Date().toISOString()
-                });
-                console.log('👑 Default Admin User Initialized!');
-            }
+            // Users store removed for security. Auth is now handled by Firebase.
         };
     });
 }
 
+// --- HYBRID MODE: Auto-detect if we should load from JSON (Public Site) or IDB (Admin/Local) ---
+// If we are NOT on an admin page, try to fetch JSON first.
+async function fetchPublicData(filename) {
+    const isLocalAdmin = window.location.pathname.includes('admin') || window.location.pathname.includes('login');
+    const isLocalFile = window.location.protocol === 'file:';
+
+    // If we are in Admin Panel or running purely local file protocol without server, use IDB
+    if (isLocalAdmin) {
+        console.log(`🔒 Admin Mode: Skipping JSON fetch for ${filename}`);
+        return null;
+    }
+
+    try {
+        console.log(`☁️ Public Mode: Fetching data/${filename}...`);
+        // Add timestamp to prevent caching
+        const response = await fetch(`data/${filename}?t=${Date.now()}`);
+
+        if (!response.ok) {
+            // If file not found (e.g. first run), fallback to IDB
+            console.warn(`⚠️ JSON fetch failed for ${filename}: ${response.status}`);
+            return null;
+        }
+
+        const data = await response.json();
+        console.log(`✅ Loaded ${filename} from Cloud`);
+        return data;
+    } catch (error) {
+        console.error(`❌ Error fetching ${filename}:`, error);
+        return null;
+    }
+}
+
 // Save all artists to IndexedDB
+const isPublicSite = !window.location.pathname.includes('admin');
+
+// Helper to fetch JSON with fallback
+async function fetchPublicData(filename) {
+    if (!isPublicSite) return null; // Admin always uses IDB
+    try {
+        // Cache busting to ensure fresh data
+        const response = await fetch(`data/${filename}?t=${new Date().getTime()}`);
+        if (response.ok) {
+            console.log(`🌍 Public Mode: Loaded ${filename} from server.`);
+            return await response.json();
+        }
+    } catch (e) {
+        console.warn(`⚠️ Public Mode: Could not load ${filename}, falling back to IDB.`, e);
+    }
+    return null;
+}
+
+async function loadArtistsDB() {
+    // 1. Try JSON (Public Mode)
+    const jsonData = await fetchPublicData('artists.json');
+    if (jsonData) return jsonData;
+
+    // 2. Fallback to IDB (Admin Mode or Offline)
+    if (!db) await initDB();
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['artists'], 'readonly');
+        const store = transaction.objectStore('artists');
+        const request = store.getAll();
+
+        request.onsuccess = () => {
+            if (request.result && request.result.length > 0) {
+                console.log(`📦 Loaded ${request.result.length} artists from IndexedDB`);
+                resolve(request.result);
+            } else {
+                console.log('📭 IndexedDB is empty.');
+                resolve([]);
+            }
+        };
+        request.onerror = () => reject(request.error);
+    });
+}
+
+// NOTE: saveArtistsDB remains IDB-only because public site doesn't save.
 async function saveArtistsDB(artists) {
-    console.log('💾 saveArtistsDB: Starting save...');
-    console.log('💾 saveArtistsDB: db initialized?', !!db);
-
-    if (!db) {
-        console.log('💾 saveArtistsDB: Initializing DB first...');
-        await initDB();
-    }
-
-    // Validate input
-    if (!Array.isArray(artists)) {
-        console.error('❌ saveArtistsDB: artists is not an array!', typeof artists, artists);
-        return Promise.reject(new Error('Invalid artists data: not an array'));
-    }
-
-    console.log(`💾 saveArtistsDB: Saving ${artists.length} artists`);
-
+    if (!db) await initDB();
     return new Promise((resolve, reject) => {
         try {
-            const transaction = db.transaction([STORE_NAME], 'readwrite');
-            const objectStore = transaction.objectStore(STORE_NAME);
-
+            const transaction = db.transaction(['artists'], 'readwrite');
+            const objectStore = transaction.objectStore('artists');
             console.log('💾 saveArtistsDB: Transaction created');
 
             // Clear existing data
@@ -129,9 +155,8 @@ async function saveArtistsDB(artists) {
                 artists.forEach((artist, index) => {
                     // Use structuredClone for better handling of large data
                     const artistCopy = structuredClone ? structuredClone(artist) : { ...artist };
-                    console.log(`💾 saveArtistsDB: Adding artist ${index}:`, artistCopy.name,
-                        'has imageData:', !!artistCopy.imageData,
-                        'imageData length:', artistCopy.imageData ? artistCopy.imageData.length : 0);
+                    // console.log(`💾 saveArtistsDB: Adding artist ${index}:`, artistCopy.name); 
+                    // Log commented out to reduce noise
                     try {
                         objectStore.add(artistCopy);
                     } catch (addError) {
@@ -300,10 +325,28 @@ async function saveTourDB(tour) {
             resolve(request.result);
         };
 
+        request.onerror = () => {
+            console.error('❌ Request Failed:', request.error);
+            reject(request.error);
+        };
+
         transaction.onerror = () => {
             console.error('❌ Transaction Failed:', transaction.error);
             reject(transaction.error);
         };
+    });
+}
+
+// Get Tour by ID
+function getTourByIdDB(id) {
+    if (!db) return Promise.reject("DB not init");
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['tours'], 'readonly');
+        const store = transaction.objectStore('tours');
+        // Ensure ID is number if keyPath is number
+        const request = store.get(Number(id));
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
     });
 }
 
@@ -313,33 +356,8 @@ async function deleteTourDB(id) {
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(['tours'], 'readwrite');
         const store = transaction.objectStore('tours');
-        console.log('🗑️ DB: Requesting DELETE for ID:', id);
-        const request = store.delete(id);
-
-        request.onsuccess = () => {
-            console.log('✅ DB: DELETE Success for ID:', id);
-            resolve(true);
-        };
-
-        request.onerror = () => {
-            console.error('❌ DB: DELETE Failed:', request.error);
-            reject(request.error);
-        };
-    });
-}
-
-// Get single tour by ID (Optimized)
-async function getTourByIdDB(id) {
-    if (!db) await initDB();
-    return new Promise((resolve, reject) => {
-        const transaction = db.transaction(['tours'], 'readonly');
-        const store = transaction.objectStore('tours');
-        const request = store.get(Number(id));
-
-        request.onsuccess = () => {
-            console.log('🔍 DB Fetch Result for ID ' + id + ':', request.result);
-            resolve(request.result);
-        };
+        const request = store.delete(Number(id));
+        request.onsuccess = () => resolve();
         request.onerror = () => reject(request.error);
     });
 }
@@ -351,7 +369,7 @@ async function getTourByIdDB(id) {
 async function saveSiteConfig(config) {
     if (!db) await initDB();
     return new Promise((resolve, reject) => {
-        // Force ID to ensure singleton
+        // Ensure ID is set
         config.id = 'home_settings';
 
         const transaction = db.transaction(['site_config'], 'readwrite');
@@ -364,6 +382,11 @@ async function saveSiteConfig(config) {
 }
 
 async function getSiteConfig() {
+    // 1. Try JSON (Public Mode)
+    const jsonData = await fetchPublicData('site_config.json');
+    if (jsonData) return jsonData;
+
+    // 2. Fallback to IDB
     if (!db) await initDB();
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(['site_config'], 'readonly');
@@ -375,6 +398,14 @@ async function getSiteConfig() {
             const defaults = {
                 id: 'home_settings',
                 showStats: true,
+                showJoinSection: true, // "Busqueda de nuevos talentos"
+                showContact: true, // "Trabaja con nosotros"
+                showStore: false, // "Tienda" (future feature)
+                showOffers: true, // "Ofertas"
+                showBackstage: true, // "Purple Backstage" (YouTube subscription etc)
+                promoTitle: 'OFERTAS IMPERDIBLES',
+                promoSubtitle: 'EN MERCH SELECCIONADO',
+                promoDescription: 'Aprovecha descuentos exclusivos en productos de tus artistas favoritos.',
                 stats: [
                     { number: '10+', label: 'Artistas Talentosos' },
                     { number: '50+', label: 'Lanzamientos Musicales' },
@@ -388,17 +419,6 @@ async function getSiteConfig() {
     });
 }
 
-// Export functions
-window.initDB = initDB;
-window.saveArtistsDB = saveArtistsDB;
-window.loadArtistsDB = loadArtistsDB;
-window.migrateFromLocalStorage = migrateFromLocalStorage;
-window.getStorageInfo = getStorageInfo;
-window.getAllToursDB = getAllToursDB;
-window.getTourByIdDB = getTourByIdDB;
-window.saveTourDB = saveTourDB;
-window.deleteTourDB = deleteTourDB;
-window.saveSiteConfig = saveSiteConfig;
 // ==========================================
 // USER MANAGEMENT FUNCTIONS (RBAC)
 // ==========================================

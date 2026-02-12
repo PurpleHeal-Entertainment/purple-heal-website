@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Setup Firestore - Purple Heal</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #1a1a1a;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .box {
+            background: #333;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 500px;
+        }
+
+        h1 {
+            color: #a96ec5;
+        }
+
+        #status {
+            margin-top: 1rem;
+            text-align: left;
+            background: #000;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            min-height: 100px;
+        }
+
+        .log-success {
+            color: #4caf50;
+        }
+
+        .log-error {
+            color: #ff6b6b;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: #a96ec5;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #8e44ad;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <h1>Configurar Base de Datos</h1>
+        <p>Esto creará tu usuario Admin y las carpetas necesarias en la base de datos.</p>
+        <button class="btn" onclick="startSetup()">INICIAR SETUP</button>
+        <div id="status">Esperando...</div>
+    </div>
+
+    <script type="module">
+        import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+        import { db } from './js/firebase-config.js';
+
+        const statusEl = document.getElementById('status');
+        const email = "purplehealent@gmail.com";
+
+        window.startSetup = async () => {
+            log("Iniciando configuración...");
+
+            try {
+                // 1. Create User Role
+                log(`Creando rol de Admin para: ${email}...`);
+                await setDoc(doc(db, "users", email), {
+                    role: "admin",
+                    name: "Super Admin",
+                    createdAt: new Date().toISOString()
+                });
+                log("✅ Rol de Admin Creado.", "log-success");
+
+                // 2. Create Config Placeholder
+                log("Creando carpeta de Secretos...");
+                const secretsRef = doc(db, "config", "secrets");
+                const secretsSnap = await getDoc(secretsRef);
+
+                if (!secretsSnap.exists()) {
+                    await setDoc(secretsRef, {
+                        github_token: "", // Empty for now
+                        repo_owner: "PurpleHeal-Entertainment",
+                        repo_name: "purple-heal-website",
+                        _info: "Este documento guarda el TOKEN para editar la web."
+                    });
+                    log("✅ Carpeta de Secretos creada (Token pendiente).", "log-success");
+                } else {
+                    log("ℹ️ La carpeta de secretos ya existía.", "log-success");
+                }
+
+                log("-----------------------------------");
+                log("🎉 ¡SETUP COMPLETADO! 🎉", "log-success");
+                log("Ahora puedes entrar al panel de administración.");
+
+                // Add link
+                const link = document.createElement('a');
+                link.href = 'admin.html';
+                link.innerText = 'Ir al Admin Panel';
+                link.style.display = 'block';
+                link.style.marginTop = '20px';
+                link.style.color = '#a96ec5';
+                statusEl.appendChild(link);
+
+            } catch (error) {
+                console.error(error);
+                log("❌ ERROR: " + error.message, "log-error");
+                log("Asegúrate de haber activado el 'Test Mode' en Firestore.", "log-error");
+            }
+        };
+
+        function log(msg, className = "") {
+            const div = document.createElement('div');
+            div.textContent = msg;
+            if (className) div.className = className;
+            statusEl.appendChild(div);
+        }
+    </script>
+</body>
+
+</html>

@@ -128,26 +128,23 @@ function switchTab(tabName) {
 
 // Storage functions - Using IndexedDB for unlimited storage
 async function saveArtists(artists) {
-    console.log('saveArtists called with:', artists);
-    console.log('Is array?', Array.isArray(artists));
-    console.log('Length:', artists?.length);
-
     try {
-        console.log('Calling saveArtistsDB...');
-        await saveArtistsDB(artists);
-        console.log('saveArtistsDB completed successfully ✅');
+        console.log('☁️ Saving artists to Cloud CMS...');
+        await ContentManager.saveArtists(artists);
+        console.log('✅ Artists saved to Cloud!');
         return true;
     } catch (error) {
         console.error('❌ Error in saveArtists:', error);
-        showToast('Error al guardar artistas. Por favor recarga la página.', 'error');
+        showToast('Error al guardar artistas en la nube.', 'error');
         return false;
     }
 }
 
 async function loadArtists() {
     try {
-        const artists = await loadArtistsDB();
-        console.log('✅ Artists loaded from IndexedDB:', artists?.length || 0, 'artists');
+        console.log('☁️ Loading artists from Cloud CMS...');
+        const artists = await ContentManager.getArtists();
+        console.log('✅ Artists loaded:', artists?.length || 0);
         return artists || [];
     } catch (error) {
         console.error('❌ Error loading artists:', error);
@@ -160,8 +157,9 @@ async function initAdmin() {
     try {
         console.log('🚀 initAdmin called');
 
-        // Wait a bit to ensure DB is initialized
-        await new Promise(resolve => setTimeout(resolve, 100));
+        // Note: ContentManager.init() is already called in admin-home.html
+        // So we can directly load data.
+
 
         const artists = await loadArtists();
         console.log('✅ Loaded artists:', artists?.length || 0, 'artists');
@@ -225,11 +223,17 @@ function renderArtistsList(artists) {
 // Delete artist
 function deleteArtist(index) {
     showDeleteModal(async () => {
-        const artists = await loadArtists();
-        artists.splice(index, 1);
-        await saveArtists(artists);
-        showToast('Artista eliminado exitosamente.');
-        renderArtistsList(artists);
+        try {
+            const artists = await ContentManager.getArtists();
+            artists.splice(index, 1);
+            await ContentManager.saveArtists(artists);
+            showToast('Artista eliminado de la nube.');
+            loadArtists(); // Reload from cloud to be sure
+            renderArtistsList(artists); // Optimistic update
+        } catch (e) {
+            console.error(e);
+            showToast('Error eliminando artista', 'error');
+        }
     });
 }
 
@@ -1475,7 +1479,8 @@ async function saveMerchForm(event) {
 
 async function loadTours() {
     try {
-        const tours = await window.getAllToursDB(); // From storage-db.js
+        console.log('☁️ Loading tours from Cloud...');
+        const tours = await ContentManager.getTours();
         return tours || [];
     } catch (error) {
         console.error('❌ Error loading tours:', error);
@@ -1566,23 +1571,30 @@ async function handleAddTour(event) {
             reader.readAsDataURL(coverFile);
         });
 
+        // Create new ID (simple timestamp-based or max+1)
+        const tours = await loadTours();
+        const newId = tours.length > 0 ? Math.max(...tours.map(t => Number(t.id))) + 1 : 1;
+
         const newTour = {
+            id: newId,
             title,
             coverImage: coverBase64,
             dates: [],
             createdAt: new Date().toISOString()
         };
 
-        await window.saveTourDB(newTour);
-        showToast('Tour creado exitosamente');
+        // Add and Save
+        tours.push(newTour);
+        await ContentManager.saveTours(tours);
+
+        showToast('Tour creado en la nube exitosamente');
         cancelAddTour();
 
-        const tours = await loadTours();
-        renderToursList(tours);
+        renderToursList(tours); // Render updated list directly
 
     } catch (error) {
         console.error(error);
-        showToast('Error al crear el tour', 'error');
+        showToast('Error al crear el tour: ' + error.message, 'error');
     }
 }
 
@@ -1595,12 +1607,18 @@ async function deleteTour(id) {
     if (!confirm('¿Eliminar este tour y todas sus fechas?')) return;
 
     try {
-        await window.deleteTourDB(numericId);
-        showToast('Tour eliminado');
         const tours = await loadTours();
-        renderToursList(tours);
+        // Since id is string in DOM but might be number in JSON, convert safely
+        const newTours = tours.filter(t => String(t.id) !== String(id));
+
+        await ContentManager.saveTours(newTours);
+        showToast('Tour eliminado de la nube');
+
+        // Reload list
+        renderToursList(newTours);
     } catch (error) {
-        showToast('Error al eliminar', 'error');
+        console.error(error);
+        showToast('Error al eliminar tour', 'error');
     }
 }
 
@@ -1719,26 +1737,44 @@ async function addTourDate(tourId) {
     // sorting dates by date
     tour.dates.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    await window.saveTourDB(tour);
+    // Save to Cloud
+    // We need to update the specific tour in the global list
+    const tourIndex = tours.findIndex(t => t.id === numericId);
+    if (tourIndex !== -1) {
+        tours[tourIndex] = tour;
+        await ContentManager.saveTours(tours);
+        showToast('Fecha agregada a la nube');
 
-    // Refresh view
-    const view = document.getElementById('tour-details-view');
-    renderTourDetails(tour, view);
-    showToast('Fecha agregada');
+        // Refresh view
+        const view = document.getElementById('tour-details-view');
+        renderTourDetails(tour, view);
+    } else {
+        showToast('Error: Tour no encontrado en la lista global', 'error');
+    }
 }
 
 async function deleteTourDate(tourId, dateIndex) {
     if (!confirm('¿Borrar esta fecha?')) return;
 
-    const numericId = Number(tourId);
-    const tours = await loadTours();
-    const tour = tours.find(t => t.id === numericId);
-    if (!tour) return;
+    const numericId = Number(tourId); // Ensure numeric ID
+    const tours = await loadTours();  // Use newly refactored loadTours (ContentManager)
 
-    tour.dates.splice(dateIndex, 1);
-    await window.saveTourDB(tour);
+    // Find tour in global list
+    const tourIndex = tours.findIndex(t => t.id === numericId);
+    if (tourIndex === -1) return;
+    const tour = tours[tourIndex];
 
-    const view = document.getElementById('tour-details-view');
-    renderTourDetails(tour, view);
-    showToast('Fecha eliminada');
+    if (tour && tour.dates) {
+        tour.dates.splice(dateIndex, 1);
+
+        // Save Global List
+        tours[tourIndex] = tour;
+        await ContentManager.saveTours(tours);
+
+        showToast('Fecha eliminada de la nube');
+
+        // Update view
+        const view = document.getElementById('tour-details-view');
+        renderTourDetails(tour, view);
+    }
 }

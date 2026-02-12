@@ -1,0 +1,132 @@
+import { db, auth } from './firebase-config.js';
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+import AuthManager from './auth-manager.js';
+
+// Central CMS Logic
+const ContentManager = {
+
+    // Initialize: Auth -> Role -> Token -> GithubSync
+    init: async () => {
+        return new Promise((resolve, reject) => {
+            // Wait for Auth
+            const unsubscribe = auth.onAuthStateChanged(async (user) => {
+                unsubscribe(); // Run once
+
+                if (!user) {
+                    console.warn("CMS: No user logged in.");
+                    reject("No user");
+                    return;
+                }
+
+                try {
+                    console.log(`CMS: Initializing for ${user.email}...`);
+
+                    // 1. Get Role
+                    const role = await AuthManager.getUserRole(user.email);
+
+                    // 2. Get Secrets (Token)
+                    // Security Rule: Only readable if role == 'admin' or 'editor'
+                    const secretsRef = doc(db, "config", "secrets");
+                    const secretsSnap = await getDoc(secretsRef);
+
+                    if (secretsSnap.exists()) {
+                        const secrets = secretsSnap.data();
+                        if (secrets.github_token) {
+                            console.log("CMS: GitHub Token loaded securely.");
+
+                            // Inject into GithubSync
+                            // We assume GithubSync is loaded globally via script tag (legacy) or imported
+                            if (window.GithubSync) {
+                                window.GithubSync.setToken(secrets.github_token);
+
+                                // Update Config too if repo/owner changed in DB
+                                const currentConfig = window.GithubSync.getConfig();
+                                currentConfig.OWNER = secrets.repo_owner || currentConfig.OWNER;
+                                currentConfig.REPO = secrets.repo_name || currentConfig.REPO;
+                                window.GithubSync.saveConfig(currentConfig); // Update local cache
+                            } else {
+                                console.error("CMS: GithubSync not found on window.");
+                            }
+                        } else {
+                            console.error("CMS: Secrets found but 'github_token' is empty.");
+                        }
+                    } else {
+                        console.error("CMS: No secrets document found in Firestore.");
+                    }
+
+                    resolve({ user, role });
+
+                } catch (error) {
+                    console.error("CMS Initialization Error:", error);
+                    reject(error);
+                }
+            });
+        });
+    },
+
+    // --- High Level Data Methods ---
+
+    getArtists: async () => {
+        // Fetch from API to ensure fresh data
+        const data = await ContentManager._fetchInfo('data/artists.json');
+        return data || [];
+    },
+
+    saveArtists: async (artists) => {
+        const content = JSON.stringify(artists, null, 2);
+        return await window.GithubSync.uploadFile('data/artists.json', content, 'Update artists.json via CMS');
+    },
+
+    getTours: async () => {
+        const data = await ContentManager._fetchInfo('data/tours.json');
+        return data || [];
+    },
+
+    saveTours: async (tours) => {
+        const content = JSON.stringify(tours, null, 2);
+        return await window.GithubSync.uploadFile('data/tours.json', content, 'Update tours.json via CMS');
+    },
+
+    getSiteConfig: async () => {
+        const data = await ContentManager._fetchInfo('data/site_config.json');
+        return data || {};
+    },
+
+    saveSiteConfig: async (config) => {
+        const content = JSON.stringify(config, null, 2);
+        return await window.GithubSync.uploadFile('data/site_config.json', content, 'Update site_config.json via CMS');
+    },
+
+    // ALIAS for consistency
+    saveConfig: async (config) => {
+        return await ContentManager.saveSiteConfig(config);
+    },
+
+    // Helper to fetch JSON from Repo
+    _fetchInfo: async (path) => {
+        if (!window.GithubSync) throw new Error("GithubSync not ready");
+
+        // Try getting via API (Auth) first to ensure latest version (bypass CDN cache)
+        // content is base64
+        try {
+            const data = await window.GithubSync.getFile(path);
+            if (data && data.content) {
+                // Decode UTF8 properly
+                const jsonString = new TextDecoder().decode(Uint8Array.from(atob(data.content), c => c.charCodeAt(0)));
+                return JSON.parse(jsonString);
+            }
+        } catch (e) {
+            console.warn(`CMS: API fetch failed for ${path}, trying Raw...`, e);
+        }
+
+        // Fallback: Raw URL (might be cached)
+        const config = window.GithubSync.getConfig();
+        const url = `https://raw.githubusercontent.com/${config.OWNER}/${config.REPO}/${config.BRANCH}/${path}`;
+        const res = await fetch(url);
+        if (!res.ok) return [];
+        return await res.json();
+    }
+};
+
+window.ContentManager = ContentManager; // Expose globally
+export default ContentManager;

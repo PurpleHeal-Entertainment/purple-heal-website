@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Usuario Admin - Purple Heal</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #1a1a1a;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .box {
+            background: #333;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 400px;
+        }
+
+        h1 {
+            color: #a96ec5;
+        }
+
+        #status {
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+
+        .success {
+            color: #4caf50;
+        }
+
+        .error {
+            color: #ff6b6b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <h1>Creando Admin...</h1>
+        <p>Intentando crear usuario principal...</p>
+        <div id="status">Esperando...</div>
+    </div>
+
+    <script type="module">
+        import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+        import { auth } from './js/firebase-config.js';
+
+        const email = "purplehealent@gmail.com";
+        const password = "Admin123456"; // Contraseña temporal
+
+        const statusEl = document.getElementById('status');
+
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                statusEl.innerHTML = `✅ ¡Usuario Creado!<br>Email: ${email}<br>Pass: ${password}<br><br><a href="admin-login.html" style="color:white">Ir a Login</a>`;
+                statusEl.className = 'success';
+                console.log("Usuario creado:", userCredential.user);
+            })
+            .catch((error) => {
+                if (error.code === 'auth/email-already-in-use') {
+                    statusEl.innerHTML = `⚠️ El usuario ya existe.<br>Puedes ir al login.<br><br><a href="admin-login.html" style="color:white">Ir a Login</a>`;
+                    statusEl.className = 'success'; // Treat as success
+                } else {
+                    statusEl.innerHTML = `❌ Error: ${error.message}`;
+                    statusEl.className = 'error';
+                    console.error(error);
+                }
+            });
+    </script>
+</body>
+
+</html>

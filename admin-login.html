@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | Purple Heal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Oxanium:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/components.css">
+
+    <style>
+        body {
+            background-color: #05000a;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(157, 78, 221, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(48, 127, 226, 0.1) 0%, transparent 40%);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-primary);
+        }
+
+        /* Subtle Pattern Overlay */
+        .pattern-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('assets/images/pattern_brand.png');
+            /* Use local pattern if available */
+            background-size: 150px;
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Floating Particles (Optional CSS Animation) */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--ph-purple);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 15s infinite ease-in-out;
+            z-index: 0;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.1;
+            }
+
+            50% {
+                transform: translateY(-50px) translateX(20px);
+                opacity: 0.5;
+            }
+        }
+
+        /* Glass Card */
+        .login-card {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 420px;
+            background: rgba(20, 10, 30, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            /* Top highlight */
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-logo {
+            width: 80px;
+            height: auto;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 15px rgba(157, 78, 221, 0.4));
+            /* Ensure perfect centering */
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .login-title {
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 5px;
+            background: linear-gradient(135deg, #fff 30%, #b491cc 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-subtitle {
+            color: var(--ph-gray-light);
+            font-size: 0.9rem;
+            font-weight: 300;
+            /* User Change: Oxanium Text */
+            font-family: 'Oxanium', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Inputs */
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--ph-purple-light);
+            font-size: 1.1rem;
+            z-index: 2;
+            transition: color 0.3s;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-family: 'Oxanium', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .login-input:focus {
+            outline: none;
+            background: rgba(0, 0, 0, 0.5);
+            border-color: var(--ph-purple);
+            box-shadow: 0 0 0 4px rgba(157, 78, 221, 0.15);
+        }
+
+        .login-input:focus+.input-icon,
+        .input-group:focus-within .input-icon {
+            color: var(--ph-purple);
+            text-shadow: 0 0 8px rgba(157, 78, 221, 0.6);
+        }
+
+        .login-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 300;
+        }
+
+        /* Button Override */
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-login::after {
+            /* Shine effect */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-login:hover::after {
+            left: 100%;
+        }
+
+        .footer-link {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-family: 'Oxanium', sans-serif;
+        }
+
+        .footer-link a {
+            color: var(--ph-purple-light);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-link a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        /* Mobile */
+        @media (max-width: 480px) {
+            .login-card {
+                margin: 20px;
+                padding: 30px 25px;
+            }
+        }
+
+        /* Error Toast Style override for login */
+        .error-msg {
+            background: rgba(231, 76, 60, 0.15);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #ff6b6b;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            text-align: center;
+            display: none;
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Background Elements -->
+    <div class="pattern-overlay"></div>
+    <div class="particle" style="top: 20%; left: 10%; width: 6px; height: 6px;"></div>
+    <div class="particle" style="top: 60%; left: 80%; width: 8px; height: 8px; animation-duration: 20s;"></div>
+    <div class="particle" style="top: 80%; left: 30%; width: 4px; height: 4px; animation-duration: 12s;"></div>
+
+    <!-- Login Card -->
+    <div class="login-card">
+        <div class="login-header">
+            <img src="assets/logos/PURPLE HEAL LOGO PURPURA EN PNG.png" alt="Purple Heal Logo" class="login-logo">
+            <h1 class="login-title">Admin Panel</h1>
+            <p class="login-subtitle">Inicia sesión para gestionar tu contenido</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="input-group">
+                <i class="fas fa-envelope input-icon"></i>
+                <input type="email" id="username" class="login-input" placeholder="Correo electrónico"
+                    autocomplete="email" required>
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-lock input-icon"></i>
+                <input type="password" id="password" class="login-input" placeholder="Contraseña"
+                    autocomplete="current-password" required>
+            </div>
+
+            <!-- Error Message Placeholder -->
+            <div id="errorMsg" class="error-msg"></div>
+
+            <button type="submit" class="ph-button ph-button--primary btn-login ph-button--glow">
+                ACCEDER AL PANEL
+            </button>
+        </form>
+
+        <div class="footer-link">
+            <p>© 2026 Purple Heal Entertainment</p>
+            <p style="margin-top: 5px;"><a href="index.html">← Volver al sitio web</a></p>
+        </div>
+    </div>
+
+    <!-- Firebase Logic -->
+    <script type="module" src="js/admin-login.js"></script>
+
+</body>
+
+</html>

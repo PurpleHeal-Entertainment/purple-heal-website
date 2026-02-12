@@ -294,41 +294,11 @@
 <body>
 
     <div class="admin-container">
-        <!-- Login Form -->
+        <!-- Admin Panel -->
+        <!-- Login Form Fallback -->
         <div class="admin-login" id="loginForm">
-            <div class="ph-card">
-                <div class="ph-card__content">
-                    <div style="text-align: center; margin-bottom: var(--space-2xl);">
-                        <img src="assets/logos/PURPLE HEAL LOGO PURPURA EN PNG.png" alt="Purple Heal"
-                            style="max-width: 90px; display: block; margin: 0 auto;">
-                        <h2 style="margin-top: var(--space-lg); text-transform: uppercase; font-size: var(--fs-xl);">
-                            PANEL DE ADMINISTRACION</h2>
-                    </div>
-
-                    <form id="loginFormElement">
-                        <div class="form-group">
-                            <label class="form-label">USUARIO</label>
-                            <input type="text" class="form-input" id="username" autocomplete="username" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">CONTRASENA</label>
-                            <input type="password" class="form-input" id="password" autocomplete="current-password"
-                                required>
-                            <div id="capsLockWarning" class="error-message" style="display: none;">
-                                ⚠️ MAYUSCULAS ACTIVADAS
-                            </div>
-                        </div>
-
-                        <div id="loginError" class="error-message" style="display: none;"></div>
-
-                        <button type="submit" class="ph-button ph-button--primary"
-                            style="width: 100%; margin-top: var(--space-lg);">
-                            INICIAR SESION
-                        </button>
-                    </form>
-                </div>
-            </div>
+            <!-- Simplified login check trigger -->
+            <p style="text-align: center; color: #666;">Verificando Acceso...</p>
         </div>
 
         <!-- Admin Panel -->
@@ -484,17 +454,63 @@
     </div>
 
     <!-- Scripts -->
-    <script src="js/storage-db.js?v=FORCE_RELOAD_8040"></script>
-    <script src="js/inline-forms-helper.js?v=FORCE_RELOAD_8040"></script>
-    <script src="js/admin-auth.js?v=FORCE_RELOAD_8040"></script>
-    <script src="js/admin-tours-router.js?v=FORCE_RELOAD_8040"></script>
+    <!-- Scripts -->
+    <!-- Cloud CMS Initialization -->
+    <script type="module">
+        import ContentManager from './js/content-manager.js';
+        import AuthManager from './js/auth-manager.js';
 
-    <script>
+        // Wait for DOM
         document.addEventListener('DOMContentLoaded', async function () {
-            // initToursPage handles auth check and initial rendering
-            await initToursPage();
+            console.log('☁️ Initializing Cloud CMS context for TOURS...');
+
+            try {
+                // Initialize Auth, Roles, and Token
+                const context = await ContentManager.init();
+                console.log(`✅ CMS Ready. User: ${context.user.email}, Role: ${context.role}`);
+
+                // Expose Context globally if needed by router
+                window.currentUserRole = context.role;
+
+                // --- UI UNLOCK ---
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('adminPanel').classList.add('active');
+
+                // Role Check for Users Tab
+                if (context.role === 'admin') {
+                    const usersTab = document.getElementById('nav-users');
+                    if (usersTab) usersTab.style.display = 'inline-block';
+                }
+
+                // Initialize Router (Must be global or we init it here if it was a module, but it is a script)
+                if (typeof window.initToursPage === 'function') {
+                    console.log('🚀 Calling initToursPage for Cloud CMS...');
+                    await window.initToursPage();
+                } else {
+                    console.error('❌ initToursPage function not found!');
+                }
+
+            } catch (error) {
+                console.error("🚨 CMS Init Failed:", error);
+                if (error === "No user") {
+                    window.location.href = 'admin-login.html';
+                } else {
+                    alert("Error crítico iniciando el panel Tours: " + error);
+                }
+            }
+
+            // Logout
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    AuthManager.logout();
+                });
+            }
         });
     </script>
+
+    <script src="js/inline-forms-helper.js?v=FORCE_RELOAD_8040"></script>
+    <script src="js/admin-tours-router.js?v=2.3"></script>
 </body>
 
 </html>
