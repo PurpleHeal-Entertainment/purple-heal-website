@@ -164,27 +164,42 @@ document.documentElement.classList.add('js-enabled');
 // ===== ADD LOADING ANIMATION =====
 
 // ===== STORE VISIBILITY LOGIC =====
+// ===== STORE VISIBILITY LOGIC =====
 async function checkStoreVisibility() {
     try {
-        // Ensure DB is initialized if not already
+        // OPTIMIZATION: Fetch directly from GitHub Raw with Cache Busting
+        // This ensures the public site sees "Save" changes immediately
+        const REPO_OWNER = 'PurpleHeal-Entertainment';
+        const REPO_NAME = 'purple-heal-website';
+        const BRANCH = 'master'; // or main
+        const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/data/site_config.json?t=${Date.now()}`;
+
+        const response = await fetch(url);
+        if (!response.ok) return;
+
+        const config = await response.json();
+
+        const showStore = config.showStore || false;
+        const navShop = document.getElementById('nav-shop');
+        const navShopMobile = document.getElementById('nav-shop-mobile');
+
+        if (showStore) {
+            if (navShop) navShop.style.display = 'block';
+            if (navShopMobile) navShopMobile.style.display = 'block';
+        } else {
+            if (navShop) navShop.style.display = 'none';
+            if (navShopMobile) navShopMobile.style.display = 'none';
+        }
+
+    } catch (e) {
+        console.warn('Store visibility check failed (Cloud):', e);
+        // Fallback to local if fetch fails (Legacy)
         if (typeof initDB === 'function' && typeof getSiteConfig === 'function') {
             await initDB();
             const config = await getSiteConfig();
-
-            const showStore = config.showStore || false;
-            const navShop = document.getElementById('nav-shop');
-            const navShopMobile = document.getElementById('nav-shop-mobile');
-
-            if (showStore) {
-                if (navShop) navShop.style.display = 'block';
-                if (navShopMobile) navShopMobile.style.display = 'block';
-            } else {
-                if (navShop) navShop.style.display = 'none';
-                if (navShopMobile) navShopMobile.style.display = 'none';
-            }
+            if (config.showStore && document.getElementById('nav-shop'))
+                document.getElementById('nav-shop').style.display = 'block';
         }
-    } catch (e) {
-        console.warn('Store visibility check failed:', e);
     }
 }
 

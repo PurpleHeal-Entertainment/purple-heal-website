@@ -237,9 +237,25 @@
             const container = document.getElementById('tours-container');
 
             try {
-                // Initialize DB and load tours
-                await initDB();
-                const tours = await getAllToursDB();
+                // OPTIMIZATION: Fetch directly from Cloud with Cache Busting
+                const REPO_OWNER = 'PurpleHeal-Entertainment';
+                const REPO_NAME = 'purple-heal-website';
+                const BRANCH = 'master';
+                const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/data/tours.json?t=${Date.now()}`;
+
+                console.log('☁️ Fetching tours from Cloud:', url);
+                const response = await fetch(url);
+
+                let tours = [];
+                if (response.ok) {
+                    tours = await response.json();
+                } else {
+                    console.warn('Cloud fetch failed, trying local fallback...');
+                    if (typeof getAllToursDB === 'function') {
+                        await initDB();
+                        tours = await getAllToursDB();
+                    }
+                }
 
                 if (!tours || tours.length === 0) {
                     renderEmptyState(container);

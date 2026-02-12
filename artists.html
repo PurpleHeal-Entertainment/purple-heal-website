@@ -135,38 +135,57 @@
     <script src="js/storage-db.js?v=2.1"></script>
     <script src="js/main.js?v=2.1"></script>
     <script>
-        // Load artists from IndexedDB
+        // Load artists from GitHub Raw (Real-time Cloud)
         async function loadArtists() {
-            const artists = await loadArtistsDB();
             const grid = document.getElementById('artistsGrid');
-
             if (!grid) return;
 
-            if (artists && artists.length > 0) {
-                // Remove hardcoded inline styles to allow CSS Media Queries to work
-                console.log('🎨 Artist grid loading...');
-                grid.classList.add('artists-grid--loaded');
+            try {
+                // OPTIMIZATION: Fetch directly from Cloud with Cache Busting
+                const REPO_OWNER = 'PurpleHeal-Entertainment';
+                const REPO_NAME = 'purple-heal-website';
+                const BRANCH = 'master';
+                const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/data/artists.json?t=${Date.now()}`;
 
-                grid.innerHTML = artists.map((artist, index) => `
-                    <a href="artist-profile.html?artist=${index}" class="artist-card">
-                        <img src="${artist.image || 'assets/images/placeholder.png'}" alt="${artist.name}"
-                            class="artist-card__image">
-                        <div class="artist-card__overlay">
-                            <p class="artist-card__genre">${artist.genre || 'Artista'}</p>
-                            <h3 class="artist-card__name">${artist.name}</h3>
-                            <p class="artist-card__bio">
-                                ${artist.bio ? (artist.bio.substring(0, 150) + (artist.bio.length > 150 ? '...' : '')) : 'Descubre más sobre este artista'}
-                            </p>
+                console.log('☁️ Fetching artists from Cloud:', url);
+                const response = await fetch(url);
+
+                let artists = [];
+                if (response.ok) {
+                    artists = await response.json();
+                } else {
+                    console.warn('Cloud fetch failed, trying local fallback...');
+                    if (typeof loadArtistsDB === 'function') artists = await loadArtistsDB();
+                }
+
+                if (artists && artists.length > 0) {
+                    console.log('🎨 Artist grid loading:', artists.length);
+                    grid.classList.add('artists-grid--loaded');
+
+                    grid.innerHTML = artists.map((artist, index) => `
+                        <a href="artist-profile.html?artist=${index}" class="artist-card">
+                            <img src="${artist.image || 'assets/images/placeholder.png'}" loading="lazy" alt="${artist.name}"
+                                class="artist-card__image">
+                            <div class="artist-card__overlay">
+                                <p class="artist-card__genre">${artist.genre || 'Artista'}</p>
+                                <h3 class="artist-card__name">${artist.name}</h3>
+                                <p class="artist-card__bio">
+                                    ${artist.bio ? (artist.bio.substring(0, 150) + (artist.bio.length > 150 ? '...' : '')) : 'Descubre más sobre este artista'}
+                                </p>
+                            </div>
+                        </a>
+                    `).join('');
+                } else {
+                    grid.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: var(--space-3xl);">
+                            <h3 style="color: var(--ph-gray-lighter); margin-bottom: var(--space-lg);">No hay artistas disponibles</h3>
+                            <p style="color: var(--ph-gray-lighter);">Los artistas aparecerán aquí cuando se agreguen desde el panel de administración.</p>
                         </div>
-                    </a>
-                `).join('');
-            } else {
-                grid.innerHTML = `
-                    <div style="grid-column: 1 / -1; text-align: center; padding: var(--space-3xl);">
-                        <h3 style="color: var(--ph-gray-lighter); margin-bottom: var(--space-lg);">No hay artistas disponibles</h3>
-                        <p style="color: var(--ph-gray-lighter);">Los artistas aparecerán aquí cuando se agreguen desde el panel de administración.</p>
-                    </div>
-                `;
+                    `;
+                }
+            } catch (e) {
+                console.error('Error loading artists:', e);
+                grid.innerHTML = '<p style="text-align:center;color:red;">Error cargando artistas.</p>';
             }
         }
 
