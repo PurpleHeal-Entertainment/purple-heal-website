@@ -35,10 +35,19 @@ const AuthManager = {
         onAuthStateChanged(auth, async (user) => {
             if (!user && redirectIfMissing) {
                 // User is signed out, redirect to login
+                sessionStorage.removeItem('ph_user_role'); // Clear cache
                 window.location.href = 'admin-login.html';
             } else if (user) {
                 console.log("User is authenticated:", user.email);
-                // Check Firestore for Role
+
+                // OPTIMIZATION: Check Session Cache first
+                const cachedRole = sessionStorage.getItem('ph_user_role');
+                if (cachedRole) {
+                    console.log("✅ Role loaded from cache:", cachedRole);
+                    return; // Skip Firestore read
+                }
+
+                // Check Firestore for Role (only if not cached)
                 try {
                     const role = await AuthManager.getUserRole(user.email);
                     console.log("User Role:", role);
@@ -66,7 +75,9 @@ const AuthManager = {
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
-                return docSnap.data().role;
+                const role = docSnap.data().role;
+                sessionStorage.setItem('ph_user_role', role); // CACHE IT
+                return role;
             } else {
                 console.log("No such user document!");
                 return null;
