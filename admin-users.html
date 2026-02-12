@@ -441,12 +441,23 @@
     <script type="module">
         // Inline script for Users Page Logic
         import AuthManager from './js/auth-manager.js';
-        import { db } from './js/firebase-config.js';
-        import { collection, getDocs, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+        import { db, auth } from './js/firebase-config.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+        import { collection, getDocs, doc, getDoc, setDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
         document.addEventListener('DOMContentLoaded', async () => {
             console.log('DOM Cargado - Iniciando Admin Users (FireStore Mode)');
-            // ... existing init code ...
+
+            // Initialize Auth Listener
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    console.log("Usuario autenticado:", user.email);
+                    await initPage(user);
+                } else {
+                    console.warn("No hay usuario, redirigiendo...");
+                    window.location.href = 'admin-login.html';
+                }
+            });
         });
 
         // ... existing functions ...
