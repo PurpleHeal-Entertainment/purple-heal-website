@@ -73,7 +73,7 @@ const GithubSync = {
         return { sha: data.sha }; // Return object with SHA for consistency
     },
 
-    uploadFile: async (path, content, message) => {
+    uploadFile: async (path, content, message, isBinary = false) => {
         const token = GithubSync.getToken();
         const config = GithubSync.getConfig();
         const url = `https://api.github.com/repos/${config.OWNER}/${config.REPO}/contents/${path}`;
@@ -87,15 +87,27 @@ const GithubSync = {
             console.warn(`File or Branch not found for ${path}, creating new...`);
         }
 
-        // Fix: Use loop instead of spread syntax to avoid "Maximum call stack size exceeded"
-        const unicodeContent = new TextEncoder().encode(content);
-        let binary = '';
-        const chunkSize = 0x8000; // 32KB chunks
-        for (let i = 0; i < unicodeContent.length; i += chunkSize) {
-            const chunk = unicodeContent.subarray(i, Math.min(i + chunkSize, unicodeContent.length));
-            binary += String.fromCharCode.apply(null, chunk);
+        let base64Content;
+
+        if (isBinary) {
+            // If content is already a base64 string (from FileReader), strip header if present
+            if (typeof content === 'string' && content.includes('base64,')) {
+                base64Content = content.split(',')[1];
+            } else {
+                // Should not happen with our Logic, but fallback just in case
+                base64Content = btoa(String.fromCharCode(...new Uint8Array(content)));
+            }
+        } else {
+            // Text content (JSON) - Use UTF-8 safe encoding
+            const unicodeContent = new TextEncoder().encode(content);
+            let binary = '';
+            const chunkSize = 0x8000; // 32KB chunks
+            for (let i = 0; i < unicodeContent.length; i += chunkSize) {
+                const chunk = unicodeContent.subarray(i, Math.min(i + chunkSize, unicodeContent.length));
+                binary += String.fromCharCode.apply(null, chunk);
+            }
+            base64Content = btoa(binary);
         }
-        const base64Content = btoa(binary);
 
         const body = {
             message: message,

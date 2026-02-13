@@ -14,29 +14,40 @@ function getProductFromURL() {
 
 // Load product data from IndexedDB
 async function loadProductData() {
-    console.log('🔍 Product Detail: Starting loadProductData');
+    console.log('🔍 Product Detail: Starting loadProductData (Cloud)');
 
     const { type, artistId, productIndex } = getProductFromURL();
     console.log('📋 URL Params:', { type, artistId, productIndex });
 
     if (!type || !artistId || productIndex === null) {
         console.error('❌ Missing URL parameters');
-        alert('Faltan parámetros en la URL. Redirigiendo...');
+        // alert('Faltan parámetros en la URL. Redirigiendo...');
         window.location.href = 'index.html';
         return;
     }
 
     try {
-        console.log('📡 Loading artists from IndexedDB...');
+        console.log('☁️ Fetching data from GitHub...');
+        const REPO_OWNER = 'PurpleHeal-Entertainment';
+        const REPO_NAME = 'purple-heal-website';
+        const BRANCH = 'master';
+        const BASE_URL = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/data`;
+        const timestamp = Date.now();
 
-        // Wait for loadArtistsDB to be available
-        if (typeof window.loadArtistsDB !== 'function') {
-            console.error('❌ loadArtistsDB is not available');
-            throw new Error('loadArtistsDB function not found');
+        // Parallel Fetch: Config & Artists
+        const [configRes, artistsRes] = await Promise.all([
+            fetch(`${BASE_URL}/site_config.json?t=${timestamp}`),
+            fetch(`${BASE_URL}/artists.json?t=${timestamp}`)
+        ]);
+
+        if (!configRes.ok || !artistsRes.ok) {
+            throw new Error('Failed to fetch data from cloud');
         }
 
-        const artists = await window.loadArtistsDB();
-        console.log(`✅ Loaded ${artists.length} artists`);
+        const config = await configRes.json();
+        const artists = await artistsRes.json();
+
+        console.log(`✅ Loaded ${artists.length} artists from cloud`);
 
         const artistIdNum = parseInt(artistId);
         // Find artist by matching index in array
@@ -44,7 +55,7 @@ async function loadProductData() {
 
         if (!artist) {
             console.error(`❌ Artist not found at index ${artistIdNum}`);
-            alert('Artista no encontrado');
+            // alert('Artista no encontrado');
             window.location.href = 'index.html';
             return;
         }
@@ -64,7 +75,7 @@ async function loadProductData() {
 
         if (!product) {
             console.error(`❌ Product not found at index ${prodIndex}`);
-            alert('Producto no encontrado');
+            // alert('Producto no encontrado');
             window.location.href = 'index.html';
             return;
         }
@@ -78,21 +89,11 @@ async function loadProductData() {
             backBtn.href = `artist-profile.html?artist=${artistIdNum}`;
         }
 
-        // Load Config for discounts
-        let config = {};
-        if (typeof window.getSiteConfig === 'function') {
-            try {
-                config = await window.getSiteConfig();
-            } catch (e) {
-                console.warn('⚠️ Could not load site config:', e);
-            }
-        }
-
         // Display product with config
         displayProduct(product, type, artist, config);
     } catch (error) {
         console.error('❌ Error loading product:', error);
-        alert('Error al cargar el producto: ' + error.message);
+        // alert('Error al cargar el producto: ' + error.message);
         window.location.href = 'index.html';
     }
 }

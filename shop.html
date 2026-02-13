@@ -130,18 +130,35 @@
     <script src="js/storage-db.js?v=2.1"></script>
     <script src="js/main.js?v=2.1"></script>
     <script>
+
+        const REPO_OWNER = 'PurpleHeal-Entertainment';
+        const REPO_NAME = 'purple-heal-website';
+        const BRANCH = 'master';
+        const BASE_URL = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/data`;
+
         let allProductsCache = [];
+        let siteConfig = null;
 
         async function loadShop() {
             const grid = document.getElementById('shopGrid');
             if (!grid) return;
 
-            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center;">Cargando productos...</div>';
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center;">Cargando productos desde la nube...</div>';
 
             try {
-                await initDB();
-                const artists = await loadArtistsDB();
-                const config = await getSiteConfig(); // Load config for discounts
+                const timestamp = Date.now();
+                // Parallel Fetch: Config & Artists
+                const [configRes, artistsRes] = await Promise.all([
+                    fetch(`${BASE_URL}/site_config.json?t=${timestamp}`),
+                    fetch(`${BASE_URL}/artists.json?t=${timestamp}`)
+                ]);
+
+                if (!configRes.ok || !artistsRes.ok) {
+                    throw new Error('Failed to fetch data');
+                }
+
+                siteConfig = await configRes.json();
+                const artists = await artistsRes.json();
 
                 // Aggregate all products
                 let products = [];
@@ -178,16 +195,17 @@
                 }
 
                 allProductsCache = products;
-                renderProducts(products, config);
+                renderProducts(products, siteConfig);
 
             } catch (err) {
-                console.error('Error loading shop:', err);
+                console.error('Error loading shop from cloud:', err);
+                // Fallback to local DB logic removed for consistency, or can be kept as backup
                 grid.innerHTML = `
-                    <div style="grid-column: 1 / -1; text-align: center; padding: var(--space-3xl);">
-                        <h3 style="color: var(--ph-gray-lighter); margin-bottom: var(--space-lg);">Error al cargar productos</h3>
-                        <p style="color: var(--ph-gray-lighter);">Por favor intenta recargar la página.</p>
-                    </div>
-                `;
+            <div style="grid-column: 1 / -1; text-align: center; padding: var(--space-3xl);">
+                <h3 style="color: var(--ph-gray-lighter); margin-bottom: var(--space-lg);">Error al cargar productos</h3>
+                <p style="color: var(--ph-gray-lighter);">Por favor intenta recargar la página.</p>
+            </div>
+            `;
             }
         }
 
@@ -224,29 +242,29 @@
                 }
 
                 return `
-                <div class="artist-card fade-in" style="cursor: default;">
-                    <div style="position: relative; overflow: hidden; border-radius: 8px 8px 0 0;">
-                        <img src="${prod.image}" alt="${prod.title}" class="artist-card__image" style="height: 300px; object-fit: cover;">
+            <div class="artist-card fade-in" style="cursor: default;">
+                <div style="position: relative; overflow: hidden; border-radius: 8px 8px 0 0;">
+                    <img src="${prod.image}" alt="${prod.title}" class="artist-card__image" style="height: 300px; object-fit: cover;">
                         ${hasDiscount ? `<div style="position: absolute; top: 10px; right: 10px; background: var(--ph-blue-accent); color: white; padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 0.9em;">-${discountPercent}%</div>` : ''}
-                    </div>
-                    <div class="artist-card__overlay" style="background: rgba(20, 20, 23, 0.95); position: relative; transform: none; padding: 20px;">
-                        <p class="artist-card__genre" style="color: var(--ph-purple-light); text-transform: uppercase; font-size: 0.8em; letter-spacing: 1px;">
-                            ${prod.artist} • ${prod.type === 'album' ? 'ALBUM' : 'MERCH'}
-                        </p>
-                        <h3 class="artist-card__name" style="font-size: 1.2em; margin: 5px 0 10px;">${prod.title}</h3>
-                        
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
-                            <div style="font-family: 'Oxanium'; font-weight: bold;">
-                                ${hasDiscount ?
+                </div>
+                <div class="artist-card__overlay" style="background: rgba(20, 20, 23, 0.95); position: relative; transform: none; padding: 20px;">
+                    <p class="artist-card__genre" style="color: var(--ph-purple-light); text-transform: uppercase; font-size: 0.8em; letter-spacing: 1px;">
+                        ${prod.artist} • ${prod.type === 'album' ? 'ALBUM' : 'MERCH'}
+                    </p>
+                    <h3 class="artist-card__name" style="font-size: 1.2em; margin: 5px 0 10px;">${prod.title}</h3>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                        <div style="font-family: 'Oxanium'; font-weight: bold;">
+                            ${hasDiscount ?
                         `<span style="text-decoration: line-through; color: #666; font-size: 0.9em; margin-right: 8px;">$${originalPrice.toFixed(2)}</span>
                                      <span style="color: var(--ph-blue-accent); font-size: 1.2em;">$${finalPrice.toFixed(2)}</span>`
                         : `<span style="color: white; font-size: 1.2em;">$${originalPrice.toFixed(2)}</span>`
                     }
-                            </div>
-                            ${prod.link ? `<a href="${prod.link}" target="_blank" class="ph-button ph-button--sm ph-button--primary">COMPRAR</a>` : '<span style="color: #666; font-size: 0.9em;">No disponible</span>'}
                         </div>
+                        ${prod.link ? `<a href="${prod.link}" target="_blank" class="ph-button ph-button--sm ph-button--primary">COMPRAR</a>` : '<span style="color: #666; font-size: 0.9em;">No disponible</span>'}
                     </div>
                 </div>
+            </div>
             `;
             }).join('');
         }
@@ -258,10 +276,10 @@
 
             // Filter logic
             if (type === 'all') {
-                getSiteConfig().then(config => renderProducts(allProductsCache, config));
+                renderProducts(allProductsCache, siteConfig);
             } else {
                 const filtered = allProductsCache.filter(p => p.type === type);
-                getSiteConfig().then(config => renderProducts(filtered, config));
+                renderProducts(filtered, siteConfig);
             }
         }
 

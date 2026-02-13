@@ -217,20 +217,134 @@
     <script>
         // Load artist data based on URL parameter
         const urlParams = new URLSearchParams(window.location.search);
-        const artistId = urlParams.get('artist') || '0';
+        const artistId = parseInt(urlParams.get('artist') || '0');
 
-        // Initialize IndexedDB and load artist data
-        (async function () {
-            await initDB();
-            if (typeof loadArtistProfile === 'function') {
-                await loadArtistProfile(artistId);
+        document.addEventListener('DOMContentLoaded', async function () {
+            try {
+                // OPTIMIZATION: Fetch directly from Cloud with Cache Busting
+                const REPO_OWNER = 'PurpleHeal-Entertainment';
+                const REPO_NAME = 'purple-heal-website';
+                const BRANCH = 'master';
+                const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/data/artists.json?t=${Date.now()}`;
+
+                console.log('☁️ Fetching artist profile from Cloud:', url);
+                const response = await fetch(url);
+
+                if (!response.ok) throw new Error('Network response was not ok');
+
+                const artists = await response.json();
+                const artist = artists[artistId];
+
+                if (!artist) {
+                    console.error('Artist not found');
+                    document.querySelector('.artist-hero').innerHTML = '<div class="container text-center"><h1>Artista no encontrado</h1><a href="artists.html" class="ph-button ph-button--primary">Volver</a></div>';
+                    return;
+                }
+
+                renderArtistProfile(artist);
+                renderDiscography(artist);
+                renderMerchandise(artist);
+
+            } catch (error) {
+                console.error('Error loading artist profile:', error);
+                // Fallback to local DB if cloud fails (optional)
+                try {
+                    await initDB();
+                    if (typeof loadArtistProfile === 'function') {
+                        await loadArtistProfile(artistId);
+                    }
+                } catch (e) {
+                    console.error('Fallback failed:', e);
+                }
             }
-            // Load products with new logic (discounts) overriding the basic load
-            if (typeof loadArtistProducts === 'function') {
-                console.log('🔄 Calling product-loader...');
-                await loadArtistProducts(artistId);
+        });
+
+        function renderArtistProfile(artist) {
+            // Update Meta Title
+            document.title = `${artist.name} | Purple Heal Entertainment`;
+
+            // Hero Section
+            const img = document.getElementById('artist-image');
+            img.src = artist.image || 'assets/placeholder-artist.jpg';
+            img.alt = artist.name;
+
+            document.getElementById('artist-genre').textContent = artist.genre || 'Género no definido';
+            document.getElementById('artist-name').textContent = artist.name;
+            document.getElementById('artist-bio').textContent = artist.bio || 'Biografía no disponible.';
+
+            // Social Links
+            const socials = artist.socials || {};
+            const buttons = {
+                spotify: document.getElementById('spotifyBtn'),
+                youtube: document.getElementById('youtubeBtn'),
+                appleMusic: document.getElementById('appleMusicBtn'),
+                instagram: document.getElementById('instagramBtn'),
+                tiktok: document.getElementById('tiktokBtn')
+            };
+
+            for (const [key, btn] of Object.entries(buttons)) {
+                if (socials[key]) {
+                    btn.href = socials[key];
+                    btn.style.display = 'inline-flex';
+                }
             }
-        })();
+
+            // Latest Video
+            if (artist.latestVideoId) {
+                const videoSection = document.getElementById('latestVideo');
+                const iframe = document.getElementById('youtubePlayer');
+                iframe.src = `https://www.youtube.com/embed/${artist.latestVideoId}`;
+                videoSection.style.display = 'block';
+            }
+        }
+
+        function renderDiscography(artist) {
+            const container = document.getElementById('albumsGrid');
+            if (!artist.albums || artist.albums.length === 0) {
+                document.getElementById('discography').style.display = 'none';
+                return;
+            }
+
+            container.innerHTML = artist.albums.map(album => `
+                <div class="product-card">
+                    <div class="product-card__image-container">
+                        <img src="${album.images && album.images[0] ? album.images[0] : 'assets/placeholder-album.jpg'}" 
+                             alt="${album.title}" class="product-card__image">
+                    </div>
+                    <div class="product-card__content">
+                        <h3 class="product-card__title">${album.title}</h3>
+                        <p class="product-card__price">$${album.price}</p>
+                        <a href="${album.link || '#'}" class="product-card__button" target="_blank">
+                            ${album.stock === 'SOLD OUT' ? 'AGOTADO' : 'COMPRAR / ESCUCHAR'}
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderMerchandise(artist) {
+            const container = document.getElementById('merchGrid');
+            if (!artist.merch || artist.merch.length === 0) {
+                document.getElementById('merch').style.display = 'none';
+                return;
+            }
+
+            container.innerHTML = artist.merch.map(product => `
+                <div class="product-card">
+                    <div class="product-card__image-container">
+                        <img src="${product.images && product.images[0] ? product.images[0] : 'assets/placeholder-merch.jpg'}" 
+                             alt="${product.name}" class="product-card__image">
+                    </div>
+                    <div class="product-card__content">
+                        <h3 class="product-card__title">${product.name}</h3>
+                        <p class="product-card__price">$${product.price}</p>
+                        <a href="${product.link || '#'}" class="product-card__button" target="_blank">
+                            ${product.stock === 'SOLD OUT' ? 'AGOTADO' : 'COMPRAR'}
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
     </script>
 </body>
 

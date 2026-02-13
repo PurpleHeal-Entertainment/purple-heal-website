@@ -152,14 +152,79 @@ async function loadArtists() {
     }
 }
 
+// Check GitHub API Health and Token
+async function checkGitHubHealth() {
+    console.log('💓 Checking GitHub Health...');
+    const header = document.querySelector('.admin-header');
+
+    // Create or get status indicator
+    let statusEl = document.getElementById('gh-status-indicator');
+    if (!statusEl && header) {
+        statusEl = document.createElement('div');
+        statusEl.id = 'gh-status-indicator';
+        statusEl.style.cssText = `
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-size: 12px; 
+            padding: 6px 12px; 
+            background: rgba(255,255,255,0.05); 
+            border-radius: 20px; 
+            border: 1px solid rgba(255,255,255,0.1);
+        `;
+        header.appendChild(statusEl); // Append to header
+    }
+
+    if (!statusEl) return; // Should not happen if header exists
+
+    try {
+        statusEl.innerHTML = '<span style="width: 8px; height: 8px; background: #f39c12; border-radius: 50%; opacity: 0.8;"></span> Connecting...';
+
+        // 1. Check if token exists in memory (via GithubSync)
+        if (!window.GithubSync || !window.GithubSync.hasToken()) {
+            throw new Error("No Token");
+        }
+
+        // 2. Simple API Call to verify
+        // We fetch the current user or just the repo to verify read access
+        const config = window.GithubSync.getConfig();
+        const start = Date.now();
+        await window.GithubSync.getObjSHA('data/artists.json'); // Lightweight check
+        const latency = Date.now() - start;
+
+        statusEl.innerHTML = `
+            <span style="width: 8px; height: 8px; background: #2ecc71; border-radius: 50%; box-shadow: 0 0 5px #2ecc71;"></span> 
+            <span style="color: #2ecc71;">GitHub Connected (${latency}ms)</span>
+        `;
+        statusEl.title = `Connected to ${config.OWNER}/${config.REPO}`;
+
+    } catch (e) {
+        console.error('❌ GitHub Health Check Failed:', e);
+        let msg = "Disconnected";
+        if (e.message === "No Token") msg = "No Token (Check Config)";
+        else if (e.message.includes("401")) msg = "Unauthorized (Invalid Token)";
+        else if (e.message.includes("404")) msg = "Repo Not Found";
+
+        statusEl.innerHTML = `
+            <span style="width: 8px; height: 8px; background: #e74c3c; border-radius: 50%; box-shadow: 0 0 5px #e74c3c;"></span> 
+            <span style="color: #e74c3c;">${msg}</span>
+        `;
+        statusEl.style.borderColor = '#e74c3c';
+
+        showToast(`⚠️ GitHub Error: ${msg}. Changes will NOT be saved to public site.`, 'error');
+    }
+}
+
 // Initialize admin panel
 async function initAdmin() {
     try {
         console.log('🚀 initAdmin called');
 
+        // Check Connection First
+        await checkGitHubHealth();
+
         // Note: ContentManager.init() is already called in admin-home.html
         // So we can directly load data.
-
 
         const artists = await loadArtists();
         console.log('✅ Loaded artists:', artists?.length || 0, 'artists');
@@ -566,37 +631,83 @@ function previewArtistImage(event) {
 // Save artist profile
 async function saveArtistProfile(event, artistIndex) {
     event.preventDefault();
+    console.log(`💾 Saving artist profile (Index: ${artistIndex})...`);
 
-    const artists = await ContentManager.getArtists();
-    const artist = artists[artistIndex];
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Guardando...';
+    submitBtn.disabled = true;
 
-    artist.name = document.getElementById('artist-name').value;
-    artist.genre = document.getElementById('artist-genre').value;
-    artist.bio = document.getElementById('artist-bio').value;
+    try {
+        const artists = await ContentManager.getArtists();
 
-    // Save social media links
-    if (!artist.socials) artist.socials = {};
-    artist.socials.instagram = document.getElementById('artist-instagram')?.value || '';
-    artist.socials.youtube = document.getElementById('artist-youtube')?.value || '';
-    artist.socials.spotify = document.getElementById('artist-spotify')?.value || '';
-    artist.socials.appleMusic = document.getElementById('artist-applemusic')?.value || '';
-    artist.socials.tiktok = document.getElementById('artist-tiktok')?.value || '';
+        if (!artists || !artists[artistIndex] && artistIndex !== -1) { // Allow new artists if logic changes
+            // Note: Currently artistIndex is array index. 
+            if (!artists[artistIndex]) throw new Error('La lista de artistas no se pudo cargar o el índice es inválido.');
+        }
 
-    // Save latest video ID
-    artist.latestVideoId = document.getElementById('artist-latest-video')?.value || '';
+        const artist = artists[artistIndex];
 
-    if (currentArtistImage) {
-        artist.image = currentArtistImage;
-        // CRITICAL FIX: Update imageData as well to prevent old heavy data from persisting
-        artist.imageData = currentArtistImage;
+        // Capture form data
+        artist.name = document.getElementById('artist-name').value;
+        artist.genre = document.getElementById('artist-genre').value;
+        artist.bio = document.getElementById('artist-bio').value;
+
+        // Save social media links
+        if (!artist.socials) artist.socials = {};
+        artist.socials.instagram = document.getElementById('artist-instagram')?.value || '';
+        artist.socials.youtube = document.getElementById('artist-youtube')?.value || '';
+        artist.socials.spotify = document.getElementById('artist-spotify')?.value || '';
+        artist.socials.appleMusic = document.getElementById('artist-applemusic')?.value || '';
+        artist.socials.tiktok = document.getElementById('artist-tiktok')?.value || '';
+
+        // Save latest video ID
+        artist.latestVideoId = document.getElementById('artist-latest-video')?.value || '';
+
+        // --- IMAGE UPLOAD LOGIC ---
+        if (currentArtistImage) {
+            console.log('🖼️ New image selected. Uploading to GitHub Storage...');
+
+            try {
+                // Upload Image -> Get URL
+                const imageUrl = await ContentManager.uploadArtistImage(artist.name, currentArtistImage);
+                console.log('✅ Image uploaded successfully:', imageUrl);
+
+                // Save URL to artist object
+                artist.image = imageUrl;
+
+                // Clear legacy Base64 field if it exists to save space
+                if (artist.imageData) delete artist.imageData;
+
+            } catch (uploadError) {
+                console.error('❌ Failed to upload image:', uploadError);
+                alert('Error al subir la imagen. Intenta con una imagen más pequeña o verifica tu conexión.');
+                throw uploadError; // Stop saving if image upload fails
+            }
+        }
+
+        console.log('📤 Saving artist metadata to GitHub...');
+        await ContentManager.saveArtists(artists);
+
+        showToast('¡Información del artista actualizada correctamente!', 'success');
+
+        // Reset state
+        currentArtistImage = null;
+
+        // Refresh view to show saved data
+        // Use the updated artist object directly to avoid re-fetch delay
+        showArtistProfile(artist, artistIndex);
+
+    } catch (error) {
+        console.error('❌ Error saving artist:', error);
+        showToast('Error al guardar: ' + error.message, 'error');
+        // alert('No se pudo guardar: ' + error.message); // Redundant with Toast
+    } finally {
+        if (submitBtn) {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
     }
-
-    await ContentManager.saveArtists(artists);
-    showToast('Artista actualizado en la nube exitosamente!');
-    currentArtistImage = null;
-
-    // Refresh view
-    showArtistProfile(artists[artistIndex], artistIndex);
 }
 
 // ----------------------------------------------------

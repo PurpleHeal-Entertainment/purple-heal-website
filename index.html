@@ -303,17 +303,82 @@
   <script src="js/storage-db.js?v=2.1"></script>
   <script src="js/main.js?v=2.1"></script>
   <script>
-    // Load artists from IndexedDB
-    async function loadArtists() {
-      const artists = await loadArtistsDB();
-      const grid = document.getElementById('artistsGrid');
+    // Configuration for GitHub Raw
+    const REPO_OWNER = 'PurpleHeal-Entertainment';
+    const REPO_NAME = 'purple-heal-website';
+    const BRANCH = 'master';
+    const BASE_URL = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/data`;
 
+    // Helper: Shuffle Array
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    async function loadAllData() {
+      try {
+        console.log('☁️ Fetching homepage data from Cloud...');
+
+        const timestamp = Date.now();
+        const headers = { 'Cache-Control': 'no-cache' };
+
+        // Parallel Fetch: Config, Artists, Tours
+        const [configRes, artistsRes, toursRes] = await Promise.all([
+          fetch(`${BASE_URL}/site_config.json?t=${timestamp}`),
+          fetch(`${BASE_URL}/artists.json?t=${timestamp}`),
+          fetch(`${BASE_URL}/tours.json?t=${timestamp}`)
+        ]);
+
+        if (!configRes.ok || !artistsRes.ok || !toursRes.ok) {
+          throw new Error('Failed to fetch one or more resources');
+        }
+
+        const config = await configRes.json();
+        const artists = await artistsRes.json();
+        const tours = await toursRes.json();
+
+        // 1. Render Artists
+        renderArtists(artists);
+
+        // 2. Render Stats
+        renderStats(config);
+
+        // 3. Render Promos & Special Sections
+        renderPromos(config, artists); // Pass artists directly for random collage
+
+        // 4. Render Featured Tour
+        if (config.featuredTourId) {
+          renderFeaturedTour(config.featuredTourId, tours);
+        }
+
+      } catch (error) {
+        console.error('❌ Error loading homepage data:', error);
+        const grid = document.getElementById('artistsGrid');
+        if (grid) {
+          grid.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: var(--space-xl); background: rgba(231, 76, 60, 0.1); border: 1px solid #e74c3c; border-radius: 8px;">
+                    <p style="color: #e74c3c; font-weight: bold; margin-bottom: 10px;">Error de conexión con GitHub</p>
+                    <p style="color: var(--ph-gray-lighter); font-size: 0.9em;">
+                        No se pudieron cargar los datos. Por favor, asegúrate de haber guardado los cambios en el Panel de Administración para sincronizar con la nube.
+                        <br><br>
+                        <small>Detalle: ${error.message}</small>
+                    </p>
+                </div>
+            `;
+        }
+      }
+    }
+
+    function renderArtists(artists) {
+      const grid = document.getElementById('artistsGrid');
       if (!grid) return;
 
       if (artists && artists.length > 0) {
-        // Show only first 3 artists on homepage
+        // Show only first 3 artists on homepage (or specific ones if configured)
         const displayArtists = artists.slice(0, 3);
-
 
         grid.innerHTML = displayArtists.map((artist, index) => `
                 <a href="artist-profile.html?artist=${index}" class="artist-card">
@@ -331,192 +396,46 @@
       } else {
         grid.innerHTML = `
                 <div style="grid-column: 1 / -1; text-align: center; padding: var(--space-xl);">
-                    <p style="color: var(--ph-gray-lighter);">No hay artistas disponibles</p>
+                    <p style="color: var(--ph-gray-lighter);">No hay artistas disponibles en este momento.</p>
                 </div>
             `;
       }
     }
 
+    function renderStats(config) {
+      const statsSection = document.getElementById('home-stats-section');
+      if (config.showStats) {
+        statsSection.style.display = 'grid';
 
-    // Helper:    // Helper: Shuffle Array
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+        if (config.stats && config.stats.length === 3) {
+          config.stats.forEach((s, i) => {
+            const numId = `stat${i + 1}-num`;
+            const labelId = `stat${i + 1}-label`;
+            const el = document.getElementById(numId)?.parentElement?.parentElement;
+            if (el) {
+              if (s.number && s.number.trim() !== '') {
+                document.getElementById(numId).textContent = s.number;
+                document.getElementById(labelId).textContent = s.label;
+                el.style.display = 'block';
+              } else {
+                el.style.display = 'none';
+              }
+            }
+          });
+        }
+      } else {
+        statsSection.style.display = 'none';
       }
-      return array;
     }
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      await loadArtists(); // Existing artist load
+    function renderFeaturedTour(tourId, tours) {
+      // tourId can be string or number, check carefully
+      const tour = tours.find(t => t.id == tourId);
+      const container = document.getElementById('featured-tour-container');
 
-      try {
-        await initDB();
-        const config = await getSiteConfig();
-
-        // 1. Handle Stats
-        const statsSection = document.getElementById('home-stats-section');
-        if (config.showStats) {
-          statsSection.style.display = 'grid';
-
-          if (config.stats && config.stats.length === 3) {
-            config.stats.forEach((s, i) => {
-              const numId = `stat${i + 1}-num`;
-              const labelId = `stat${i + 1}-label`;
-              const el = document.getElementById(numId)?.parentElement?.parentElement;
-              if (el) {
-                if (s.number && s.number.trim() !== '') {
-                  document.getElementById(numId).textContent = s.number;
-                  document.getElementById(labelId).textContent = s.label;
-                  el.style.display = 'block';
-                } else {
-                  el.style.display = 'none';
-                }
-              }
-            });
-          }
-        } else {
-          statsSection.style.display = 'none';
-        }
-
-        // 2 & 3. Promos - Independent Sections Logic
-        const backstageSection = document.getElementById('backstage-section');
-        const backstageWrapper = document.getElementById('promo-backstage-wrapper');
-        const saleSection = document.getElementById('promo-sale-section');
-        const saleCard = document.getElementById('promo-sale');
-
-        // Handle Backstage Visibility
-        if (config.showBackstage && backstageWrapper) {
-          backstageSection.style.display = 'block';
-          backstageWrapper.style.display = 'block';
-          const btn = document.getElementById('btn-backstage');
-          if (btn) btn.href = config.backstageLink || '#';
-        }
-
-        // Handle Contact Section Visibility
-        const contactSection = document.getElementById('contact');
-        if (contactSection) {
-          const showContact = config.showContact !== false; // Default to true
-          contactSection.style.display = showContact ? 'block' : 'none';
-        }
-
-        // Handle Sale Promo Visibility
-        if (config.showPromo && saleCard) {
-          saleSection.style.display = 'block';
-          saleCard.style.display = 'flex';
-
-          const btn = document.getElementById('btn-promo');
-          if (btn) btn.href = config.promoLink || 'shop.html';
-
-          const titleEl = document.getElementById('promo-title-main');
-          const subtitleEl = document.getElementById('promo-subtitle');
-
-          const descEl = document.getElementById('promo-desc');
-
-          const discAlbum = config.promoDiscountAlbum ? parseInt(config.promoDiscountAlbum) : 0;
-          const discMerch = config.promoDiscountMerch ? parseInt(config.promoDiscountMerch) : 0;
-          const maxDisc = Math.max(discAlbum, discMerch);
-
-          if (titleEl && maxDisc > 0) {
-            titleEl.innerHTML = `${maxDisc}% <span style="color: var(--ph-blue-accent);">OFF</span>`;
-          } else if (titleEl && config.promoTitle) {
-            titleEl.textContent = config.promoTitle;
-          }
-
-          if (subtitleEl) {
-            if (config.promoSubtitle) {
-              subtitleEl.textContent = config.promoSubtitle;
-            } else {
-              // Fallback Logic
-              if (discAlbum > 0 && discMerch > 0 && discAlbum === discMerch) {
-                subtitleEl.textContent = 'DESCUENTO EN TODOS LOS PRODUCTOS';
-              } else if (discAlbum > 0) {
-                subtitleEl.textContent = 'OFERTA EN ALBUMES';
-              } else if (discMerch > 0) {
-                subtitleEl.textContent = 'DESCUENTO EN MERCH';
-              } else {
-                subtitleEl.textContent = 'GRANDES OFERTAS';
-              }
-            }
-          }
-
-          if (descEl && config.promoDescription) {
-            descEl.textContent = config.promoDescription;
-          }
-
-          // Random Products
-          try {
-            const artists = await loadArtistsDB();
-            if (artists && artists.length > 0) {
-              let allProducts = [];
-              // Collect all products with images
-              artists.forEach(artist => {
-                if (artist.albums) {
-                  artist.albums.forEach(album => {
-                    // Robust check for image
-                    let img = null;
-                    if (album.images && album.images.length > 0) img = album.images[0];
-                    else if (album.cover) img = album.cover;
-                    else if (album.image) img = album.image;
-
-                    if (img) allProducts.push({ img: img, type: 'album' });
-                  });
-                }
-                if (artist.merch) {
-                  artist.merch.forEach(item => {
-                    // Robust check for image
-                    let img = null;
-                    if (item.images && item.images.length > 0) img = item.images[0];
-                    else if (item.image) img = item.image;
-
-                    if (img) allProducts.push({ img: img, type: 'merch' });
-                  });
-                }
-              });
-              const imageContainer = document.getElementById('promo-images-container');
-
-              if (imageContainer) {
-                const bg = imageContainer.querySelector('div[style*="radial-gradient"]');
-                imageContainer.innerHTML = '';
-                if (bg) imageContainer.appendChild(bg);
-
-                let productsToShow = [];
-                if (allProducts.length > 0) {
-                  productsToShow = shuffleArray(allProducts).slice(0, 3);
-                } else {
-                  // Fallback placeholders
-                  productsToShow = [
-                    { img: 'assets/images/placeholder.png' },
-                    { img: 'assets/images/placeholder.png' }
-                  ];
-                }
-
-                // Set class for flexible styling (promo-count-1, promo-count-2, promo-count-3)
-                imageContainer.className = `promo-products-container promo-count-${productsToShow.length}`;
-
-                productsToShow.forEach((prod, i) => {
-                  const img = document.createElement('img');
-                  img.src = prod.img;
-                  // Add specific item class for robust CSS targeting
-                  img.className = `promo-image-collage promo-item-${i} fade-in`;
-                  img.alt = 'Producto en oferta';
-                  imageContainer.appendChild(img);
-                });
-              }
-            }
-          } catch (e) {
-            console.error('Promo Logic Error:', e);
-          }
-        }
-
-
-
-        if (config.featuredTourId) {
-          const tour = await getTourByIdDB(config.featuredTourId);
-          const container = document.getElementById('featured-tour-container');
-          if (tour && container) {
-            container.style.display = 'block';
-            container.innerHTML = `
+      if (tour && container) {
+        container.style.display = 'block';
+        container.innerHTML = `
                 <div class="ph-featured-tour">
                     <div class="ph-featured-tour__bg" style="background-image: url('${tour.coverImage}');"></div>
                     <div class="ph-featured-tour__overlay"></div>
@@ -529,14 +448,134 @@
                     </div>
                 </div>
             `;
+      }
+    }
+
+    function renderPromos(config, artists) {
+      // Sections
+      const backstageSection = document.getElementById('backstage-section');
+      const backstageWrapper = document.getElementById('promo-backstage-wrapper');
+      const saleSection = document.getElementById('promo-sale-section');
+      const saleCard = document.getElementById('promo-sale');
+
+      // Backstage
+      if (config.showBackstage && backstageWrapper) {
+        backstageSection.style.display = 'block';
+        backstageWrapper.style.display = 'block';
+        const btn = document.getElementById('btn-backstage');
+        if (btn) btn.href = config.backstageLink || '#';
+      }
+
+      // Contact
+      const contactSection = document.getElementById('contact');
+      if (contactSection) {
+        const showContact = config.showContact !== false;
+        contactSection.style.display = showContact ? 'block' : 'none';
+      }
+
+      // Sale Promo
+      if (config.showPromo && saleCard) {
+        saleSection.style.display = 'block';
+        saleCard.style.display = 'flex';
+
+        const btn = document.getElementById('btn-promo');
+        if (btn) btn.href = config.promoLink || 'shop.html';
+
+        const titleEl = document.getElementById('promo-title-main');
+        const subtitleEl = document.getElementById('promo-subtitle');
+        const descEl = document.getElementById('promo-desc');
+
+        const discAlbum = config.promoDiscountAlbum ? parseInt(config.promoDiscountAlbum) : 0;
+        const discMerch = config.promoDiscountMerch ? parseInt(config.promoDiscountMerch) : 0;
+        const maxDisc = Math.max(discAlbum, discMerch);
+
+        if (titleEl && maxDisc > 0) {
+          titleEl.innerHTML = `${maxDisc}% <span style="color: var(--ph-blue-accent);">OFF</span>`;
+        } else if (titleEl && config.promoTitle) {
+          titleEl.textContent = config.promoTitle;
+        }
+
+        if (subtitleEl) {
+          if (config.promoSubtitle) {
+            subtitleEl.textContent = config.promoSubtitle;
+          } else {
+            if (discAlbum > 0 && discMerch > 0 && discAlbum === discMerch) {
+              subtitleEl.textContent = 'DESCUENTO EN TODOS LOS PRODUCTOS';
+            } else if (discAlbum > 0) {
+              subtitleEl.textContent = 'OFERTA EN ALBUMES';
+            } else if (discMerch > 0) {
+              subtitleEl.textContent = 'DESCUENTO EN MERCH';
+            } else {
+              subtitleEl.textContent = 'GRANDES OFERTAS';
+            }
           }
         }
 
-      } catch (err) {
-        console.error('Home Config Error:', err);
-        document.getElementById('home-stats-section').style.display = 'grid';
+        if (descEl && config.promoDescription) {
+          descEl.textContent = config.promoDescription;
+        }
+
+        // Random Products Collage
+        try {
+          if (artists && artists.length > 0) {
+            let allProducts = [];
+            // Collect all products with images
+            artists.forEach(artist => {
+              if (artist.albums) {
+                artist.albums.forEach(album => {
+                  let img = null;
+                  if (album.images && album.images.length > 0) img = album.images[0];
+                  else if (album.cover) img = album.cover;
+                  else if (album.image) img = album.image;
+
+                  if (img) allProducts.push({ img: img, type: 'album' });
+                });
+              }
+              if (artist.merch) {
+                artist.merch.forEach(item => {
+                  let img = null;
+                  if (item.images && item.images.length > 0) img = item.images[0];
+                  else if (item.image) img = item.image;
+
+                  if (img) allProducts.push({ img: img, type: 'merch' });
+                });
+              }
+            });
+
+            const imageContainer = document.getElementById('promo-images-container');
+            if (imageContainer) {
+              const bg = imageContainer.querySelector('div[style*="radial-gradient"]');
+              imageContainer.innerHTML = '';
+              if (bg) imageContainer.appendChild(bg);
+
+              let productsToShow = [];
+              if (allProducts.length > 0) {
+                productsToShow = shuffleArray(allProducts).slice(0, 3);
+              } else {
+                productsToShow = [
+                  { img: 'assets/images/placeholder.png' },
+                  { img: 'assets/images/placeholder.png' }
+                ];
+              }
+
+              imageContainer.className = `promo-products-container promo-count-${productsToShow.length}`;
+
+              productsToShow.forEach((prod, i) => {
+                const img = document.createElement('img');
+                img.src = prod.img;
+                img.className = `promo-image-collage promo-item-${i} fade-in`;
+                img.alt = 'Producto en oferta';
+                imageContainer.appendChild(img);
+              });
+            }
+          }
+        } catch (e) {
+          console.error('Promo Logic Error:', e);
+        }
       }
-    });
+    }
+
+    document.addEventListener('DOMContentLoaded', loadAllData);
   </script>
 </body>
 

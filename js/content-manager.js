@@ -72,6 +72,23 @@ const ContentManager = {
         return data || [];
     },
 
+    uploadArtistImage: async (artistName, fileData) => {
+        // Sanitize filename: remove spaces, special chars, lowercase
+        const safeName = artistName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        const timestamp = Date.now();
+        const filename = `${safeName}-${timestamp}.jpg`;
+        const path = `assets/images/artists/${filename}`;
+
+        console.log(`CMS: Uploading image to ${path}...`);
+
+        // Upload Binary
+        await window.GithubSync.uploadFile(path, fileData, `Upload image for ${artistName}`, true);
+
+        // Return Raw URL (Note: Use raw.githubusercontent for direct access)
+        const config = window.GithubSync.getConfig();
+        return `https://raw.githubusercontent.com/${config.OWNER}/${config.REPO}/${config.BRANCH}/${path}`;
+    },
+
     saveArtists: async (artists) => {
         const content = JSON.stringify(artists, null, 2);
         return await window.GithubSync.uploadFile('data/artists.json', content, 'Update artists.json via CMS');
