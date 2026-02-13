@@ -1,21 +1,19 @@
-﻿{
-    "name":  "R.N BOI",
-    "genre":  "trap/hiphop/rap/newjazz/surf",
-    "bio":  "R.N BOI es un artista/compositor/productor de Argentina/Santa Cruz/Rio Gallegos. EmpezÃ³ a desarrollar un amor profundo con la mÃºsica desde los 8 aÃ±os escuchando a canserbero y otros artistas del ambiente. desde entonces ha explorado muchos horizontes, eventos de freestyle, escritor de letras, composiciÃ³n de canciones y producciÃ³n en distintos programas de producciÃ³n musical, para dejar un mensaje en ellos.",
-    "image":  "https://raw.githubusercontent.com/PurpleHeal-Entertainment/purple-heal-website/master/assets/images/artists/rnboi-profile.jpg",
-    "socials":  {
-                    "spotify":  "https://open.spotify.com/intl-es/artist/2ZPlj306WZWYt28UkdD3Uu?si=fc0z3JgaQmS3o045pYN49A",
-                    "youtube":  "https://www.youtube.com/@r.nboi261",
-                    "appleMusic":  "https://music.apple.com/es/artist/r-n-boi/1529985738",
-                    "instagram":  "https://www.instagram.com/r.nboi261/",
-                    "tiktok":  "https://www.tiktok.com/@r.nboi261?_r=1\u0026_t=ZM-93E1C8dVkce"
-                },
-    "albums":  [
-
-               ],
-    "merch":  [
-
-              ],
-    "latestVideoId":  "s9hBQrB4nG8",
-    "id":  1
-}
+﻿[
+    {
+        "name": "R.N BOI",
+        "genre": "trap/hiphop/rap/newjazz/surf",
+        "bio": "R.N BOI es un artista/compositor/productor de Argentina/Santa Cruz/Rio Gallegos. Empezó a desarrollar un amor profundo con la música desde los 8 años escuchando a canserbero y otros artistas del ambiente. desde entonces ha explorado muchos horizontes, eventos de freestyle, escritor de letras, composición de canciones y producción en distintos programas de producción musical, para dejar un mensaje en ellos.",
+        "image": "https://raw.githubusercontent.com/PurpleHeal-Entertainment/purple-heal-website/master/assets/images/artists/rnboi-profile.jpg",
+        "socials": {
+            "spotify": "https://open.spotify.com/intl-es/artist/2ZPlj306WZWYt28UkdD3Uu?si=fc0z3JgaQmS3o045pYN49A",
+            "youtube": "https://www.youtube.com/@r.nboi261",
+            "appleMusic": "https://music.apple.com/es/artist/r-n-boi/1529985738",
+            "instagram": "https://www.instagram.com/r.nboi261/",
+            "tiktok": "https://www.tiktok.com/@r.nboi261?_r=1&_t=ZM-93E1C8dVkce"
+        },
+        "albums": [],
+        "merch": [],
+        "latestVideoId": "s9hBQrB4nG8",
+        "id": 1
+    }
+]
