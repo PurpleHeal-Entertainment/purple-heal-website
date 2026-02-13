@@ -618,12 +618,12 @@
 
     <!-- Scripts -->
     <script src="js/storage-db.js"></script> <!-- Keep for legacy read support if needed locally -->
-    <script src="js/github-api.js"></script> <!-- API Helper (Critical for Public Site) -->
+    <script src="js/github-api.js?v=3.5"></script> <!-- API Helper (Critical for Public Site) -->
     <script src="js/inline-forms-helper.js?v=2.2"></script>
-    <script src="js/admin-panel.js?v=2.3"></script>
+    <script src="js/admin-panel.js?v=3.5"></script>
 
     <script type="module">
-        import ContentManager from './js/content-manager.js';
+        import ContentManager from './js/content-manager.js?v=3.5';
         import AuthManager from './js/auth-manager.js';
 
         // Wait for Auth + CMS Init
