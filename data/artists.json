@@ -26,7 +26,20 @@
         ]
       }
     ],
-    "merch": [],
+    "merch": [
+      {
+        "name": "fafafafa",
+        "category": "Camiseta",
+        "price": 123,
+        "description": "asdasdasd",
+        "sizes": "f",
+        "stock": "EN STOCK",
+        "link": "https://www.crunchyroll.com/es-es/watch/GRDQ4M79Y/conclusion",
+        "images": [
+          "https://raw.githubusercontent.com/PurpleHeal-Entertainment/purple-heal-website/master/assets/images/merch/r-n-boi-fafafafa-0-1771102896230.jpg"
+        ]
+      }
+    ],
     "latestVideoId": "s9hBQrB4nG8",
     "id": 1
   }
