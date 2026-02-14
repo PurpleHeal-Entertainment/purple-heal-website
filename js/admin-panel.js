@@ -736,7 +736,7 @@ function renderArtistAlbums(artist, artistIndex) {
     }
 
     return `
-            < div class="admin-carousel-container" style = "position: relative;" >
+            <div class="admin-carousel-container" style="position: relative;">
             <button type="button" class="carousel-btn prev" onclick="scrollCarousel('albums-carousel-${artistIndex}', -300)" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); z-index: 10; background: rgba(0,0,0,0.8); border: 1px solid var(--ph-purple); color: white; border-radius: 50%; width: 32px; height: 32px; cursor: pointer;">‹</button>
             
             <div id="albums-carousel-${artistIndex}" class="admin-horizontal-slider" style="display: flex; gap: var(--space-md); overflow-x: auto; padding: var(--space-sm) 40px; scroll-behavior: smooth;">
@@ -788,7 +788,7 @@ function renderArtistMerch(artist, artistIndex) {
     }
 
     return `
-            < div class="admin-carousel-container" style = "position: relative;" >
+            <div class="admin-carousel-container" style="position: relative;">
             <button type="button" class="carousel-btn prev" onclick="scrollCarousel('merch-carousel-${artistIndex}', -300)" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); z-index: 10; background: rgba(0,0,0,0.8); border: 1px solid var(--ph-purple); color: white; border-radius: 50%; width: 32px; height: 32px; cursor: pointer;">‹</button>
             
             <div id="merch-carousel-${artistIndex}" class="admin-horizontal-slider" style="display: flex; gap: var(--space-md); overflow-x: auto; padding: var(--space-sm) 40px; scroll-behavior: smooth;">
@@ -958,7 +958,7 @@ async function showAlbumForm(artistIndex, albumIndex) {
     const artistView = document.getElementById('artist-view');
 
     artistView.innerHTML = `
-            < div class="ph-card" style = "margin-bottom: var(--space-xl);" >
+            <div class="ph-card" style="margin-bottom: var(--space-xl);">
                 <div class="ph-card__content">
                     <!-- Header with back button and title -->
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2xl);">
@@ -1120,7 +1120,7 @@ function renderAlbumImagePreviews(album, artistIndex, albumIndex) {
     // First image - large
     const firstImage = images[0];
     html += `
-            < div class="album-image-slot" style = "position: relative; margin-bottom: var(--space-lg);" >
+            <div class="album-image-slot" style="position: relative; margin-bottom: var(--space-lg);">
                 <div style="aspect-ratio: 1/1; background: var(--ph-gray-darker); border-radius: var(--border-radius); overflow: hidden; border: 2px dashed var(--ph-purple);">
                     ${firstImage ? `
                     <img src="${firstImage}" style="width: 100%; height: 100%; object-fit: cover;">
@@ -1149,7 +1149,7 @@ function renderAlbumImagePreviews(album, artistIndex, albumIndex) {
     // Additional images - horizontal scroll thumbnails
     if (images.length > 1 || !firstImage) {
         html += `
-            < div style = "margin-top: var(--space-md);" >
+            <div style="margin-top: var(--space-md);">
                 <p style="color: var(--ph-gray-lighter); font-size: var(--fs-sm); margin-bottom: var(--space-sm);">Imágenes adicionales:</p>
                 <div style="display: flex; gap: var(--space-sm); overflow-x: auto; padding-bottom: var(--space-sm);">
         `;
