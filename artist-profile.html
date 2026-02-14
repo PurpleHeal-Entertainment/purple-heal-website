@@ -242,8 +242,8 @@
                 }
 
                 renderArtistProfile(artist);
-                renderDiscography(artist);
-                renderMerchandise(artist);
+                renderDiscography(artist, artistId);
+                renderMerchandise(artist, artistId);
 
             } catch (error) {
                 console.error('Error loading artist profile:', error);
@@ -296,54 +296,13 @@
                 iframe.src = `https://www.youtube.com/embed/${artist.latestVideoId}`;
                 videoSection.style.display = 'block';
             }
-        }
 
-        function renderDiscography(artist) {
-            const container = document.getElementById('albumsGrid');
-            if (!artist.albums || artist.albums.length === 0) {
-                document.getElementById('discography').style.display = 'none';
-                return;
+            // Load Products (using shared loader)
+            if (typeof window.loadArtistProducts === 'function') {
+                window.loadArtistProducts(artistId);
+            } else {
+                console.error('Product loader not found');
             }
-
-            container.innerHTML = artist.albums.map(album => `
-                <div class="product-card">
-                    <div class="product-card__image-container">
-                        <img src="${album.images && album.images[0] ? album.images[0] : 'assets/placeholder-album.jpg'}" 
-                             alt="${album.title}" class="product-card__image">
-                    </div>
-                    <div class="product-card__content">
-                        <h3 class="product-card__title">${album.title}</h3>
-                        <p class="product-card__price">$${album.price}</p>
-                        <a href="${album.link || '#'}" class="product-card__button" target="_blank">
-                            ${album.stock === 'SOLD OUT' ? 'AGOTADO' : 'COMPRAR / ESCUCHAR'}
-                        </a>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderMerchandise(artist) {
-            const container = document.getElementById('merchGrid');
-            if (!artist.merch || artist.merch.length === 0) {
-                document.getElementById('merch').style.display = 'none';
-                return;
-            }
-
-            container.innerHTML = artist.merch.map(product => `
-                <div class="product-card">
-                    <div class="product-card__image-container">
-                        <img src="${product.images && product.images[0] ? product.images[0] : 'assets/placeholder-merch.jpg'}" 
-                             alt="${product.name}" class="product-card__image">
-                    </div>
-                    <div class="product-card__content">
-                        <h3 class="product-card__title">${product.name}</h3>
-                        <p class="product-card__price">$${product.price}</p>
-                        <a href="${product.link || '#'}" class="product-card__button" target="_blank">
-                            ${product.stock === 'SOLD OUT' ? 'AGOTADO' : 'COMPRAR'}
-                        </a>
-                    </div>
-                </div>
-            `).join('');
         }
     </script>
 </body>

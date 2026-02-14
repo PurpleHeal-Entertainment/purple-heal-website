@@ -89,6 +89,34 @@ const ContentManager = {
         return `https://raw.githubusercontent.com/${config.OWNER}/${config.REPO}/${config.BRANCH}/${path}`;
     },
 
+    uploadAlbumImage: async (artistName, albumTitle, fileData, index) => {
+        const safeArtist = artistName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        const safeTitle = albumTitle.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        const timestamp = Date.now();
+        const filename = `${safeArtist}-${safeTitle}-${index}-${timestamp}.jpg`;
+        const path = `assets/images/albums/${filename}`;
+
+        console.log(`CMS: Uploading album image to ${path}...`);
+        await window.GithubSync.uploadFile(path, fileData, `Upload album image for ${albumTitle}`, true);
+
+        const config = window.GithubSync.getConfig();
+        return `https://raw.githubusercontent.com/${config.OWNER}/${config.REPO}/${config.BRANCH}/${path}`;
+    },
+
+    uploadMerchImage: async (artistName, productName, fileData, index) => {
+        const safeArtist = artistName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        const safeProduct = productName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        const timestamp = Date.now();
+        const filename = `${safeArtist}-${safeProduct}-${index}-${timestamp}.jpg`;
+        const path = `assets/images/merch/${filename}`;
+
+        console.log(`CMS: Uploading merch image to ${path}...`);
+        await window.GithubSync.uploadFile(path, fileData, `Upload merch image for ${productName}`, true);
+
+        const config = window.GithubSync.getConfig();
+        return `https://raw.githubusercontent.com/${config.OWNER}/${config.REPO}/${config.BRANCH}/${path}`;
+    },
+
     saveArtists: async (artists) => {
         const content = JSON.stringify(artists, null, 2);
         return await window.GithubSync.uploadFile('data/artists.json', content, 'Update artists.json via CMS');

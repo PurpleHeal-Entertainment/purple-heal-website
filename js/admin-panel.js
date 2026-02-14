@@ -720,43 +720,48 @@ function renderArtistAlbums(artist, artistIndex) {
     }
 
     return `
-        <div class="admin-grid">
-            ${artist.albums.map((album, idx) => `
-                <div class="ph-card" style="border: 1px solid rgba(255,255,255,0.1);">
-                    <div class="ph-card__content" style="padding: var(--space-md);">
-                        <div style="display: flex; gap: var(--space-md);">
+        <div class="admin-carousel-container" style="position: relative;">
+            <button type="button" class="carousel-btn prev" onclick="scrollCarousel('albums-carousel-${artistIndex}', -300)" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); z-index: 10; background: rgba(0,0,0,0.8); border: 1px solid var(--ph-purple); color: white; border-radius: 50%; width: 32px; height: 32px; cursor: pointer;">‹</button>
+            
+            <div id="albums-carousel-${artistIndex}" class="admin-horizontal-slider" style="display: flex; gap: var(--space-md); overflow-x: auto; padding: var(--space-sm) 40px; scroll-behavior: smooth;">
+                ${artist.albums.map((album, idx) => `
+                    <div class="ph-card" style="border: 1px solid rgba(255,255,255,0.1); flex: 0 0 280px; min-width: 280px;">
+                        <div class="ph-card__content" style="padding: var(--space-md);">
+                            
                             <!-- Image -->
-                            <div style="width: 80px; height: 80px; background: #000; border-radius: 4px; overflow: hidden; flex-shrink: 0;">
+                            <div style="width: 100%; aspect-ratio: 1/1; background: #000; border-radius: 4px; overflow: hidden; margin-bottom: var(--space-md);">
                                 ${album.images && album.images[0] ?
             `<img src="${album.images[0]}" style="width: 100%; height: 100%; object-fit: cover;">` :
-            '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #333;">💿</div>'
+            '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #333; font-size: 2rem;">💿</div>'
         }
                             </div>
                             
                             <!-- Info -->
-                            <div style="flex: 1; min-width: 0;">
-                                <h4 style="margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${album.title}</h4>
-                                <p style="color: var(--ph-gray-lighter); font-size: var(--fs-xs); margin-top: 4px;">
+                            <div>
+                                <h4 style="margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: var(--fs-md);">${album.title}</h4>
+                                <p style="color: var(--ph-gray-lighter); font-size: var(--fs-sm); margin-top: 4px;">
                                     ${album.year || (album.releaseDate ? album.releaseDate.split('-')[0] : '????')} • ${album.type || 'Album'}
                                 </p>
-                                <p style="color: var(--ph-purple-light); font-size: var(--fs-xs); font-weight: bold; margin-top: 4px;">
+                                <p style="color: var(--ph-purple-light); font-size: var(--fs-sm); font-weight: bold; margin-top: 4px;">
                                     $${album.price}
                                 </p>
                             </div>
-                        </div>
-                        
-                        <!-- Actions -->
-                        <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md); border-top: 1px solid rgba(255,255,255,0.1); padding-top: var(--space-sm);">
-                            <button onclick="showAlbumForm(${artistIndex}, ${idx})" class="ph-button ph-button--outline" style="flex: 1; padding: 4px; font-size: var(--fs-xs);">
-                                EDITAR
-                            </button>
-                            <button onclick="deleteAlbum(${artistIndex}, ${idx})" class="ph-button ph-button--outline" style="flex: 0 0 auto; padding: 4px 8px; font-size: var(--fs-xs); border-color: #e74c3c; color: #e74c3c;">
-                                🗑️
-                            </button>
+                            
+                            <!-- Actions -->
+                            <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md); border-top: 1px solid rgba(255,255,255,0.1); padding-top: var(--space-sm);">
+                                <button onclick="showAlbumForm(${artistIndex}, ${idx})" class="ph-button ph-button--outline" style="flex: 1; padding: 4px; font-size: var(--fs-xs);">
+                                    EDITAR
+                                </button>
+                                <button onclick="deleteAlbum(${artistIndex}, ${idx})" class="ph-button ph-button--outline" style="flex: 0 0 auto; padding: 4px 8px; font-size: var(--fs-xs); border-color: #e74c3c; color: #e74c3c;">
+                                    🗑️
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('')}
+                `).join('')}
+            </div>
+
+            <button type="button" class="carousel-btn next" onclick="scrollCarousel('albums-carousel-${artistIndex}', 300)" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); z-index: 10; background: rgba(0,0,0,0.8); border: 1px solid var(--ph-purple); color: white; border-radius: 50%; width: 32px; height: 32px; cursor: pointer;">›</button>
         </div>
     `;
 }
@@ -767,46 +772,57 @@ function renderArtistMerch(artist, artistIndex) {
     }
 
     return `
-        <div class="admin-grid">
-            ${artist.merch.map((product, idx) => `
-                <div class="ph-card" style="border: 1px solid rgba(255,255,255,0.1);">
-                    <div class="ph-card__content" style="padding: var(--space-md);">
-                        <div style="display: flex; gap: var(--space-md);">
+        <div class="admin-carousel-container" style="position: relative;">
+            <button type="button" class="carousel-btn prev" onclick="scrollCarousel('merch-carousel-${artistIndex}', -300)" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); z-index: 10; background: rgba(0,0,0,0.8); border: 1px solid var(--ph-purple); color: white; border-radius: 50%; width: 32px; height: 32px; cursor: pointer;">‹</button>
+            
+            <div id="merch-carousel-${artistIndex}" class="admin-horizontal-slider" style="display: flex; gap: var(--space-md); overflow-x: auto; padding: var(--space-sm) 40px; scroll-behavior: smooth;">
+                ${artist.merch.map((product, idx) => `
+                    <div class="ph-card" style="border: 1px solid rgba(255,255,255,0.1); flex: 0 0 280px; min-width: 280px;">
+                        <div class="ph-card__content" style="padding: var(--space-md);">
+                            
                             <!-- Image -->
-                            <div style="width: 80px; height: 80px; background: #000; border-radius: 4px; overflow: hidden; flex-shrink: 0;">
+                            <div style="width: 100%; aspect-ratio: 1/1; background: #000; border-radius: 4px; overflow: hidden; margin-bottom: var(--space-md);">
                                 ${product.images && product.images[0] ?
             `<img src="${product.images[0]}" style="width: 100%; height: 100%; object-fit: cover;">` :
-            '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #333;">👕</div>'
+            '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #333; font-size: 2rem;">👕</div>'
         }
                             </div>
                             
                             <!-- Info -->
-                            <div style="flex: 1; min-width: 0;">
-                                <h4 style="margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${product.name}</h4>
-                                <p style="color: var(--ph-gray-lighter); font-size: var(--fs-xs); margin-top: 4px;">
+                            <div>
+                                <h4 style="margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: var(--fs-md);">${product.name}</h4>
+                                <p style="color: var(--ph-gray-lighter); font-size: var(--fs-sm); margin-top: 4px;">
                                     ${product.category} • ${product.stock}
                                 </p>
-                                <p style="color: var(--ph-purple-light); font-size: var(--fs-xs); font-weight: bold; margin-top: 4px;">
+                                <p style="color: var(--ph-purple-light); font-size: var(--fs-sm); font-weight: bold; margin-top: 4px;">
                                     $${product.price}
                                 </p>
                             </div>
-                        </div>
-                        
-                        <!-- Actions -->
-                        <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md); border-top: 1px solid rgba(255,255,255,0.1); padding-top: var(--space-sm);">
-                            <button onclick="showMerchForm(${artistIndex}, ${idx})" class="ph-button ph-button--outline" style="flex: 1; padding: 4px; font-size: var(--fs-xs);">
-                                EDITAR
-                            </button>
-                            <button onclick="deleteMerch(${artistIndex}, ${idx})" class="ph-button ph-button--outline" style="flex: 0 0 auto; padding: 4px 8px; font-size: var(--fs-xs); border-color: #e74c3c; color: #e74c3c;">
-                                🗑️
-                            </button>
+                            
+                            <!-- Actions -->
+                            <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md); border-top: 1px solid rgba(255,255,255,0.1); padding-top: var(--space-sm);">
+                                <button onclick="showMerchForm(${artistIndex}, ${idx})" class="ph-button ph-button--outline" style="flex: 1; padding: 4px; font-size: var(--fs-xs);">
+                                    EDITAR
+                                </button>
+                                <button onclick="deleteMerch(${artistIndex}, ${idx})" class="ph-button ph-button--outline" style="flex: 0 0 auto; padding: 4px 8px; font-size: var(--fs-xs); border-color: #e74c3c; color: #e74c3c;">
+                                    🗑️
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('')}
+                `).join('')}
+            </div>
+
+            <button type="button" class="carousel-btn next" onclick="scrollCarousel('merch-carousel-${artistIndex}', 300)" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); z-index: 10; background: rgba(0,0,0,0.8); border: 1px solid var(--ph-purple); color: white; border-radius: 50%; width: 32px; height: 32px; cursor: pointer;">›</button>
         </div>
     `;
 }
+
+// Helper for scrolling
+window.scrollCarousel = function (id, amount) {
+    const el = document.getElementById(id);
+    if (el) el.scrollLeft += amount;
+};
 
 // ...
 
@@ -1195,6 +1211,7 @@ function addAlbumImageSlot(artistIndex, albumIndex) {
 }
 
 // Save album form
+// Save album form
 async function saveAlbumForm(event) {
     event.preventDefault();
 
@@ -1202,55 +1219,93 @@ async function saveAlbumForm(event) {
     const artistIndex = parseInt(form.dataset.artistIndex);
     const albumIndex = form.dataset.albumIndex !== 'null' ? parseInt(form.dataset.albumIndex) : null;
 
-    // Validate required fields
-    const title = document.getElementById('album-title').value.trim();
-    const releaseDate = document.getElementById('album-releaseDate').value;
-    const price = parseFloat(document.getElementById('album-price').value);
-    const type = document.getElementById('album-type').value;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Guardando e Imagenes...';
+    submitBtn.disabled = true;
 
-    if (!title || !releaseDate || !price || !type) {
-        showToast('Por favor completa los campos obligatorios (*)', 'warning');
-        return;
-    }
+    try {
+        // Validate required fields
+        const title = document.getElementById('album-title').value.trim();
+        const releaseDate = document.getElementById('album-releaseDate').value;
+        const price = parseFloat(document.getElementById('album-price').value);
+        const type = document.getElementById('album-type').value;
 
-    if (tempAlbumImages.length === 0) {
-        showToast('Por favor agrega al menos una imagen', 'warning');
-        return;
-    }
-
-    // Extract year from date for backward compatibility
-    const year = releaseDate.split('-')[0];
-
-    const albumData = {
-        title,
-        releaseDate,
-        year, // Keep for backward compatibility
-        price,
-        type,
-        description: document.getElementById('album-description').value.trim(),
-        stock: document.getElementById('album-stock').value,
-        link: document.getElementById('album-link').value.trim(),
-        images: tempAlbumImages
-    };
-
-    const artists = await loadArtists();
-
-    if (albumIndex === null) {
-        // Add new album
-        if (!artists[artistIndex].albums) {
-            artists[artistIndex].albums = [];
+        if (!title || !releaseDate || !price || !type) {
+            showToast('Por favor completa los campos obligatorios (*)', 'warning');
+            throw new Error('Campos obligatorios faltantes');
         }
-        artists[artistIndex].albums.push(albumData);
-    } else {
-        // Update existing album
-        artists[artistIndex].albums[albumIndex] = albumData;
+
+        if (tempAlbumImages.length === 0) {
+            showToast('Por favor agrega al menos una imagen', 'warning');
+            throw new Error('Falta imagen');
+        }
+
+        const artists = await loadArtists();
+        const artist = artists[artistIndex];
+
+        // PROCESS IMAGES
+        // We need to detect which images are Base64 (new) and upload them
+        // Existing URLs are kept as is
+        const processedImages = [];
+
+        for (let i = 0; i < tempAlbumImages.length; i++) {
+            const imgData = tempAlbumImages[i];
+
+            if (imgData.startsWith('data:image')) {
+                // It's a base64 string -> UPLOAD
+                console.log(`Uploading album image ${i + 1}/${tempAlbumImages.length}...`);
+                const imageUrl = await ContentManager.uploadAlbumImage(artist.name, title, imgData, i);
+                processedImages.push(imageUrl);
+            } else {
+                // It's already a URL -> KEEP
+                processedImages.push(imgData);
+            }
+        }
+
+        // Extract year from date for backward compatibility
+        const year = releaseDate.split('-')[0];
+
+        const albumData = {
+            title,
+            releaseDate,
+            year, // Keep for backward compatibility
+            price,
+            type,
+            description: document.getElementById('album-description').value.trim(),
+            stock: document.getElementById('album-stock').value,
+            link: document.getElementById('album-link').value.trim(),
+            images: processedImages
+        };
+
+
+        if (albumIndex === null) {
+            // Add new album
+            if (!artists[artistIndex].albums) {
+                artists[artistIndex].albums = [];
+            }
+            artists[artistIndex].albums.push(albumData);
+        } else {
+            // Update existing album
+            artists[artistIndex].albums[albumIndex] = albumData;
+        }
+
+        await saveArtists(artists);
+        showToast(`Album "${albumData.title}" ${albumIndex === null ? 'agregado' : 'actualizado'} exitosamente!`);
+
+        // Go back to artist profile
+        closeAlbumView(); // Use closeAlbumView to return to profile
+
+    } catch (error) {
+        console.error('Error saving album:', error);
+        // Toast is already shown for some errors, but generic fallback
+        if (!error.message.includes('Campos') && !error.message.includes('Falta')) {
+            showToast('Error al guardar album: ' + error.message, 'error');
+        }
+    } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
     }
-
-    await saveArtists(artists);
-    showToast(`Album "${albumData.title}" ${albumIndex === null ? 'agregado' : 'actualizado'} exitosamente!`);
-
-    // Go back to artist profile
-    showArtistProfile(artists[artistIndex], artistIndex);
 }
 
 // Show merch form
@@ -1544,6 +1599,7 @@ function addMerchImageSlot(artistIndex, merchIndex) {
 }
 
 // Save merch form
+// Save merch form
 async function saveMerchForm(event) {
     event.preventDefault();
 
@@ -1551,47 +1607,85 @@ async function saveMerchForm(event) {
     const artistIndex = parseInt(form.dataset.artistIndex);
     const merchIndex = form.dataset.merchIndex !== 'null' ? parseInt(form.dataset.merchIndex) : null;
 
-    const artists = await loadArtists();
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Guardando e Imagenes...';
+    submitBtn.disabled = true;
 
-    // Collect form data
-    const merchData = {
-        name: document.getElementById('merch-name').value,
-        category: document.getElementById('merch-category').value,
-        price: parseFloat(document.getElementById('merch-price').value),
-        description: document.getElementById('merch-description').value || '',
-        sizes: document.getElementById('merch-sizes').value || '',
-        stock: document.getElementById('merch-stock').value,
-        link: document.getElementById('merch-link').value || '',
-        images: tempMerchImages.filter(img => img)
-    };
+    try {
+        const artists = await loadArtists();
+        const artist = artists[artistIndex];
 
-    // Validate
-    if (!merchData.name || !merchData.category || !merchData.price) {
-        showToast('Por favor completa todos los campos requeridos', 'error');
-        return;
+        // Collect form data
+        const merchData = {
+            name: document.getElementById('merch-name').value,
+            category: document.getElementById('merch-category').value,
+            price: parseFloat(document.getElementById('merch-price').value),
+            description: document.getElementById('merch-description').value || '',
+            sizes: document.getElementById('merch-sizes').value || '',
+            stock: document.getElementById('merch-stock').value,
+            link: document.getElementById('merch-link').value || '',
+            images: [] // Will populate
+        };
+
+        // Validate
+        if (!merchData.name || !merchData.category || !merchData.price) {
+            showToast('Por favor completa todos los campos requeridos', 'error');
+            throw new Error('Campos faltantes');
+        }
+        if (merchData.price < 0) {
+            showToast('El precio debe ser mayor o igual a 0', 'error');
+            throw new Error('Precio invalido');
+        }
+
+        merchData.price = parseFloat(merchData.price.toFixed(2));
+
+        // PROCESS IMAGES
+        const processedImages = [];
+        // Filter out nulls first from tempMerchImages
+        const validTempImages = tempMerchImages.filter(img => img);
+
+        for (let i = 0; i < validTempImages.length; i++) {
+            const imgData = validTempImages[i];
+
+            if (imgData.startsWith('data:image')) {
+                // Upload
+                console.log(`Uploading merch image ${i + 1}/${validTempImages.length}...`);
+                const imageUrl = await ContentManager.uploadMerchImage(artist.name, merchData.name, imgData, i);
+                processedImages.push(imageUrl);
+            } else {
+                // Keep URL
+                processedImages.push(imgData);
+            }
+        }
+
+        merchData.images = processedImages;
+
+        // Initialize merch array if needed
+        if (!artists[artistIndex].merch) {
+            artists[artistIndex].merch = [];
+        }
+
+        if (merchIndex === null) {
+            artists[artistIndex].merch.push(merchData);
+        } else {
+            artists[artistIndex].merch[merchIndex] = merchData;
+        }
+
+        await saveArtists(artists);
+        showToast(`Producto "${merchData.name}" ${merchIndex === null ? 'agregado' : 'actualizado'} exitosamente!`);
+
+        closeMerchView();
+
+    } catch (error) {
+        console.error('Error saving merch:', error);
+        if (!error.message.includes('Campos') && !error.message.includes('Precio')) {
+            showToast('Error al guardar producto: ' + error.message, 'error');
+        }
+    } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
     }
-    if (merchData.price < 0) {
-        showToast('El precio debe ser mayor o igual a 0', 'error');
-        return;
-    }
-
-    merchData.price = parseFloat(merchData.price.toFixed(2));
-
-    // Initialize merch array if needed
-    if (!artists[artistIndex].merch) {
-        artists[artistIndex].merch = [];
-    }
-
-    if (merchIndex === null) {
-        artists[artistIndex].merch.push(merchData);
-    } else {
-        artists[artistIndex].merch[merchIndex] = merchData;
-    }
-
-    await saveArtists(artists);
-    showToast(`Producto "${merchData.name}" ${merchIndex === null ? 'agregado' : 'actualizado'} exitosamente!`);
-
-    showArtistProfile(artists[artistIndex], artistIndex);
 }
 // ==========================================
 // TOURS MANAGEMENT

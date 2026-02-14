@@ -163,12 +163,14 @@
                 // Aggregate all products
                 let products = [];
                 if (artists && artists.length > 0) {
-                    artists.forEach(artist => {
+                    artists.forEach((artist, artistIdx) => {
                         // Albums
                         if (artist.albums) {
-                            artist.albums.forEach(album => {
+                            artist.albums.forEach((album, albumIdx) => {
                                 products.push({
                                     type: 'album',
+                                    artistIndex: artistIdx,
+                                    index: albumIdx,
                                     artist: artist.name,
                                     title: album.title,
                                     image: (album.images && album.images.length > 0) ? album.images[0] : (album.cover || 'assets/images/placeholder.png'),
@@ -180,9 +182,11 @@
                         }
                         // Merch
                         if (artist.merch) {
-                            artist.merch.forEach(item => {
+                            artist.merch.forEach((item, itemIdx) => {
                                 products.push({
                                     type: 'merch',
+                                    artistIndex: artistIdx,
+                                    index: itemIdx,
                                     artist: artist.name,
                                     title: item.name,
                                     image: (item.images && item.images.length > 0) ? item.images[0] : (item.image || 'assets/images/placeholder.png'),
@@ -261,7 +265,7 @@
                         : `<span style="color: white; font-size: 1.2em;">$${originalPrice.toFixed(2)}</span>`
                     }
                         </div>
-                        ${prod.link ? `<a href="${prod.link}" target="_blank" class="ph-button ph-button--sm ph-button--primary">COMPRAR</a>` : '<span style="color: #666; font-size: 0.9em;">No disponible</span>'}
+                        ${prod.link ? `<a href="product-detail.html?type=${prod.type}&artist=${prod.artistIndex}&index=${prod.index}" class="ph-button ph-button--sm ph-button--primary">VER DETALLES</a>` : '<span style="color: #666; font-size: 0.9em;">No disponible</span>'}
                     </div>
                 </div>
             </div>

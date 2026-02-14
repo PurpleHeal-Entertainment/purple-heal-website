@@ -336,12 +336,24 @@
             gap: 60px;
         }
 
-        /* Horizontal Scroll for Mobile Products */
+        /* Horizontal Scroll for All Screens (Carousel) */
         .admin-horizontal-slider {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            display: flex;
+            overflow-x: auto;
             gap: var(--space-md);
             margin-top: var(--space-lg);
+            padding-bottom: 20px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE/Edge */
+        }
+
+        .admin-horizontal-slider::-webkit-scrollbar {
+            display: none;
+            /* Chrome/Safari */
         }
 
         /* Mobile Adjustments */
@@ -360,27 +372,10 @@
             }
 
             .admin-horizontal-slider {
-                display: flex !important;
-                flex-wrap: nowrap !important;
-                overflow-x: auto !important;
                 scroll-snap-type: x mandatory;
-                padding-bottom: 20px;
-                gap: 15px;
-                scrollbar-width: none;
-                -ms-overflow-style: none;
-                margin-left: -10px;
-                margin-right: -10px;
-                padding-left: 10px;
-                padding-right: 10px;
-            }
-
-            .admin-horizontal-slider::-webkit-scrollbar {
-                display: none;
             }
 
             .admin-horizontal-slider>div {
-                flex: 0 0 85% !important;
-                min-width: 280px;
                 scroll-snap-align: center;
             }
         }
@@ -615,16 +610,17 @@
             <div id="merch-edit-view" style="display: none; position: absolute;"></div>
         </div>
     </div>
+    </div>
 
     <!-- Scripts -->
     <script src="js/storage-db.js"></script> <!-- Keep for legacy read support if needed locally -->
-    <script src="js/github-api.js?v=3.5"></script> <!-- API Helper (Critical for Public Site) -->
-    <script src="js/inline-forms-helper.js?v=2.2"></script>
-    <script src="js/admin-panel.js?v=3.5"></script>
+    <script src="js/github-api.js"></script> <!-- Required for Save -->
+    <script src="js/content-manager.js" type="module"></script>
+    <script src="js/admin-panel.js?v=3.6"></script>
 
     <script type="module">
-        import ContentManager from './js/content-manager.js?v=3.5';
         import AuthManager from './js/auth-manager.js';
+        import ContentManager from './js/content-manager.js';
 
         // Wait for Auth + CMS Init
         document.addEventListener('DOMContentLoaded', async () => {
