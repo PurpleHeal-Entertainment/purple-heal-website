@@ -26,20 +26,7 @@
         ]
       }
     ],
-    "merch": [
-      {
-        "name": "asdasda",
-        "category": "Camiseta",
-        "price": 1234,
-        "description": "asdasdasdad",
-        "sizes": "sd",
-        "stock": "EN STOCK",
-        "link": "https://www.crunchyroll.com/es-es/watch/GRDQ4M79Y/conclusion",
-        "images": [
-          "https://raw.githubusercontent.com/PurpleHeal-Entertainment/purple-heal-website/master/assets/images/merch/r-n-boi-asdasda-0-1771097234641.jpg"
-        ]
-      }
-    ],
+    "merch": [],
     "latestVideoId": "s9hBQrB4nG8",
     "id": 1
   }
