@@ -489,7 +489,12 @@
         <div class="admin-panel" id="adminPanel">
             <div class="admin-header">
                 <h1 style="text-transform: uppercase; font-size: var(--fs-2xl);">PANEL DE ADMINISTRACION</h1>
-                <button class="ph-button ph-button--outline" id="logoutBtn">CERRAR SESION</button>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button onclick="publishChanges()" class="ph-button ph-button--gold" id="publishBtn">
+                        🚀 PUBLICAR CAMBIOS
+                    </button>
+                    <button class="ph-button ph-button--outline" id="logoutBtn">CERRAR SESION</button>
+                </div>
             </div>
 
             <!-- Tab Navigation (LINKS) -->

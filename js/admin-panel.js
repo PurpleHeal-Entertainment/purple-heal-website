@@ -98,33 +98,62 @@ function showToast(message, type = 'success') {
 // Tab switching
 // Tab switching
 function switchTab(tabName) {
-    console.log('🔄 Switching to tab:', tabName);
-
-    // Remove active class from all tab buttons
-    document.querySelectorAll('.admin-tab').forEach(btn => btn.classList.remove('active'));
-
-    // Hide ALL tab contents explicitly using inline styles
-    document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.remove('active');
-        content.style.display = 'none'; // Force hide
+    // Hide all tabs
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.style.display = 'none';
+        tab.classList.remove('active');
     });
 
-    // Add active class to clicked tab button
-    const targetButton = document.querySelector(`.admin-tab[data-tab="${tabName}"]`);
-    if (targetButton) {
-        targetButton.classList.add('active');
+    // Show selected tab
+    const selectedTab = document.getElementById(`${tabName}-tab`);
+    if (selectedTab) {
+        selectedTab.style.display = 'block';
+        selectedTab.classList.add('active');
     }
 
-    // Show corresponding tab content
-    const targetContent = document.getElementById(tabName);
-    if (targetContent) {
-        targetContent.classList.add('active');
-        targetContent.style.display = 'block'; // Force show
-        console.log('✅ Tab switched successfully');
-    } else {
-        console.error('❌ Tab content not found:', tabName);
+    // Update nav states
+    document.querySelectorAll('.admin-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    document.getElementById(`nav-${tabName}`).classList.add('active');
+}
+
+// === PUBLISH CHANGES TO GITHUB ===
+async function publishChanges() {
+    const btn = document.getElementById('publishBtn');
+    const originalText = btn.innerHTML;
+
+    // Confirm dialog
+    if (!confirm('¿Estás seguro de que deseas publicar todos los cambios en la web pública? Esto actualizará la información para todos los visitantes.')) {
+        return;
+    }
+
+    try {
+        btn.disabled = true;
+        btn.innerHTML = '⏳ PUBLICANDO...';
+        showToast('Iniciando sincronización con la nube...', 'info');
+
+        if (window.GithubSync && typeof window.GithubSync.syncAll === 'function') {
+            await window.GithubSync.syncAll((progress) => {
+                console.log(progress);
+                // Optional: Update toast with progress if supports updates
+            });
+            showToast('¡Cambios publicados exitosamente!', 'success');
+        } else {
+            throw new Error('El módulo de sincronización no está disponible.');
+        }
+
+    } catch (error) {
+        console.error('Publish error:', error);
+        showToast('Error al publicar: ' + error.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
     }
 }
+window.publishChanges = publishChanges;
+
+
 
 // Storage functions - Using IndexedDB for unlimited storage
 async function saveArtists(artists) {
@@ -132,6 +161,19 @@ async function saveArtists(artists) {
         console.log('☁️ Saving artists to Cloud CMS...');
         await ContentManager.saveArtists(artists);
         console.log('✅ Artists saved to Cloud!');
+
+        // Auto-publish to GitHub Pages
+        try {
+            showToast('Guardando y Publicando cambios...', 'info');
+            if (window.GithubSync && typeof window.GithubSync.syncAll === 'function') {
+                await window.GithubSync.syncAll();
+                showToast('¡Cambios guardados y publicados!', 'success');
+            }
+        } catch (pubError) {
+            console.error('Auto-publish failed:', pubError);
+            showToast('Guardado local OK, pero falló la publicación automática.', 'warning');
+        }
+
         return true;
     } catch (error) {
         console.error('❌ Error in saveArtists:', error);
@@ -190,16 +232,12 @@ async function checkGitHubHealth() {
         const config = window.GithubSync.getConfig();
         const start = Date.now();
         await window.GithubSync.getObjSHA('data/artists.json'); // Lightweight check
+        // Badge removed as per user request
         const latency = Date.now() - start;
-
-        statusEl.innerHTML = `
-            <span style="width: 8px; height: 8px; background: #2ecc71; border-radius: 50%; box-shadow: 0 0 5px #2ecc71;"></span> 
-            <span style="color: #2ecc71;">GitHub Connected (${latency}ms)</span>
-        `;
-        statusEl.title = `Connected to ${config.OWNER}/${config.REPO}`;
+        console.log(`GitHub API Connected (${latency}ms)`);
 
     } catch (e) {
-        console.error('❌ GitHub Health Check Failed:', e);
+        console.warn("GitHub API Check Failed", e);
         let msg = "Disconnected";
         if (e.message === "No Token") msg = "No Token (Check Config)";
         else if (e.message.includes("401")) msg = "Unauthorized (Invalid Token)";
