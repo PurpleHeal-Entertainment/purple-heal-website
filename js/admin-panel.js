@@ -220,7 +220,8 @@ async function checkGitHubHealth() {
     if (!statusEl) return; // Should not happen if header exists
 
     try {
-        statusEl.innerHTML = '<span style="width: 8px; height: 8px; background: #f39c12; border-radius: 50%; opacity: 0.8;"></span> Connecting...';
+        // Badge removed as per user request
+        // statusEl.innerHTML = '<span style="width: 8px; height: 8px; background: #f39c12; border-radius: 50%; opacity: 0.8;"></span> Connecting...';
 
         // 1. Check if token exists in memory (via GithubSync)
         if (!window.GithubSync || !window.GithubSync.hasToken()) {
@@ -232,7 +233,6 @@ async function checkGitHubHealth() {
         const config = window.GithubSync.getConfig();
         const start = Date.now();
         await window.GithubSync.getObjSHA('data/artists.json'); // Lightweight check
-        // Badge removed as per user request
         const latency = Date.now() - start;
         console.log(`GitHub API Connected (${latency}ms)`);
 
@@ -243,13 +243,8 @@ async function checkGitHubHealth() {
         else if (e.message.includes("401")) msg = "Unauthorized (Invalid Token)";
         else if (e.message.includes("404")) msg = "Repo Not Found";
 
-        statusEl.innerHTML = `
-            <span style="width: 8px; height: 8px; background: #e74c3c; border-radius: 50%; box-shadow: 0 0 5px #e74c3c;"></span> 
-            <span style="color: #e74c3c;">${msg}</span>
-        `;
-        statusEl.style.borderColor = '#e74c3c';
-
-        showToast(`⚠️ GitHub Error: ${msg}. Changes will NOT be saved to public site.`, 'error');
+        // Error handling for connection check - SILENT
+        console.warn("GitHub API Check Failed", e);
     }
 }
 
@@ -309,7 +304,7 @@ function renderArtistsList(artists) {
             if (!artist) return '';
 
             return `
-            <div class="artist-item">
+            < div class="artist-item" >
                 <div>
                     <h3>${artist.name || 'Sin Nombre (Error de Datos)'}</h3>
                     <p style="color: var(--ph-gray-lighter); font-size: var(--fs-sm); margin-top: var(--space-xs);">
@@ -324,12 +319,12 @@ function renderArtistsList(artists) {
                         ELIMINAR
                     </button>
                 </div>
-            </div>
+            </div >
             `;
         } catch (err) {
             console.error('Error rendering artist at index ' + index, err);
             return `
-            <div class="artist-item" style="border-color: #e74c3c;">
+            < div class="artist-item" style = "border-color: #e74c3c;" >
                 <div>
                     <h3 style="color: #e74c3c;">DATOS CORRUPTOS (${index})</h3>
                     <p style="color: var(--ph-gray-lighter); font-size: var(--fs-sm);">
@@ -341,7 +336,7 @@ function renderArtistsList(artists) {
                         ELIMINAR
                     </button>
                 </div>
-            </div>`;
+            </div > `;
         }
     }).join('');
 }
@@ -493,22 +488,22 @@ function showArtistProfile(artist, artistIndex) {
 
     artistView.style.display = 'block';
     artistView.innerHTML = `
-        <div class="ph-card">
-            <div class="ph-card__content">
-                <button onclick="closeArtistView()" class="ph-button ph-button--outline" style="margin-bottom: var(--space-xl);">
-                    ← VOLVER A LA LISTA
-                </button>
-                
-                <h2 style="margin-bottom: var(--space-3xl); color: var(--ph-purple-lighter);">PERFIL DE ARTISTA</h2>
-                
-                <!-- Two-column layout: Image left, Form right -->
-                <form id="artist-form" onsubmit="saveArtistProfile(event, ${artistIndex})">
-                    <div class="admin-profile-grid">
-                        
-                        <!-- LEFT COLUMN: Artist Image -->
-                        <div>
-                            <div class="admin-image-preview-container">
-                                ${artist.image ? `
+            < div class="ph-card" >
+                <div class="ph-card__content">
+                    <button onclick="closeArtistView()" class="ph-button ph-button--outline" style="margin-bottom: var(--space-xl);">
+                        ← VOLVER A LA LISTA
+                    </button>
+
+                    <h2 style="margin-bottom: var(--space-3xl); color: var(--ph-purple-lighter);">PERFIL DE ARTISTA</h2>
+
+                    <!-- Two-column layout: Image left, Form right -->
+                    <form id="artist-form" onsubmit="saveArtistProfile(event, ${artistIndex})">
+                        <div class="admin-profile-grid">
+
+                            <!-- LEFT COLUMN: Artist Image -->
+                            <div>
+                                <div class="admin-image-preview-container">
+                                    ${artist.image ? `
                                     <img id="artist-image-preview" src="${artist.image}" style="width: 100%; height: 100%; object-fit: cover;">
                                 ` : `
                                     <div id="artist-image-preview" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--ph-gray-lighter);">
@@ -519,113 +514,113 @@ function showArtistProfile(artist, artistIndex) {
                                         <p style="margin-top: var(--space-md); font-size: var(--fs-sm);">Sin imagen</p>
                                     </div>
                                 `}
-                            </div>
-                            <label for="artist-image" style="display: block; margin-top: var(--space-md); cursor: pointer;">
-                                <div class="ph-button ph-button--outline" style="width: 100%; text-align: center; padding: var(--space-md);">
-                                    📷 CAMBIAR FOTO
                                 </div>
-                            </label>
-                            <input type="file" id="artist-image" accept="image/*" style="display: none;" onchange="previewArtistImage(event)">
-                            <p style="color: var(--ph-gray-lighter); font-size: var(--fs-xs); text-align: center; margin-top: var(--space-sm);">
-                                Click para cambiar imagen
-                            </p>
+                                <label for="artist-image" style="display: block; margin-top: var(--space-md); cursor: pointer;">
+                                    <div class="ph-button ph-button--outline" style="width: 100%; text-align: center; padding: var(--space-md);">
+                                        📷 CAMBIAR FOTO
+                                    </div>
+                                </label>
+                                <input type="file" id="artist-image" accept="image/*" style="display: none;" onchange="previewArtistImage(event)">
+                                    <p style="color: var(--ph-gray-lighter); font-size: var(--fs-xs); text-align: center; margin-top: var(--space-sm);">
+                                        Click para cambiar imagen
+                                    </p>
+                            </div>
+
+                            <!-- RIGHT COLUMN: Form Fields -->
+                            <div>
+                                <div class="form-group">
+                                    <label for="artist-name">NOMBRE DEL ARTISTA</label>
+                                    <input type="text" id="artist-name" value="${artist.name || ''}" required
+                                        style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-md); padding: var(--space-md); color: var(--ph-white); font-family: var(--font-body); width: 100%; box-sizing: border-box;">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="artist-genre">GENERO MUSICAL</label>
+                                    <input type="text" id="artist-genre" value="${artist.genre || ''}" placeholder="Ej: trap/hiphop/rap/newjazz" required
+                                        style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-md); padding: var(--space-md); color: var(--ph-white); font-family: var(--font-body); width: 100%; box-sizing: border-box;">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="artist-bio">BIOGRAFIA</label>
+                                    <textarea id="artist-bio" rows="6"
+                                        style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-md); padding: var(--space-md); color: var(--ph-white); font-family: var(--font-body); width: 100%; box-sizing: border-box; resize: vertical;">${artist.bio || ''}</textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="artist-instagram">INSTAGRAM</label>
+                                    <input type="url" id="artist-instagram" value="${artist.socials?.instagram || ''}" placeholder="https://www.instagram.com/..."
+                                        style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-md); padding: var(--space-md); color: var(--ph-white); font-family: var(--font-body); width: 100%; box-sizing: border-box;">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="artist-youtube">YOUTUBE</label>
+                                    <input type="url" id="artist-youtube" value="${artist.socials?.youtube || ''}" placeholder="https://www.youtube.com/..."
+                                        style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-md); padding: var(--space-md); color: var(--ph-white); font-family: var(--font-body); width: 100%; box-sizing: border-box;">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="artist-spotify">SPOTIFY</label>
+                                    <input type="url" id="artist-spotify" value="${artist.socials?.spotify || ''}" placeholder="https://open.spotify.com/..."
+                                        style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-md); padding: var(--space-md); color: var(--ph-white); font-family: var(--font-body); width: 100%; box-sizing: border-box;">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="artist-applemusic">APPLE MUSIC</label>
+                                    <input type="url" id="artist-applemusic" value="${artist.socials?.appleMusic || ''}" placeholder="https://music.apple.com/..."
+                                        style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-md); padding: var(--space-md); color: var(--ph-white); font-family: var(--font-body); width: 100%; box-sizing: border-box;">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="artist-tiktok">TIKTOK</label>
+                                    <input type="url" id="artist-tiktok" value="${artist.socials?.tiktok || ''}" placeholder="https://www.tiktok.com/@..."
+                                        style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-md); padding: var(--space-md); color: var(--ph-white); font-family: var(--font-body); width: 100%; box-sizing: border-box;">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="artist-latest-video">ULTIMO VIDEO (YouTube ID)</label>
+                                    <input type="text" id="artist-latest-video" value="${artist.latestVideoId || ''}" placeholder="ej: dQw4w9WgXcQ"
+                                        style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-md); padding: var(--space-md); color: var(--ph-white); font-family: var(--font-body); width: 100%; box-sizing: border-box;">
+                                        <p style="color: var(--ph-gray-lighter); font-size: var(--fs-xs); margin-top: var(--space-xs);">
+                                            El ID está en la URL de YouTube. Ejemplo: <br>
+                                                <code style="color: var(--ph-purple-lighter); background: rgba(155, 89, 182, 0.1); padding: 2px 6px; border-radius: 4px;">youtube.com/watch?v=<strong>dQw4w9WgXcQ</strong></code>
+                                        </p>
+                                </div>
+                            </div>
                         </div>
-                        
-                        <!-- RIGHT COLUMN: Form Fields -->
-                        <div>
-                            <div class="form-group">
-                                <label for="artist-name">NOMBRE DEL ARTISTA</label>
-                                <input type="text" id="artist-name" value="${artist.name || ''}" required 
-                                       style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-md); padding: var(--space-md); color: var(--ph-white); font-family: var(--font-body); width: 100%; box-sizing: border-box;">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="artist-genre">GENERO MUSICAL</label>
-                                <input type="text" id="artist-genre" value="${artist.genre || ''}" placeholder="Ej: trap/hiphop/rap/newjazz" required
-                                       style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-md); padding: var(--space-md); color: var(--ph-white); font-family: var(--font-body); width: 100%; box-sizing: border-box;">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="artist-bio">BIOGRAFIA</label>
-                                <textarea id="artist-bio" rows="6"
-                                          style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-md); padding: var(--space-md); color: var(--ph-white); font-family: var(--font-body); width: 100%; box-sizing: border-box; resize: vertical;">${artist.bio || ''}</textarea>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="artist-instagram">INSTAGRAM</label>
-                                <input type="url" id="artist-instagram" value="${artist.socials?.instagram || ''}" placeholder="https://www.instagram.com/..."
-                                       style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-md); padding: var(--space-md); color: var(--ph-white); font-family: var(--font-body); width: 100%; box-sizing: border-box;">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="artist-youtube">YOUTUBE</label>
-                                <input type="url" id="artist-youtube" value="${artist.socials?.youtube || ''}" placeholder="https://www.youtube.com/..."
-                                       style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-md); padding: var(--space-md); color: var(--ph-white); font-family: var(--font-body); width: 100%; box-sizing: border-box;">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="artist-spotify">SPOTIFY</label>
-                                <input type="url" id="artist-spotify" value="${artist.socials?.spotify || ''}" placeholder="https://open.spotify.com/..."
-                                       style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-md); padding: var(--space-md); color: var(--ph-white); font-family: var(--font-body); width: 100%; box-sizing: border-box;">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="artist-applemusic">APPLE MUSIC</label>
-                                <input type="url" id="artist-applemusic" value="${artist.socials?.appleMusic || ''}" placeholder="https://music.apple.com/..."
-                                       style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-md); padding: var(--space-md); color: var(--ph-white); font-family: var(--font-body); width: 100%; box-sizing: border-box;">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="artist-tiktok">TIKTOK</label>
-                                <input type="url" id="artist-tiktok" value="${artist.socials?.tiktok || ''}" placeholder="https://www.tiktok.com/@..."
-                                       style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-md); padding: var(--space-md); color: var(--ph-white); font-family: var(--font-body); width: 100%; box-sizing: border-box;">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="artist-latest-video">ULTIMO VIDEO (YouTube ID)</label>
-                                <input type="text" id="artist-latest-video" value="${artist.latestVideoId || ''}" placeholder="ej: dQw4w9WgXcQ"
-                                       style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-md); padding: var(--space-md); color: var(--ph-white); font-family: var(--font-body); width: 100%; box-sizing: border-box;">
-                                <p style="color: var(--ph-gray-lighter); font-size: var(--fs-xs); margin-top: var(--space-xs);">
-                                    El ID está en la URL de YouTube. Ejemplo: <br>
-                                    <code style="color: var(--ph-purple-lighter); background: rgba(155, 89, 182, 0.1); padding: 2px 6px; border-radius: 4px;">youtube.com/watch?v=<strong>dQw4w9WgXcQ</strong></code>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="ph-button ph-button--primary" style="width: 100%; padding: var(--space-lg); font-size: var(--fs-lg);">
-                        ACTUALIZAR INFORMACION DEL ARTISTA
-                    </button>
-                </form>
-                
-                <!-- Albums Section -->
-                <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: var(--space-xl); margin-top: var(--space-xl);">
-                    <div class="tab-header">
-                        <h3 style="color: var(--ph-purple-lighter); margin: 0;">ALBUMES</h3>
-                        <button onclick="showAlbumForm(${artistIndex}, null)" class="ph-button ph-button--primary">
-                            + AGREGAR ALBUM
+
+                        <button type="submit" class="ph-button ph-button--primary" style="width: 100%; padding: var(--space-lg); font-size: var(--fs-lg);">
+                            ACTUALIZAR INFORMACION DEL ARTISTA
                         </button>
+                    </form>
+
+                    <!-- Albums Section -->
+                    <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: var(--space-xl); margin-top: var(--space-xl);">
+                        <div class="tab-header">
+                            <h3 style="color: var(--ph-purple-lighter); margin: 0;">ALBUMES</h3>
+                            <button onclick="showAlbumForm(${artistIndex}, null)" class="ph-button ph-button--primary">
+                                + AGREGAR ALBUM
+                            </button>
+                        </div>
+                        <div id="artist-albums-list">
+                            ${renderArtistAlbums(artist, artistIndex)}
+                        </div>
                     </div>
-                    <div id="artist-albums-list">
-                        ${renderArtistAlbums(artist, artistIndex)}
+
+                    <!-- Merch Section -->
+                    <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: var(--space-xl); margin-top: var(--space-xl);">
+                        <div class="tab-header">
+                            <h3 style="color: var(--ph-purple-lighter); margin: 0;">MERCHANDISING</h3>
+                            <button onclick="showMerchForm(${artistIndex}, null)" class="ph-button ph-button--primary">
+                                + AGREGAR PRODUCTO
+                            </button>
+                        </div>
+                        <div id="artist-merch-list">
+                            ${renderArtistMerch(artist, artistIndex)}
+                        </div>
                     </div>
                 </div>
-                
-                <!-- Merch Section -->
-                <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: var(--space-xl); margin-top: var(--space-xl);">
-                    <div class="tab-header">
-                        <h3 style="color: var(--ph-purple-lighter); margin: 0;">MERCHANDISING</h3>
-                        <button onclick="showMerchForm(${artistIndex}, null)" class="ph-button ph-button--primary">
-                            + AGREGAR PRODUCTO
-                        </button>
-                    </div>
-                    <div id="artist-merch-list">
-                        ${renderArtistMerch(artist, artistIndex)}
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
+        </div >
+            `;
 }
 
 
@@ -669,7 +664,7 @@ function previewArtistImage(event) {
 // Save artist profile
 async function saveArtistProfile(event, artistIndex) {
     event.preventDefault();
-    console.log(`💾 Saving artist profile (Index: ${artistIndex})...`);
+    console.log(`💾 Saving artist profile(Index: ${artistIndex})...`);
 
     const submitBtn = event.target.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
@@ -758,7 +753,7 @@ function renderArtistAlbums(artist, artistIndex) {
     }
 
     return `
-        <div class="admin-carousel-container" style="position: relative;">
+            < div class="admin-carousel-container" style = "position: relative;" >
             <button type="button" class="carousel-btn prev" onclick="scrollCarousel('albums-carousel-${artistIndex}', -300)" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); z-index: 10; background: rgba(0,0,0,0.8); border: 1px solid var(--ph-purple); color: white; border-radius: 50%; width: 32px; height: 32px; cursor: pointer;">‹</button>
             
             <div id="albums-carousel-${artistIndex}" class="admin-horizontal-slider" style="display: flex; gap: var(--space-md); overflow-x: auto; padding: var(--space-sm) 40px; scroll-behavior: smooth;">
@@ -800,8 +795,8 @@ function renderArtistAlbums(artist, artistIndex) {
             </div>
 
             <button type="button" class="carousel-btn next" onclick="scrollCarousel('albums-carousel-${artistIndex}', 300)" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); z-index: 10; background: rgba(0,0,0,0.8); border: 1px solid var(--ph-purple); color: white; border-radius: 50%; width: 32px; height: 32px; cursor: pointer;">›</button>
-        </div>
-    `;
+        </div >
+            `;
 }
 
 function renderArtistMerch(artist, artistIndex) {
@@ -810,7 +805,7 @@ function renderArtistMerch(artist, artistIndex) {
     }
 
     return `
-        <div class="admin-carousel-container" style="position: relative;">
+            < div class="admin-carousel-container" style = "position: relative;" >
             <button type="button" class="carousel-btn prev" onclick="scrollCarousel('merch-carousel-${artistIndex}', -300)" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); z-index: 10; background: rgba(0,0,0,0.8); border: 1px solid var(--ph-purple); color: white; border-radius: 50%; width: 32px; height: 32px; cursor: pointer;">‹</button>
             
             <div id="merch-carousel-${artistIndex}" class="admin-horizontal-slider" style="display: flex; gap: var(--space-md); overflow-x: auto; padding: var(--space-sm) 40px; scroll-behavior: smooth;">
@@ -852,8 +847,8 @@ function renderArtistMerch(artist, artistIndex) {
             </div>
 
             <button type="button" class="carousel-btn next" onclick="scrollCarousel('merch-carousel-${artistIndex}', 300)" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); z-index: 10; background: rgba(0,0,0,0.8); border: 1px solid var(--ph-purple); color: white; border-radius: 50%; width: 32px; height: 32px; cursor: pointer;">›</button>
-        </div>
-    `;
+        </div >
+            `;
 }
 
 // Helper for scrolling
@@ -980,53 +975,53 @@ async function showAlbumForm(artistIndex, albumIndex) {
     const artistView = document.getElementById('artist-view');
 
     artistView.innerHTML = `
-        <div class="ph-card" style="margin-bottom: var(--space-xl);">
-            <div class="ph-card__content">
-                <!-- Header with back button and title -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2xl);">
-                    <button onclick="closeAlbumView()" class="ph-button ph-button--outline">
-                        ← VOLVER AL PERFIL
-                    </button>
-                    <h2 style="margin: 0; color: var(--ph-purple-lighter);">${title}</h2>
-                </div>
-                
-                <!-- Centered Artist Name -->
-                <h1 style="margin-bottom: var(--space-xl); color: var(--ph-white); font-size: var(--fs-2xl); text-align: center;">
-                    ARTISTA: ${artist.name}
-                </h1>
-                
-                <div class="admin-form-grid">
-                    
-                    <!-- LEFT COLUMN: Album Images -->
-                    <div>
-                        <h3 style="margin-bottom: var(--space-md); color: var(--ph-purple-lighter);">IMAGENES DEL ALBUM</h3>
-                        <p style="color: var(--ph-gray-lighter); font-size: var(--fs-sm); margin-bottom: var(--space-lg);">
-                            Resolución recomendada: 3000x3000px (formato 1:1)
-                        </p>
-                        
-                        <div id="album-images-container" style="display: grid; grid-template-columns: 1fr; gap: var(--space-md);">
-                            ${renderAlbumImagePreviews(album, artistIndex, albumIndex)}
-                        </div>
-                        
-                        <button type="button" onclick="addAlbumImageSlot(${artistIndex}, ${albumIndex})" 
-                                id="add-album-image-btn"
-                                class="ph-button ph-button--outline" 
-                                style="width: 100%; margin-top: var(--space-md); border-radius: 8px !important;">
-                            + AGREGAR OTRA IMAGEN
+            < div class="ph-card" style = "margin-bottom: var(--space-xl);" >
+                <div class="ph-card__content">
+                    <!-- Header with back button and title -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2xl);">
+                        <button onclick="closeAlbumView()" class="ph-button ph-button--outline">
+                            ← VOLVER AL PERFIL
                         </button>
-                        <p style="color: var(--ph-gray-lighter); font-size: var(--fs-xs); text-align: center; margin-top: var(--space-sm);">
-                            Máximo 15 imágenes
-                        </p>
+                        <h2 style="margin: 0; color: var(--ph-purple-lighter);">${title}</h2>
                     </div>
-                    
-                    <!-- RIGHT COLUMN: Album Form -->
-                    <div>
-                        <form id="album-form" data-artist-index="${artistIndex}" data-album-index="${albumIndex}">
-                            <style>
-                                #album-form input,
-                                #album-form select,
-                                #album-form textarea {
-                                    background: rgba(255, 255, 255, 0.05);
+
+                    <!-- Centered Artist Name -->
+                    <h1 style="margin-bottom: var(--space-xl); color: var(--ph-white); font-size: var(--fs-2xl); text-align: center;">
+                        ARTISTA: ${artist.name}
+                    </h1>
+
+                    <div class="admin-form-grid">
+
+                        <!-- LEFT COLUMN: Album Images -->
+                        <div>
+                            <h3 style="margin-bottom: var(--space-md); color: var(--ph-purple-lighter);">IMAGENES DEL ALBUM</h3>
+                            <p style="color: var(--ph-gray-lighter); font-size: var(--fs-sm); margin-bottom: var(--space-lg);">
+                                Resolución recomendada: 3000x3000px (formato 1:1)
+                            </p>
+
+                            <div id="album-images-container" style="display: grid; grid-template-columns: 1fr; gap: var(--space-md);">
+                                ${renderAlbumImagePreviews(album, artistIndex, albumIndex)}
+                            </div>
+
+                            <button type="button" onclick="addAlbumImageSlot(${artistIndex}, ${albumIndex})"
+                                id="add-album-image-btn"
+                                class="ph-button ph-button--outline"
+                                style="width: 100%; margin-top: var(--space-md); border-radius: 8px !important;">
+                                + AGREGAR OTRA IMAGEN
+                            </button>
+                            <p style="color: var(--ph-gray-lighter); font-size: var(--fs-xs); text-align: center; margin-top: var(--space-sm);">
+                                Máximo 15 imágenes
+                            </p>
+                        </div>
+
+                        <!-- RIGHT COLUMN: Album Form -->
+                        <div>
+                            <form id="album-form" data-artist-index="${artistIndex}" data-album-index="${albumIndex}">
+                                <style>
+                                    #album-form input,
+                                    #album-form select,
+                                    #album-form textarea {
+                                        background: rgba(255, 255, 255, 0.05);
                                     border: 1px solid rgba(255, 255, 255, 0.2);
                                     border-radius: var(--radius-md);
                                     padding: var(--space-md);
@@ -1035,92 +1030,92 @@ async function showAlbumForm(artistIndex, albumIndex) {
                                     font-size: var(--fs-base);
                                     transition: all var(--transition-base);
                                 }
-                                
-                                #album-form select option {
-                                    background: #1a1a1a;
+
+                                    #album-form select option {
+                                        background: #1a1a1a;
                                     color: white;
                                 }
-                                
-                                #album-form input:focus,
-                                #album-form select:focus,
-                                #album-form textarea:focus {
-                                    outline: none;
+
+                                    #album-form input:focus,
+                                    #album-form select:focus,
+                                    #album-form textarea:focus {
+                                        outline: none;
                                     border-color: var(--ph-purple-primary);
                                     background: rgba(255, 255, 255, 0.08);
                                 }
-                                
-                                #album-form input::placeholder,
-                                #album-form textarea::placeholder {
-                                    color: rgba(255, 255, 255, 0.4);
+
+                                    #album-form input::placeholder,
+                                    #album-form textarea::placeholder {
+                                        color: rgba(255, 255, 255, 0.4);
                                 }
-                            </style>
-                            
-                            <div class="form-group">
-                                <label for="album-title">Titulo del Album *</label>
-                                <input type="text" id="album-title" name="title" 
-                                       value="${album?.title || ''}" 
-                                       placeholder="Ej: Mi Primer EP" 
-                                       style="width: 100%; box-sizing: border-box;" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="album-releaseDate">Fecha de Lanzamiento *</label>
-                                <input type="date" id="album-releaseDate" name="releaseDate" 
-                                       value="${album?.releaseDate || album?.year ? (album?.releaseDate || `${album?.year}-01-01`) : ''}" 
-                                       style="width: 100%; box-sizing: border-box;" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="album-price">Precio (USD) *</label>
-                                <input type="number" id="album-price" name="price" 
-                                       value="${album?.price || ''}" 
-                                       placeholder="15.99" step="0.01" min="0"
-                                       style="width: 100%; box-sizing: border-box;" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="album-type">Tipo *</label>
-                                <select id="album-type" name="type" style="width: 100%; box-sizing: border-box;" required>
-                                    <option value="EP" ${album?.type === 'EP' ? 'selected' : ''}>EP</option>
-                                    <option value="LP" ${album?.type === 'LP' ? 'selected' : ''}>LP (Album completo)</option>
-                                    <option value="Single" ${album?.type === 'Single' ? 'selected' : ''}>Single</option>
-                                    <option value="Mixtape" ${album?.type === 'Mixtape' ? 'selected' : ''}>Mixtape</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="album-description">Descripción</label>
-                                <textarea id="album-description" name="description" 
-                                          rows="3" placeholder="Describe el álbum..."
-                                          style="width: 100%; box-sizing: border-box; min-height: 80px; resize: vertical;"
-                                          oninput="this.style.height = 'auto'; this.style.height = (this.scrollHeight) + 'px'">${album?.description || ''}</textarea>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="album-stock">Estado</label>
-                                <select id="album-stock" name="stock" style="width: 100%; box-sizing: border-box;">
-                                    <option value="EN STOCK" ${album?.stock !== 'SOLD OUT' ? 'selected' : ''}>EN STOCK</option>
-                                    <option value="SOLD OUT" ${album?.stock === 'SOLD OUT' ? 'selected' : ''}>SOLD OUT (Agotado)</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="album-link">Link de Compra / Streaming</label>
-                                <input type="url" id="album-link" name="link" 
-                                       value="${album?.link || ''}" 
-                                       placeholder="https://..."
-                                       style="width: 100%; box-sizing: border-box;">
-                            </div>
-                            
-                            <button type="submit" class="ph-button ph-button--primary" style="width: 100%; margin-top: var(--space-lg);">
-                                ${album ? 'ACTUALIZAR ALBUM' : 'GUARDAR ALBUM'}
-                            </button>
-                        </form>
+                                </style>
+
+                                <div class="form-group">
+                                    <label for="album-title">Titulo del Album *</label>
+                                    <input type="text" id="album-title" name="title"
+                                        value="${album?.title || ''}"
+                                        placeholder="Ej: Mi Primer EP"
+                                        style="width: 100%; box-sizing: border-box;" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="album-releaseDate">Fecha de Lanzamiento *</label>
+                                    <input type="date" id="album-releaseDate" name="releaseDate"
+                                        value="${album?.releaseDate || album?.year ? (album?.releaseDate || `${album?.year}-01-01`) : ''}"
+                                        style="width: 100%; box-sizing: border-box;" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="album-price">Precio (USD) *</label>
+                                    <input type="number" id="album-price" name="price"
+                                        value="${album?.price || ''}"
+                                        placeholder="15.99" step="0.01" min="0"
+                                        style="width: 100%; box-sizing: border-box;" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="album-type">Tipo *</label>
+                                    <select id="album-type" name="type" style="width: 100%; box-sizing: border-box;" required>
+                                        <option value="EP" ${album?.type === 'EP' ? 'selected' : ''}>EP</option>
+                                        <option value="LP" ${album?.type === 'LP' ? 'selected' : ''}>LP (Album completo)</option>
+                                        <option value="Single" ${album?.type === 'Single' ? 'selected' : ''}>Single</option>
+                                        <option value="Mixtape" ${album?.type === 'Mixtape' ? 'selected' : ''}>Mixtape</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="album-description">Descripción</label>
+                                    <textarea id="album-description" name="description"
+                                        rows="3" placeholder="Describe el álbum..."
+                                        style="width: 100%; box-sizing: border-box; min-height: 80px; resize: vertical;"
+                                        oninput="this.style.height = 'auto'; this.style.height = (this.scrollHeight) + 'px'">${album?.description || ''}</textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="album-stock">Estado</label>
+                                    <select id="album-stock" name="stock" style="width: 100%; box-sizing: border-box;">
+                                        <option value="EN STOCK" ${album?.stock !== 'SOLD OUT' ? 'selected' : ''}>EN STOCK</option>
+                                        <option value="SOLD OUT" ${album?.stock === 'SOLD OUT' ? 'selected' : ''}>SOLD OUT (Agotado)</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="album-link">Link de Compra / Streaming</label>
+                                    <input type="url" id="album-link" name="link"
+                                        value="${album?.link || ''}"
+                                        placeholder="https://..."
+                                        style="width: 100%; box-sizing: border-box;">
+                                </div>
+
+                                <button type="submit" class="ph-button ph-button--primary" style="width: 100%; margin-top: var(--space-lg);">
+                                    ${album ? 'ACTUALIZAR ALBUM' : 'GUARDAR ALBUM'}
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    `;
+        </div >
+            `;
 
     // Add form submit handler
     document.getElementById('album-form').addEventListener('submit', saveAlbumForm);
@@ -1142,9 +1137,9 @@ function renderAlbumImagePreviews(album, artistIndex, albumIndex) {
     // First image - large
     const firstImage = images[0];
     html += `
-        <div class="album-image-slot" style="position: relative; margin-bottom: var(--space-lg);">
-            <div style="aspect-ratio: 1/1; background: var(--ph-gray-darker); border-radius: var(--border-radius); overflow: hidden; border: 2px dashed var(--ph-purple);">
-                ${firstImage ? `
+            < div class="album-image-slot" style = "position: relative; margin-bottom: var(--space-lg);" >
+                <div style="aspect-ratio: 1/1; background: var(--ph-gray-darker); border-radius: var(--border-radius); overflow: hidden; border: 2px dashed var(--ph-purple);">
+                    ${firstImage ? `
                     <img src="${firstImage}" style="width: 100%; height: 100%; object-fit: cover;">
                     <button type="button" onclick="removeAlbumImage(${artistIndex}, ${albumIndex}, 0)" 
                             style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; font-size: 18px;">
@@ -1164,14 +1159,14 @@ function renderAlbumImagePreviews(album, artistIndex, albumIndex) {
                     <input type="file" id="album-image-0" class="album-image-input" accept="image/*" 
                            style="display: none;" onchange="handleAlbumImageUpload(event, ${artistIndex}, ${albumIndex}, 0)">
                 `}
-            </div>
-        </div>
-    `;
+                </div>
+        </div >
+            `;
 
     // Additional images - horizontal scroll thumbnails
     if (images.length > 1 || !firstImage) {
         html += `
-            <div style="margin-top: var(--space-md);">
+            < div style = "margin-top: var(--space-md);" >
                 <p style="color: var(--ph-gray-lighter); font-size: var(--fs-sm); margin-bottom: var(--space-sm);">Imágenes adicionales:</p>
                 <div style="display: flex; gap: var(--space-sm); overflow-x: auto; padding-bottom: var(--space-sm);">
         `;
@@ -1210,8 +1205,8 @@ function renderAlbumImagePreviews(album, artistIndex, albumIndex) {
 
         html += `
                 </div>
-            </div>
-        `;
+            </div >
+            `;
     }
 
     return html;
