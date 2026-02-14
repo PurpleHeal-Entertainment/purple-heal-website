@@ -703,7 +703,7 @@ async function saveArtistProfile(event, artistIndex) {
         }
 
         console.log('📤 Saving artist metadata to GitHub...');
-        await ContentManager.saveArtists(artists);
+        await saveArtists(artists);
 
         showToast('¡Información del artista actualizada correctamente!', 'success');
 
@@ -847,8 +847,8 @@ function deleteAlbum(artistIndex, albumIndex) {
     showDeleteModal(async () => {
         const artists = await ContentManager.getArtists();
         artists[artistIndex].albums.splice(albumIndex, 1);
-        await ContentManager.saveArtists(artists);
-        showToast('Album eliminado de la nube.');
+        await saveArtists(artists);
+        showToast('Album eliminado y cambios publicados.');
         showArtistProfile(artists[artistIndex], artistIndex);
     });
 }
@@ -858,8 +858,8 @@ function deleteMerch(artistIndex, productIndex) {
     showDeleteModal(async () => {
         const artists = await ContentManager.getArtists();
         artists[artistIndex].merch.splice(productIndex, 1);
-        await ContentManager.saveArtists(artists);
-        showToast('Producto eliminado de la nube.');
+        await saveArtists(artists);
+        showToast('Producto eliminado y cambios publicados.');
         showArtistProfile(artists[artistIndex], artistIndex);
     });
 }
