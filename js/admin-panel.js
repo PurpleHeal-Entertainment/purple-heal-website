@@ -768,8 +768,8 @@ function renderArtistAlbums(artist, artistIndex) {
                                 <button onclick="showAlbumForm(${artistIndex}, ${idx})" class="ph-button ph-button--outline" style="flex: 1; padding: 4px; font-size: var(--fs-xs);">
                                     EDITAR
                                 </button>
-                                <button onclick="deleteAlbum(${artistIndex}, ${idx})" class="ph-button ph-button--outline" style="flex: 0 0 auto; padding: 4px 8px; font-size: var(--fs-xs); border-color: #e74c3c; color: #e74c3c;">
-                                    🗑️
+                                <button onclick="deleteAlbum(${artistIndex}, ${idx})" class="ph-button ph-button--outline" style="flex: 0 0 auto; padding: 4px 12px; font-size: var(--fs-xs); border-color: #e74c3c; color: #e74c3c;">
+                                    ELIMINAR
                                 </button>
                             </div>
                         </div>
@@ -820,8 +820,8 @@ function renderArtistMerch(artist, artistIndex) {
                                 <button onclick="showMerchForm(${artistIndex}, ${idx})" class="ph-button ph-button--outline" style="flex: 1; padding: 4px; font-size: var(--fs-xs);">
                                     EDITAR
                                 </button>
-                                <button onclick="deleteMerch(${artistIndex}, ${idx})" class="ph-button ph-button--outline" style="flex: 0 0 auto; padding: 4px 8px; font-size: var(--fs-xs); border-color: #e74c3c; color: #e74c3c;">
-                                    🗑️
+                                <button onclick="deleteMerch(${artistIndex}, ${idx})" class="ph-button ph-button--outline" style="flex: 0 0 auto; padding: 4px 12px; font-size: var(--fs-xs); border-color: #e74c3c; color: #e74c3c;">
+                                    ELIMINAR
                                 </button>
                             </div>
                         </div>
