@@ -13,12 +13,12 @@
     },
     "albums": [
       {
-        "title": "dada",
-        "releaseDate": "2131-02-22",
-        "year": "2131",
-        "price": 40,
+        "title": "123123",
+        "releaseDate": "1232-03-12",
+        "year": "1232",
+        "price": 123,
         "type": "EP",
-        "description": "adasdasd",
+        "description": "123123123",
         "stock": "EN STOCK",
         "link": "https://www.youtube.com/watch?v=qlgs_SWLQrM",
         "images": [
