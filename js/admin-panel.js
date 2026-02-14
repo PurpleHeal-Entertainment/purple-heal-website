@@ -199,25 +199,8 @@ async function checkGitHubHealth() {
     console.log('💓 Checking GitHub Health...');
     const header = document.querySelector('.admin-header');
 
-    // Create or get status indicator
-    let statusEl = document.getElementById('gh-status-indicator');
-    if (!statusEl && header) {
-        statusEl = document.createElement('div');
-        statusEl.id = 'gh-status-indicator';
-        statusEl.style.cssText = `
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            font-size: 12px; 
-            padding: 6px 12px; 
-            background: rgba(255,255,255,0.05); 
-            border-radius: 20px; 
-            border: 1px solid rgba(255,255,255,0.1);
-        `;
-        header.appendChild(statusEl); // Append to header
-    }
-
-    if (!statusEl) return; // Should not happen if header exists
+    // Badge removed as per user request
+    const statusEl = null;
 
     try {
         // Badge removed as per user request
