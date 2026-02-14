@@ -296,7 +296,7 @@ async function renderToursList() {
         }
 
         listContainer.innerHTML = tours.map(tour => `
-                    < div class="ph-card" style = "margin-bottom: var(--space-lg); overflow: hidden;" >
+                    <div class="ph-card" style="margin-bottom: var(--space-lg); overflow: hidden;">
                 <div style="height: 150px; background-image: url('${tour.coverImage}'); background-size: cover; background-position: center; border-bottom: 1px solid rgba(255,255,255,0.1);">
                     <!-- Clean Banner -->
                 </div>

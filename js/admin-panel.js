@@ -471,7 +471,7 @@ function showArtistProfile(artist, artistIndex) {
 
     artistView.style.display = 'block';
     artistView.innerHTML = `
-            < div class="ph-card" >
+            <div class="ph-card">
                 <div class="ph-card__content">
                     <button onclick="closeArtistView()" class="ph-button ph-button--outline" style="margin-bottom: var(--space-xl);">
                         ← VOLVER A LA LISTA
