@@ -3,15 +3,18 @@
 // ====================================================
 
 // Load albums and merch dynamically from IndexedDB
-async function loadArtistProducts(artistId) {
-    // Load artist data AND site config
-    const [artistsData, config] = await Promise.all([
-        getArtistsDataFromDB(),
-        getSiteConfig().catch(() => ({})) // Fail gracefully if config missing
-    ]);
+// Load albums and merch dynamically
+async function loadArtistProducts(artistId, injectedArtistData = null) {
+    // Load site config
+    const config = await getSiteConfig().catch(() => ({}));
 
-    // Note: getArtistsDataFromDB returns an object keyed by index string '0', '1', etc.
-    const artist = artistsData[artistId];
+    let artist = injectedArtistData;
+
+    if (!artist) {
+        // Fallback to DB if no data injected
+        const artistsData = await getArtistsDataFromDB();
+        artist = artistsData[artistId];
+    }
 
     if (!artist) {
         console.error('❌ Artist not found in product-loader:', artistId);

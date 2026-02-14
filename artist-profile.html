@@ -242,8 +242,13 @@
                 }
 
                 renderArtistProfile(artist);
-                renderDiscography(artist, artistId);
-                renderMerchandise(artist, artistId);
+
+                // Load products with injected data
+                if (typeof window.loadArtistProducts === 'function') {
+                    window.loadArtistProducts(artistId, artist);
+                } else {
+                    console.error('Product loader not found');
+                }
 
             } catch (error) {
                 console.error('Error loading artist profile:', error);
@@ -297,12 +302,7 @@
                 videoSection.style.display = 'block';
             }
 
-            // Load Products (using shared loader)
-            if (typeof window.loadArtistProducts === 'function') {
-                window.loadArtistProducts(artistId);
-            } else {
-                console.error('Product loader not found');
-            }
+
         }
     </script>
 </body>
