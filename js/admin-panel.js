@@ -287,7 +287,7 @@ function renderArtistsList(artists) {
             if (!artist) return '';
 
             return `
-            < div class="artist-item" >
+            <div class="artist-item">
                 <div>
                     <h3>${artist.name || 'Sin Nombre (Error de Datos)'}</h3>
                     <p style="color: var(--ph-gray-lighter); font-size: var(--fs-sm); margin-top: var(--space-xs);">
@@ -307,7 +307,7 @@ function renderArtistsList(artists) {
         } catch (err) {
             console.error('Error rendering artist at index ' + index, err);
             return `
-            < div class="artist-item" style = "border-color: #e74c3c;" >
+            <div class="artist-item" style="border-color: #e74c3c;">
                 <div>
                     <h3 style="color: #e74c3c;">DATOS CORRUPTOS (${index})</h3>
                     <p style="color: var(--ph-gray-lighter); font-size: var(--fs-sm);">
