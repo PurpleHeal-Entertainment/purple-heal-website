@@ -57,12 +57,14 @@ const GithubSync = {
 
         if (!token) throw new Error("No GitHub Token found. Please configure it in settings.");
 
-        const url = `https://api.github.com/repos/${config.OWNER}/${config.REPO}/contents/${path}?ref=${branch}`;
+        const timestamp = new Date().getTime();
+        const url = `https://api.github.com/repos/${config.OWNER}/${config.REPO}/contents/${path}?ref=${branch}&t=${timestamp}`;
 
         const response = await fetch(url, {
             headers: {
                 'Authorization': `token ${token}`,
-                'Accept': 'application/vnd.github.v3+json'
+                'Accept': 'application/vnd.github.v3+json',
+                'Cache-Control': 'no-cache, no-store, must-revalidate'
             }
         });
 
