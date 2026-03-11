@@ -26,7 +26,18 @@
         ]
       }
     ],
-    "merch": [],
+    "merch": [
+      {
+        "name": "hehe2",
+        "category": "Accesorio",
+        "price": 10,
+        "description": "",
+        "sizes": "",
+        "stock": "EN STOCK",
+        "link": "",
+        "images": []
+      }
+    ],
     "latestVideoId": "s9hBQrB4nG8",
     "id": 1
   }
