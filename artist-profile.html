@@ -221,18 +221,8 @@
 
         document.addEventListener('DOMContentLoaded', async function () {
             try {
-                // OPTIMIZATION: Fetch directly from Cloud with Cache Busting
-                const REPO_OWNER = 'PurpleHeal-Entertainment';
-                const REPO_NAME = 'purple-heal-website';
-                const BRANCH = 'master';
-                const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/data/artists.json?t=${Date.now()}`;
-
-                console.log('☁️ Fetching artist profile from Cloud:', url);
-                const response = await fetch(url);
-
-                if (!response.ok) throw new Error('Network response was not ok');
-
-                const artists = await response.json();
+                console.log('☁️ Fetching artist profile using DB layer...');
+                const artists = await loadArtistsDB();
                 const artist = artists[artistId];
 
                 if (!artist) {

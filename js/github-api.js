@@ -77,9 +77,13 @@ const GithubSync = {
         const token = GithubSync.getToken();
         const config = GithubSync.getConfig();
         const branch = config.BRANCH || 'master';
-        const url = `https://api.github.com/repos/${config.OWNER}/${config.REPO}/contents/${path}?ref=${branch}`;
+        const timestamp = new Date().getTime();
+        const url = `https://api.github.com/repos/${config.OWNER}/${config.REPO}/contents/${path}?ref=${branch}&t=${timestamp}`;
 
-        const headers = { 'Accept': 'application/vnd.github.v3+json' };
+        const headers = { 
+            'Accept': 'application/vnd.github.v3+json',
+            'Cache-Control': 'no-cache, no-store, must-revalidate'
+        };
         if (token) headers['Authorization'] = `token ${token}`;
 
         const response = await fetch(url, { headers });
@@ -333,9 +337,10 @@ const GithubSync = {
 
             if (window.ContentManager) {
                 // Modern Path
-                artists = await window.ContentManager.getArtists();
-                tours = window.ContentManager.tours || await window.ContentManager.getTours();
-                config = window.ContentManager.config || await window.ContentManager.getSiteConfig();
+                // Prefer local memory cache if available to avoid overwriting with stale API data
+                artists = window.currentArtists || await window.ContentManager.getArtists();
+                tours = window.currentTours || window.ContentManager.tours || await window.ContentManager.getTours();
+                config = window.currentConfig || window.ContentManager.config || await window.ContentManager.getSiteConfig();
                 // Users are not synced to public usually, but let's keep it if logic demands
             } else {
                 // Legacy Fallback

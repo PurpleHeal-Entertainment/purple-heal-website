@@ -158,6 +158,7 @@ window.publishChanges = publishChanges;
 // Storage functions - Using IndexedDB for unlimited storage
 // Storage functions - Using IndexedDB for unlimited storage
 let currentArtists = []; // Local state cache
+window.currentArtists = currentArtists;
 
 async function saveArtists(artists) {
     try {
@@ -166,6 +167,10 @@ async function saveArtists(artists) {
 
         // Update local cache immediately
         currentArtists = artists;
+        window.currentArtists = currentArtists;
+        if (typeof window.saveArtistsDB === 'function') {
+            await window.saveArtistsDB(artists);
+        }
         console.log('✅ Artists saved to Cloud & Local Cache updated!');
 
         // Auto-publish to GitHub Pages
@@ -196,6 +201,10 @@ async function loadArtists() {
 
         // Update local cache
         currentArtists = artists || [];
+        window.currentArtists = currentArtists;
+        if (typeof window.saveArtistsDB === 'function') {
+            await window.saveArtistsDB(currentArtists);
+        }
 
         return currentArtists;
     } catch (error) {
@@ -338,9 +347,9 @@ function renderArtistsList(artists) {
 function deleteArtist(index) {
     showDeleteModal(async () => {
         try {
-            const artists = await ContentManager.getArtists();
+            const artists = currentArtists || await loadArtists();
             artists.splice(index, 1);
-            await ContentManager.saveArtists(artists);
+            await saveArtists(artists);
             showToast('Artista eliminado de la nube.');
             renderArtistsList(artists); // Optimistic update
         } catch (e) {
@@ -862,7 +871,7 @@ window.scrollCarousel = function (id, amount) {
 // Delete album
 function deleteAlbum(artistIndex, albumIndex) {
     showDeleteModal(async () => {
-        const artists = await ContentManager.getArtists();
+        const artists = currentArtists || await loadArtists();
         artists[artistIndex].albums.splice(albumIndex, 1);
         await saveArtists(artists);
         showToast('Album eliminado y cambios publicados.');
@@ -873,7 +882,7 @@ function deleteAlbum(artistIndex, albumIndex) {
 // Delete merch
 function deleteMerch(artistIndex, productIndex) {
     showDeleteModal(async () => {
-        const artists = await ContentManager.getArtists();
+        const artists = currentArtists || await loadArtists();
         artists[artistIndex].merch.splice(productIndex, 1);
         await saveArtists(artists);
         showToast('Producto eliminado y cambios publicados.');
@@ -1266,7 +1275,7 @@ async function saveAlbumForm(event) {
         const price = parseFloat(document.getElementById('album-price').value);
         const type = document.getElementById('album-type').value;
 
-        if (!title || !releaseDate || !price || !type) {
+        if (!title || !releaseDate || isNaN(price) || !type) {
             showToast('Por favor completa los campos obligatorios (*)', 'warning');
             throw new Error('Campos obligatorios faltantes');
         }
@@ -1668,7 +1677,7 @@ async function saveMerchForm(event) {
         };
 
         // Validate
-        if (!merchData.name || !merchData.category || !merchData.price) {
+        if (!merchData.name || !merchData.category || isNaN(merchData.price)) {
             showToast('Por favor completa todos los campos requeridos', 'error');
             throw new Error('Campos faltantes');
         }
@@ -1865,10 +1874,29 @@ async function deleteTour(id) {
         const newTours = tours.filter(t => String(t.id) !== String(id));
 
         await ContentManager.saveTours(newTours);
+        
+        // Also update local cache for admin
+        if (typeof window.saveTourDB === 'function') {
+            for (const t of newTours) {
+                await window.saveTourDB(t);
+            }
+            // Optional: To be completely safe with deletions in IDB, you might want a `deleteTourDB` call which exists in admin-tours.js.
+            // For now, syncing the global array to GitHub is the minimum fix.
+            if (typeof window.deleteTourDB === 'function') {
+                await window.deleteTourDB(numericId);
+            }
+        }
+        
+        // Auto publish
+        if (window.GithubSync && typeof window.GithubSync.syncAll === 'function') {
+             window.GithubSync.syncAll();
+        }
+
         showToast('Tour eliminado de la nube');
 
         // Reload list
         renderToursList(newTours);
+
     } catch (error) {
         console.error(error);
         showToast('Error al eliminar tour', 'error');
@@ -2023,6 +2051,16 @@ async function deleteTourDate(tourId, dateIndex) {
         // Save Global List
         tours[tourIndex] = tour;
         await ContentManager.saveTours(tours);
+        
+        // Also update local cache for admin
+        if (typeof window.saveTourDB === 'function') {
+            await window.saveTourDB(tour);
+        }
+        
+        // Auto publish
+        if (window.GithubSync && typeof window.GithubSync.syncAll === 'function') {
+             window.GithubSync.syncAll();
+        }
 
         showToast('Fecha eliminada de la nube');
 

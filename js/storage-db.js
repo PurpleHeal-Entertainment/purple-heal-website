@@ -61,44 +61,22 @@ function initDB() {
     });
 }
 
-// --- HYBRID MODE: Auto-detect if we should load from JSON (Public Site) or IDB (Admin/Local) ---
-// If we are NOT on an admin page, try to fetch JSON first.
-async function fetchPublicData(filename) {
-    const isLocalAdmin = window.location.pathname.includes('admin') || window.location.pathname.includes('login');
-    const isLocalFile = window.location.protocol === 'file:';
-
-    // If we are in Admin Panel or running purely local file protocol without server, use IDB
-    if (isLocalAdmin) {
-        console.log(`🔒 Admin Mode: Skipping JSON fetch for ${filename}`);
-        return null;
-    }
-
-    try {
-        console.log(`☁️ Public Mode: Fetching data/${filename}...`);
-        // Add timestamp to prevent caching
-        const response = await fetch(`data/${filename}?t=${Date.now()}`);
-
-        if (!response.ok) {
-            // If file not found (e.g. first run), fallback to IDB
-            console.warn(`⚠️ JSON fetch failed for ${filename}: ${response.status}`);
-            return null;
-        }
-
-        const data = await response.json();
-        console.log(`✅ Loaded ${filename} from Cloud`);
-        return data;
-    } catch (error) {
-        console.error(`❌ Error fetching ${filename}:`, error);
-        return null;
-    }
-}
+// DEPRECATED: Duplicate function block removed. See fetchPublicData below.
 
 // Save all artists to IndexedDB
 const isPublicSite = !window.location.pathname.includes('admin');
 
 // Helper to fetch JSON with fallback
 async function fetchPublicData(filename) {
-    if (!isPublicSite) return null; // Admin always uses IDB
+    const isAdmin = !!localStorage.getItem('ph_github_token');
+    
+    // If Admin is logged in, we bypass the public fetch so they can 
+    // see their immediate changes saved in IndexedDB bypassing GitHub's CDN delay.
+    if (!isPublicSite || isAdmin) {
+        console.log(`🔒 Admin Mode Detected (or not public page): Skipping JSON fetch for ${filename} to use fresh local IDB data.`);
+        return null;
+    }
+
     try {
         // Cache busting to ensure fresh data
         const response = await fetch(`data/${filename}?t=${new Date().getTime()}`);
@@ -383,8 +361,11 @@ async function saveSiteConfig(config) {
 
 async function getSiteConfig() {
     // 1. Try JSON (Public Mode)
-    const jsonData = await fetchPublicData('site_config.json');
-    if (jsonData) return jsonData;
+    const isAdmin = !!localStorage.getItem('ph_github_token');
+    if (!isAdmin) {
+        const jsonData = await fetchPublicData('site_config.json');
+        if (jsonData) return jsonData;
+    }
 
     // 2. Fallback to IDB
     if (!db) await initDB();

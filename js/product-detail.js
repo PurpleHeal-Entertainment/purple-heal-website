@@ -27,25 +27,12 @@ async function loadProductData() {
     }
 
     try {
-        console.log('☁️ Fetching data from GitHub...');
-        const REPO_OWNER = 'PurpleHeal-Entertainment';
-        const REPO_NAME = 'purple-heal-website';
-        const BRANCH = 'master';
-        const BASE_URL = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/data`;
-        const timestamp = Date.now();
-
+        console.log('☁️ Fetching data using DB layer...');
         // Parallel Fetch: Config & Artists
-        const [configRes, artistsRes] = await Promise.all([
-            fetch(`${BASE_URL}/site_config.json?t=${timestamp}`),
-            fetch(`${BASE_URL}/artists.json?t=${timestamp}`)
+        const [config, artists] = await Promise.all([
+            getSiteConfig(),
+            loadArtistsDB()
         ]);
-
-        if (!configRes.ok || !artistsRes.ok) {
-            throw new Error('Failed to fetch data from cloud');
-        }
-
-        const config = await configRes.json();
-        const artists = await artistsRes.json();
 
         console.log(`✅ Loaded ${artists.length} artists from cloud`);
 

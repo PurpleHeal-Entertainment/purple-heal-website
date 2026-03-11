@@ -272,9 +272,25 @@ async function handleTourSubmit(event) {
         await saveTourDB(tourData);
         showToast(currentEditingTourId ? 'Tour actualizado exitosamente!' : 'Tour creado exitosamente!');
 
+        // ✅ Critical Fix: Update memory cache so syncAll uses the new data
+        const allTours = await getAllToursDB();
+        window.currentTours = allTours;
+
         // Reset and Reload
         cancelAddTour();
         await renderToursList();
+
+        // ✅ Auto-publish to GitHub Pages
+        try {
+            showToast('Guardando y Publicando tour...', 'info');
+            if (window.GithubSync && typeof window.GithubSync.syncAll === 'function') {
+                await window.GithubSync.syncAll();
+                showToast('¡Tour guardado y publicado!', 'success');
+            }
+        } catch (pubError) {
+            console.error('Auto-publish failed:', pubError);
+            showToast('Guardado local OK, falló la publicación.', 'warning');
+        }
 
     } catch (error) {
         console.error('Save Error:', error);
@@ -329,7 +345,24 @@ async function deleteTour(id) {
         try {
             await deleteTourDB(id);
             showToast('Tour eliminado.');
+            
+            // ✅ Critical Fix: Update memory cache 
+            const allTours = await getAllToursDB();
+            window.currentTours = allTours;
+
             renderToursList();
+
+            // ✅ Auto-publish to GitHub Pages
+            try {
+                showToast('Sincronizando eliminación...', 'info');
+                if (window.GithubSync && typeof window.GithubSync.syncAll === 'function') {
+                    await window.GithubSync.syncAll();
+                    showToast('¡Tour eliminado y publicado!', 'success');
+                }
+            } catch (pubError) {
+                console.error('Auto-publish failed:', pubError);
+            }
+
         } catch (error) {
             showToast('Error al eliminar.', 'error');
         }
