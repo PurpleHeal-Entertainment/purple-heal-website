@@ -11,21 +11,7 @@
       "instagram": "https://www.instagram.com/r.nboi261/",
       "tiktok": "https://www.tiktok.com/@r.nboi261?_r=1&_t=ZM-93E1C8dVkce"
     },
-    "albums": [
-      {
-        "title": "123123",
-        "releaseDate": "1232-03-12",
-        "year": "1232",
-        "price": 123,
-        "type": "EP",
-        "description": "123123123",
-        "stock": "EN STOCK",
-        "link": "https://www.youtube.com/watch?v=qlgs_SWLQrM",
-        "images": [
-          "https://raw.githubusercontent.com/PurpleHeal-Entertainment/purple-heal-website/master/assets/images/albums/r-n-boi-123123-0-1771041059612.jpg"
-        ]
-      }
-    ],
+    "albums": [],
     "merch": [
       {
         "name": "hehe2",
