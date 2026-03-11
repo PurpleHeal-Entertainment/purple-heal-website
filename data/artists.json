@@ -26,20 +26,7 @@
         ]
       }
     ],
-    "merch": [
-      {
-        "name": "hehe",
-        "category": "Sudadera",
-        "price": 231,
-        "description": "sfsfs",
-        "sizes": "m",
-        "stock": "EN STOCK",
-        "link": "https://purpleheal-entertainment.github.io/purple-heal-website/artist-profile.html?artist=0",
-        "images": [
-          "https://raw.githubusercontent.com/PurpleHeal-Entertainment/purple-heal-website/master/assets/images/merch/r-n-boi-hehe-0-1773205291973.jpg"
-        ]
-      }
-    ],
+    "merch": [],
     "latestVideoId": "s9hBQrB4nG8",
     "id": 1
   }
