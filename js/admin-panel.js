@@ -888,6 +888,7 @@ function deleteAlbum(artistIndex, albumIndex) {
         showArtistProfile(artists[artistIndex], artistIndex);
     });
 }
+window.deleteAlbum = deleteAlbum;
 
 // Delete merch
 function deleteMerch(artistIndex, productIndex) {
@@ -899,24 +900,21 @@ function deleteMerch(artistIndex, productIndex) {
         showArtistProfile(artists[artistIndex], artistIndex);
     });
 }
+window.deleteMerch = deleteMerch;
 
 // --- CUSTOM DELETE MODAL LOGIC ---
 let pendingDeleteCallback = null;
 
 function showDeleteModal(onConfirm) {
     const modal = document.getElementById('deleteModal');
-    const input = document.getElementById('deletePasswordInput');
     const confirmBtn = document.getElementById('confirmDeleteBtn');
     const cancelBtn = document.getElementById('cancelDeleteBtn');
 
     // Reset state
-    input.value = '';
-    input.classList.remove('error'); // if any
     pendingDeleteCallback = onConfirm;
 
     // Show modal
     modal.style.display = 'flex';
-    input.focus();
 
     // Event Handlers (One-time setup or managing references would be cleaner, 
     // but for simplicity we'll handle clicks here carefully or rely on IDs)
@@ -933,42 +931,14 @@ function showDeleteModal(onConfirm) {
     const freshCancel = document.getElementById('cancelDeleteBtn');
 
     freshConfirm.addEventListener('click', () => {
-        const pwd = input.value;
-        if (typeof window.verifyPassword === 'function' && window.verifyPassword(pwd)) {
-            modal.style.display = 'none';
-            if (pendingDeleteCallback) pendingDeleteCallback();
-        } else {
-            showToast('Contraseña incorrecta.', 'error');
-            input.value = '';
-            input.focus();
-            // Optional: Shake animation here
-        }
+        modal.style.display = 'none';
+        if (pendingDeleteCallback) pendingDeleteCallback();
     });
 
     freshCancel.addEventListener('click', () => {
         modal.style.display = 'none';
         pendingDeleteCallback = null;
     });
-
-    // Allow Enter key to confirm
-    input.onkeydown = (e) => {
-        if (e.key === 'Enter') freshConfirm.click();
-        if (e.key === 'Escape') freshCancel.click();
-        checkCapsLock(e);
-    };
-
-    input.onkeyup = (e) => {
-        checkCapsLock(e);
-    };
-
-    function checkCapsLock(e) {
-        const warning = document.getElementById('deleteCapsLockWarning');
-        if (e.getModifierState && e.getModifierState('CapsLock')) {
-            warning.style.display = 'block';
-        } else {
-            warning.style.display = 'none';
-        }
-    }
 }
 
 // Show album form
