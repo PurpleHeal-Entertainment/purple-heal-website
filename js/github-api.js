@@ -81,8 +81,7 @@ const GithubSync = {
         const url = `https://api.github.com/repos/${config.OWNER}/${config.REPO}/contents/${path}?ref=${branch}&t=${timestamp}`;
 
         const headers = { 
-            'Accept': 'application/vnd.github.v3+json',
-            'Cache-Control': 'no-cache, no-store, must-revalidate'
+            'Accept': 'application/vnd.github.v3+json'
         };
         if (token) headers['Authorization'] = `token ${token}`;
 
