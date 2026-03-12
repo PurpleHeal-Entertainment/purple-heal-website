@@ -1,5 +1,5 @@
 const DEFAULT_CONFIG = {
-    OWNER: 'PurpleHeal-Entertainment',
+    OWNER: 'purpleheal',
     REPO: 'purple-heal-website',
     BRANCH: 'master' // Updated to match user's repo default
 };

@@ -606,7 +606,7 @@
                             <small style="color: #aaa; display: block; margin-bottom: 4px;">Usuario GitHub
                                 (Owner)</small>
                             <input type="text" id="githubOwner" class="form-input"
-                                placeholder="Ej: PurpleHeal-Entertainment"
+                                placeholder="Ej: purpleheal"
                                 style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white;">
                         </div>
                         <div>
@@ -700,21 +700,43 @@
                         const usersTab = document.getElementById('nav-users');
                         if (usersTab) usersTab.style.display = 'inline-block';
                     }
+                    // RECOVERY: Load UI even if Firestore fails
+                    await initializeHomePanel();
                 }
             }
         });
 
         // Main Initialization
         async function initializeHomePanel() {
-            // Hide Legacy Inputs
-            const tokenInputs = document.getElementById('githubToken');
-            if (tokenInputs) {
-                tokenInputs.disabled = true;
-                tokenInputs.placeholder = "Gestionado por Purple Security™";
-                tokenInputs.value = "";
-                if (document.getElementById('githubOwner')) document.getElementById('githubOwner').disabled = true;
-                if (document.getElementById('githubRepo')) document.getElementById('githubRepo').disabled = true;
-                if (document.getElementById('btnSaveToken')) document.getElementById('btnSaveToken').style.display = 'none';
+            // 1. Load Local Settings if available (Fallback)
+            if (window.GithubSync) {
+                const config = window.GithubSync.getConfig();
+                if (document.getElementById('githubOwner')) document.getElementById('githubOwner').value = config.OWNER || '';
+                if (document.getElementById('githubRepo')) document.getElementById('githubRepo').value = config.REPO || '';
+                // Token is password field, don't auto-fill for security unless explicitly requested
+            }
+            
+            // Setup Token Save Button logic
+            const btnSaveToken = document.getElementById('btnSaveToken');
+            if (btnSaveToken) {
+                btnSaveToken.addEventListener('click', () => {
+                    const owner = document.getElementById('githubOwner').value.trim();
+                    const repo = document.getElementById('githubRepo').value.trim();
+                    const token = document.getElementById('githubToken').value.trim();
+                    
+                    if (window.GithubSync) {
+                        if (owner && repo) {
+                            window.GithubSync.saveConfig({ OWNER: owner, REPO: repo, BRANCH: 'master' });
+                        }
+                        if (token) {
+                            window.GithubSync.setToken(token);
+                            window.GithubSync.saveToken(token);
+                            showMsg('✅ Configuración de GitHub guardada localmente.', 'success');
+                        } else {
+                            showMsg('❌ Ingresa un token válido.', 'error');
+                        }
+                    }
+                });
             }
 
             // Sync Button logic

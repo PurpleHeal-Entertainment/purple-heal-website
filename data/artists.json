@@ -1,9 +1,9 @@
-[
+﻿[
   {
     "name": "ERRE 261",
     "genre": "trap/hiphop/rap/newjazz/surf",
-    "bio": "erre261 es un artista/compositor/productor de Argentina/Santa Cruz/Rio Gallegos. Empezó a desarrollar un amor profundo con la música desde los 8 años escuchando a canserbero y otros artistas del ambiente. desde entonces ha explorado muchos horizontes, eventos de freestyle, escritor de letras, composición de canciones y producción en distintos programas de producción musical, para dejar un mensaje en ellos.",
-    "image": "https://raw.githubusercontent.com/PurpleHeal-Entertainment/purple-heal-website/master/assets/images/artists/rnboi-profile.jpg",
+    "bio": "erre261 es un artista/compositor/productor de Argentina/Santa Cruz/Rio Gallegos. EmpezÃ³ a desarrollar un amor profundo con la mÃºsica desde los 8 aÃ±os escuchando a canserbero y otros artistas del ambiente. desde entonces ha explorado muchos horizontes, eventos de freestyle, escritor de letras, composiciÃ³n de canciones y producciÃ³n en distintos programas de producciÃ³n musical, para dejar un mensaje en ellos.",
+    "image": "https://raw.githubusercontent.com/purpleheal/purple-heal-website/master/assets/images/artists/rnboi-profile.jpg",
     "socials": {
       "spotify": "https://open.spotify.com/intl-es/artist/2ZPlj306WZWYt28UkdD3Uu?si=fc0z3JgaQmS3o045pYN49A",
       "youtube": "https://www.youtube.com/@r.nboi261",
@@ -22,7 +22,7 @@
         "stock": "EN STOCK",
         "link": "https://www.youtube.com/watch?v=wII1KSo3gQs",
         "images": [
-          "https://raw.githubusercontent.com/PurpleHeal-Entertainment/purple-heal-website/master/assets/images/albums/erre-261-ola-del-sur-0-1773298076317.jpg"
+          "https://raw.githubusercontent.com/purpleheal/purple-heal-website/master/assets/images/albums/erre-261-ola-del-sur-0-1773298076317.jpg"
         ]
       },
       {
@@ -35,7 +35,7 @@
         "stock": "EN STOCK",
         "link": "https://www.youtube.com/watch?v=wII1KSo3gQs",
         "images": [
-          "https://raw.githubusercontent.com/PurpleHeal-Entertainment/purple-heal-website/master/assets/images/albums/erre-261-ola-del-sur-2-0-1773298119689.jpg"
+          "https://raw.githubusercontent.com/purpleheal/purple-heal-website/master/assets/images/albums/erre-261-ola-del-sur-2-0-1773298119689.jpg"
         ]
       },
       {
@@ -48,7 +48,7 @@
         "stock": "EN STOCK",
         "link": "https://www.youtube.com/watch?v=wII1KSo3gQs",
         "images": [
-          "https://raw.githubusercontent.com/PurpleHeal-Entertainment/purple-heal-website/master/assets/images/albums/erre-261-ola-del-sur-3-0-1773298143687.jpg"
+          "https://raw.githubusercontent.com/purpleheal/purple-heal-website/master/assets/images/albums/erre-261-ola-del-sur-3-0-1773298143687.jpg"
         ]
       }
     ],

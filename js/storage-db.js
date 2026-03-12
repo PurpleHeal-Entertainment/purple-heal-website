@@ -381,7 +381,10 @@ async function getSiteConfig() {
                 ],
                 featuredTourId: null // Null means none selected
             };
-            resolve(request.result || defaults);
+            
+            // Merge defaults with stored result to handle stale data
+            const finalConfig = { ...defaults, ...(request.result || {}) };
+            resolve(finalConfig);
         };
         request.onerror = () => reject(request.error);
     });

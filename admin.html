@@ -665,12 +665,12 @@
                     } catch (roleErr) { console.warn("Role check failed:", roleErr.message); }
                 }
 
-            } catch (e) {
-                console.error("CMS Init Failed:", e);
-                if (e === "No user") {
+            } catch (error) {
+                console.error("CMS Init failed:", error);
+                if (error === "No user") {
                     window.location.href = 'admin-login.html';
                 } else {
-                    // Show panel anyway - don't hang forever
+                    // Show Admin Panel anyway for recovery
                     document.getElementById('loginForm').style.display = 'none';
                     document.getElementById('adminPanel').classList.add('active');
                     if (typeof window.initAdmin === 'function') {

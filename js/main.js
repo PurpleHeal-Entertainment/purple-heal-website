@@ -167,7 +167,7 @@ document.documentElement.classList.add('js-enabled');
 // ===== STORE VISIBILITY LOGIC =====
 async function checkStoreVisibility() {
     try {
-        const OWNER = 'PurpleHeal-Entertainment';
+        const OWNER = 'purpleheal';
         const REPO = 'purple-heal-website';
         const BRANCH = 'master';
         const timestamp = Date.now();
