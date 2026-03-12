@@ -643,14 +643,22 @@
                     await window.initAdmin();
                 }
 
-                // 4. Role Check
-                const currentUser = AuthManager.getCurrentUser();
-                if (currentUser) {
-                    const role = await AuthManager.getUserRole(currentUser.email);
-                    if (role === 'admin') {
-                        const usersTab = document.getElementById('nav-users');
-                        if (usersTab) usersTab.style.display = 'inline-block';
+                // 4. Role Check - Use cache first to avoid Firestore permissions error
+                const cachedRole = sessionStorage.getItem('ph_user_role');
+                let role = cachedRole;
+                if (!role) {
+                    try {
+                        const currentUser = AuthManager.getCurrentUser();
+                        if (currentUser) {
+                            role = await AuthManager.getUserRole(currentUser.email);
+                        }
+                    } catch (roleErr) {
+                        console.warn("Role check failed, using cache:", roleErr.message);
                     }
+                }
+                if (role === 'admin') {
+                    const usersTab = document.getElementById('nav-users');
+                    if (usersTab) usersTab.style.display = 'inline-block';
                 }
 
             } catch (e) {
@@ -664,6 +672,12 @@
                     document.getElementById('adminPanel').classList.add('active');
                     if (typeof window.initAdmin === 'function') {
                         await window.initAdmin();
+                    }
+                    // Show Users tab if cached role is admin
+                    const fallbackRole = sessionStorage.getItem('ph_user_role');
+                    if (fallbackRole === 'admin') {
+                        const usersTab = document.getElementById('nav-users');
+                        if (usersTab) usersTab.style.display = 'inline-block';
                     }
                 }
             }
