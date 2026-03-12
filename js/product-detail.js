@@ -88,7 +88,7 @@ async function loadProductData() {
 // Display product information
 function displayProduct(product, type, artist, config = {}) {
     // Discount Logic
-    const isPromoActive = config.showPromo === true;
+    const isPromoActive = config.showOffers === true;
     const discountAlbum = parseInt(config.promoDiscountAlbum) || 0;
     const discountMerch = parseInt(config.promoDiscountMerch) || 0;
 
