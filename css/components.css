@@ -247,6 +247,7 @@
     min-height: 0 !important;
     height: auto !important;
     line-height: 1 !important;
+    white-space: nowrap !important;
 }
 
 /* === GRID SYSTEM === */
