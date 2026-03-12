@@ -657,6 +657,14 @@
                 console.error("CMS Init Failed:", e);
                 if (e === "No user") {
                     window.location.href = 'admin-login.html';
+                } else {
+                    // Show panel anyway with a warning - don't hang forever
+                    console.warn("CMS init had an error but user may be authenticated. Showing panel.");
+                    document.getElementById('loginForm').style.display = 'none';
+                    document.getElementById('adminPanel').classList.add('active');
+                    if (typeof window.initAdmin === 'function') {
+                        await window.initAdmin();
+                    }
                 }
             }
         });

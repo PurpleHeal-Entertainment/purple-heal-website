@@ -21,37 +21,45 @@ const ContentManager = {
                 try {
                     console.log(`CMS: Initializing for ${user.email}...`);
 
-                    // 1. Get Role
-                    const role = await AuthManager.getUserRole(user.email);
+                    // 1. Get Role (non-fatal if it fails)
+                    let role = 'editor'; // Default fallback
+                    try {
+                        role = await AuthManager.getUserRole(user.email) || 'editor';
+                    } catch (roleErr) {
+                        console.warn("CMS: Could not fetch role from Firestore (permissions?), defaulting to 'editor':", roleErr.message);
+                    }
 
                     // 2. Get Secrets (Token)
                     // Security Rule: Only readable if role == 'admin' or 'editor'
-                    const secretsRef = doc(db, "config", "secrets");
-                    const secretsSnap = await getDoc(secretsRef);
+                    try {
+                        const secretsRef = doc(db, "config", "secrets");
+                        const secretsSnap = await getDoc(secretsRef);
 
-                    if (secretsSnap.exists()) {
-                        const secrets = secretsSnap.data();
-                        if (secrets.github_token) {
-                            console.log("CMS: GitHub Token loaded securely.");
+                        if (secretsSnap.exists()) {
+                            const secrets = secretsSnap.data();
+                            if (secrets.github_token) {
+                                console.log("CMS: GitHub Token loaded securely.");
 
-                            // Inject into GithubSync
-                            // We assume GithubSync is loaded globally via script tag (legacy) or imported
-                            if (window.GithubSync) {
-                                window.GithubSync.setToken(secrets.github_token);
+                                // Inject into GithubSync
+                                if (window.GithubSync) {
+                                    window.GithubSync.setToken(secrets.github_token);
 
-                                // Update Config too if repo/owner changed in DB
-                                const currentConfig = window.GithubSync.getConfig();
-                                currentConfig.OWNER = secrets.repo_owner || currentConfig.OWNER;
-                                currentConfig.REPO = secrets.repo_name || currentConfig.REPO;
-                                window.GithubSync.saveConfig(currentConfig); // Update local cache
+                                    // Update Config too if repo/owner changed in DB
+                                    const currentConfig = window.GithubSync.getConfig();
+                                    currentConfig.OWNER = secrets.repo_owner || currentConfig.OWNER;
+                                    currentConfig.REPO = secrets.repo_name || currentConfig.REPO;
+                                    window.GithubSync.saveConfig(currentConfig);
+                                } else {
+                                    console.error("CMS: GithubSync not found on window.");
+                                }
                             } else {
-                                console.error("CMS: GithubSync not found on window.");
+                                console.error("CMS: Secrets found but 'github_token' is empty.");
                             }
                         } else {
-                            console.error("CMS: Secrets found but 'github_token' is empty.");
+                            console.error("CMS: No secrets document found in Firestore.");
                         }
-                    } else {
-                        console.error("CMS: No secrets document found in Firestore.");
+                    } catch (secretsErr) {
+                        console.warn("CMS: Could not read secrets from Firestore:", secretsErr.message);
                     }
 
                     resolve({ user, role });
