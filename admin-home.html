@@ -406,6 +406,7 @@
                                     <input type="text" class="form-input" id="stat3Label" placeholder="Fans">
                                 </div>
                             </div>
+                            <button type="button" class="ph-button ph-button--outline section-save-btn" onclick="saveSection('stats')" style="width: 100%; margin-top: 15px; padding: 10px;">💾 GUARDAR ESTADISTICAS</button>
                         </div>
 
                         <!-- JOIN SECTION TOGGLE -->
@@ -474,6 +475,7 @@
                                     style="margin-top: 10px; color: white; text-align: center; font-family: 'Oxanium';">
                                 </h4>
                             </div>
+                            <button type="button" class="ph-button ph-button--outline section-save-btn" onclick="saveSection('featuredTour')" style="width: 100%; margin-top: 15px; padding: 10px;">💾 GUARDAR TOUR DESTACADO</button>
                         </div>
                     </div>
 
@@ -564,6 +566,7 @@
                                         aplicar descuento a esa categoria.</p>
                                 </div>
                             </div>
+                            <button type="button" class="ph-button ph-button--outline section-save-btn" onclick="saveSection('promos')" style="width: 100%; margin-top: 15px; padding: 10px;">💾 GUARDAR PROMOCIONES</button>
                         </div>
                     </div>
 
@@ -691,7 +694,14 @@
                 if (error === "No user") {
                     window.location.href = 'admin-login.html';
                 } else {
-                    alert("Error crítico iniciando el panel: " + error);
+                    // Show panel anyway
+                    document.getElementById('loginForm').style.display = 'none';
+                    document.getElementById('adminPanel').classList.add('active');
+                    const fallbackRole = sessionStorage.getItem('ph_user_role');
+                    if (fallbackRole === 'admin') {
+                        const usersTab = document.getElementById('nav-users');
+                        if (usersTab) usersTab.style.display = 'inline-block';
+                    }
                 }
             }
         });
@@ -780,26 +790,25 @@
 
 
 
-            // Load Data using ContentManager
+            // Load Data using ContentManager (FETCH FROM GITHUB)
+            let loadedTours = [];
             try {
-                // Ensure ContentManager is available
                 if (!window.ContentManager) throw new Error("ContentManager no cargado");
 
-                // Get data from Context or direct access
-                const config = window.ContentManager.config || {};
-                const tours = window.ContentManager.tours || [];
+                // Actually fetch from GitHub
+                const config = await window.ContentManager.getSiteConfig();
+                loadedTours = await window.ContentManager.getTours();
+                window._currentConfig = config; // Store for section saves
 
                 // Populate Tours Dropdown
                 const select = document.getElementById('featuredTourSelect');
-                if (select) { // Safety check
-                    tours.forEach(tour => {
+                if (select) {
+                    loadedTours.forEach(tour => {
                         const option = document.createElement('option');
                         option.value = tour.id;
                         option.textContent = tour.title;
                         select.appendChild(option);
                     });
-                } else {
-                    console.warn('#featuredTourSelect not found');
                 }
 
                 // Populate Form
@@ -809,19 +818,18 @@
                     const getEl = (id) => document.getElementById(id);
                     if (getEl('showStats')) getEl('showStats').checked = !!config.showStats;
                     if (getEl('showJoinSection')) getEl('showJoinSection').checked = config.showJoinSection !== false;
-                    if (getEl('showContact')) getEl('showContact').checked = config.showContact !== false; // Default true
+                    if (getEl('showContact')) getEl('showContact').checked = config.showContact !== false;
                     if (getEl('showStore')) getEl('showStore').checked = !!config.showStore;
 
                     // Promos
                     if (getEl('showBackstage')) getEl('showBackstage').checked = config.showBackstage || false;
                     if (getEl('backstageLink')) getEl('backstageLink').value = config.backstageLink || '';
-                    if (getEl('showPromo')) getEl('showPromo').checked = config.showOffers || false; // Use showOffers in DB
+                    if (getEl('showPromo')) getEl('showPromo').checked = config.showOffers || false;
 
                     if (getEl('promoTitle')) getEl('promoTitle').value = config.promoTitle || '';
                     if (getEl('promoSubtitle')) getEl('promoSubtitle').value = config.promoSubtitle || '';
                     if (getEl('promoDescription')) getEl('promoDescription').value = config.promoDescription || '';
 
-                    // New Split Discounts
                     if (getEl('promoDiscountAlbum')) getEl('promoDiscountAlbum').value = config.promoDiscountAlbum || '';
                     if (getEl('promoDiscountMerch')) getEl('promoDiscountMerch').value = config.promoDiscountMerch || '';
 
@@ -838,73 +846,108 @@
                     // Featured Tour
                     if (config.featuredTourId && select) {
                         select.value = config.featuredTourId;
-                        updatePreview(config.featuredTourId, tours);
+                        updatePreview(config.featuredTourId, loadedTours);
                     }
                 }
 
                 // Preview Listener
-                if (select) select.addEventListener('change', (e) => updatePreview(e.target.value, tours));
+                if (select) select.addEventListener('change', (e) => updatePreview(e.target.value, loadedTours));
 
             } catch (err) {
                 console.error('Error loading config:', err);
-                // alert('Error cargando configuración: ' + err.message); // Silent fail preferred on load
             }
+
+            // AUTO-SAVE TOGGLES: Save immediately when any switch is toggled
+            const toggleIds = ['showStats', 'showJoinSection', 'showStore', 'showContact', 'showBackstage', 'showPromo'];
+            toggleIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('change', async () => {
+                        try {
+                            const fullConfig = buildFullConfig();
+                            await window.ContentManager.saveConfig(fullConfig);
+                            showMsg(`✅ ${el.checked ? 'Activado' : 'Desactivado'} correctamente.`, 'success');
+                        } catch (err) {
+                            console.error('Toggle save error:', err);
+                            showMsg('Error guardando: ' + err.message, 'error');
+                        }
+                    });
+                }
+            });
 
             // Save Handler
             document.getElementById('homeConfigForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const btn = e.target.querySelector('button');
+                const btn = e.target.querySelector('button[type="submit"]');
                 btn.textContent = 'GUARDANDO...';
 
-                // NOTE: Using 'showOffers' in DB, but ID in HTML is 'showPromo' for historical reasons.
-                // We map them here to ensure consistency.
-                const newConfig = {
-                    showStats: document.getElementById('showStats').checked,
-                    showJoinSection: document.getElementById('showJoinSection').checked,
-                    showContact: document.getElementById('showContact').checked,
-                    showStore: document.getElementById('showStore').checked,
-
-                    // Promo Section (Offers)
-                    showOffers: document.getElementById('showPromo').checked, // Map showPromo -> showOffers
-                    promoTitle: document.getElementById('promoTitle').value,
-                    promoSubtitle: document.getElementById('promoSubtitle').value,
-                    promoDescription: document.getElementById('promoDescription').value,
-                    promoDiscountAlbum: document.getElementById('promoDiscountAlbum').value,
-                    promoDiscountMerch: document.getElementById('promoDiscountMerch').value,
-
-                    // Backstage
-                    showBackstage: document.getElementById('showBackstage').checked,
-                    backstageLink: document.getElementById('backstageLink').value,
-
-                    stats: [
-                        { number: document.getElementById('stat1Num').value, label: document.getElementById('stat1Label').value },
-                        { number: document.getElementById('stat2Num').value, label: document.getElementById('stat2Label').value },
-                        { number: document.getElementById('stat3Num').value, label: document.getElementById('stat3Label').value }
-                    ],
-                    featuredTourId: document.getElementById('featuredTourSelect').value || null
-                };
-
                 try {
-                    // await saveSiteConfig(newConfig); // Legacy
+                    const newConfig = buildFullConfig();
                     await window.ContentManager.saveConfig(newConfig);
-
-                    // Use new message style
-                    const msgEl = document.getElementById('formMessage');
-                    msgEl.innerHTML = `<div class="ph-alert ph-alert--success" style="padding: 15px; margin-bottom: 20px; text-align: center; border: 1px solid #2ecc71; background: rgba(46, 204, 113, 0.1); color: #2ecc71; border-radius: 8px;">✅ ¡Configuración guardada! Actualizando sitio web...</div>`;
-                    msgEl.scrollIntoView({ behavior: 'smooth' });
-
-                    setTimeout(() => {
-                        msgEl.innerHTML = '';
-                        btn.textContent = 'GUARDAR CAMBIOS';
-                    }, 2000);
-
+                    showMsg('✅ ¡Configuración guardada!', 'success');
+                    btn.textContent = 'GUARDAR CAMBIOS';
                 } catch (saveErr) {
                     console.error(saveErr);
-                    alert('Error al guardar: ' + saveErr.message);
+                    showMsg('Error al guardar: ' + saveErr.message, 'error');
                     btn.textContent = 'GUARDAR CAMBIOS';
                 }
             });
         });
+
+        // HELPER: Build full config object from form
+        function buildFullConfig() {
+            return {
+                showStats: document.getElementById('showStats').checked,
+                showJoinSection: document.getElementById('showJoinSection').checked,
+                showContact: document.getElementById('showContact').checked,
+                showStore: document.getElementById('showStore').checked,
+                showOffers: document.getElementById('showPromo').checked,
+                promoTitle: document.getElementById('promoTitle').value,
+                promoSubtitle: document.getElementById('promoSubtitle').value,
+                promoDescription: document.getElementById('promoDescription').value,
+                promoDiscountAlbum: document.getElementById('promoDiscountAlbum').value,
+                promoDiscountMerch: document.getElementById('promoDiscountMerch').value,
+                showBackstage: document.getElementById('showBackstage').checked,
+                backstageLink: document.getElementById('backstageLink').value,
+                stats: [
+                    { number: document.getElementById('stat1Num').value, label: document.getElementById('stat1Label').value },
+                    { number: document.getElementById('stat2Num').value, label: document.getElementById('stat2Label').value },
+                    { number: document.getElementById('stat3Num').value, label: document.getElementById('stat3Label').value }
+                ],
+                featuredTourId: document.getElementById('featuredTourSelect').value || null
+            };
+        }
+
+        // HELPER: Save a specific section
+        async function saveSection(section) {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '⏳ GUARDANDO...';
+            btn.disabled = true;
+
+            try {
+                const fullConfig = buildFullConfig();
+                await window.ContentManager.saveConfig(fullConfig);
+                showMsg(`✅ Sección guardada correctamente.`, 'success');
+                btn.textContent = '✅ GUARDADO';
+                setTimeout(() => { btn.textContent = originalText; btn.disabled = false; }, 2000);
+            } catch (err) {
+                console.error('Section save error:', err);
+                showMsg('Error: ' + err.message, 'error');
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // HELPER: Show message
+        function showMsg(text, type) {
+            const msgEl = document.getElementById('formMessage');
+            const color = type === 'success' ? '#2ecc71' : '#e74c3c';
+            const bg = type === 'success' ? 'rgba(46, 204, 113, 0.1)' : 'rgba(231, 76, 60, 0.1)';
+            msgEl.innerHTML = `<div style="padding: 12px; text-align: center; border: 1px solid ${color}; background: ${bg}; color: ${color}; border-radius: 8px; margin-bottom: 15px;">${text}</div>`;
+            msgEl.scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => { msgEl.innerHTML = ''; }, 3000);
+        }
 
         function updatePreview(id, tours) {
             const preview = document.getElementById('tourPreview');
