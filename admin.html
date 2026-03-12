@@ -55,6 +55,11 @@
             display: block;
         }
 
+        /* Reveal Users Tab if Admin */
+        body[data-user-role="admin"] #nav-users {
+            display: inline-block !important;
+        }
+
         /* Fix centering issue - align to top when panel is shown */
         .admin-container:has(.admin-panel.active) {
             align-items: flex-start;
@@ -644,20 +649,17 @@
                     await window.initAdmin();
                 }
 
-                // 4. Role Check - use cache to avoid Firestore failure
+                // 4. Role Check
                 const cachedRole = sessionStorage.getItem('ph_user_role');
                 if (cachedRole === 'admin') {
-                    const usersTab = document.getElementById('nav-users');
-                    if (usersTab) usersTab.style.display = 'inline-block';
+                    document.body.setAttribute('data-user-role', 'admin');
                 } else {
-                    // Try Firestore as fallback
                     try {
                         const currentUser = AuthManager.getCurrentUser();
                         if (currentUser) {
                             const role = await AuthManager.getUserRole(currentUser.email);
                             if (role === 'admin') {
-                                const usersTab = document.getElementById('nav-users');
-                                if (usersTab) usersTab.style.display = 'inline-block';
+                                document.body.setAttribute('data-user-role', 'admin');
                             }
                         }
                     } catch (roleErr) { console.warn("Role check failed:", roleErr.message); }

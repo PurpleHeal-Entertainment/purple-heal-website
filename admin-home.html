@@ -110,6 +110,11 @@
             border-bottom-color: var(--ph-purple);
         }
 
+        /* Reveal Users Tab if Admin */
+        body[data-user-role="admin"] #nav-users {
+            display: inline-block !important;
+        }
+
         /* Config Specific styles */
         .config-block {
             background: rgba(255, 255, 255, 0.03);
@@ -676,6 +681,11 @@
 
                 // Role Check for Users Tab
                 if (context.role === 'admin') {
+                    document.body.setAttribute('data-user-role', 'admin');
+                }
+
+                // Role Check for Users Tab
+                if (context.role === 'admin') {
                     const usersTab = document.getElementById('nav-users');
                     if (usersTab) usersTab.style.display = 'inline-block';
                 }
@@ -742,6 +752,15 @@
                 const config = await ContentManager.getSiteConfig();
                 loadedTours = await ContentManager.getTours();
                 populateForm(config, loadedTours);
+
+                // Role Check for Users Tab
+                const currentUser = AuthManager.getCurrentUser();
+                if (currentUser) {
+                    const role = await AuthManager.getUserRole(currentUser.email);
+                    if (role === 'admin') {
+                        document.body.setAttribute('data-user-role', 'admin');
+                    }
+                }
             } catch (err) {
                 console.error('Error loading config:', err);
             }

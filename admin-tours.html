@@ -149,6 +149,11 @@
             border-bottom-color: var(--ph-purple);
         }
 
+        /* Reveal Users Tab if Admin */
+        body[data-user-role="admin"] #nav-users {
+            display: inline-block !important;
+        }
+
         .tab-content {
             display: block;
             /* Always block since we are on separate pages */
@@ -478,8 +483,7 @@
 
                 // Role Check for Users Tab
                 if (context.role === 'admin') {
-                    const usersTab = document.getElementById('nav-users');
-                    if (usersTab) usersTab.style.display = 'inline-block';
+                    document.body.setAttribute('data-user-role', 'admin');
                 }
 
                 // Initialize Router (Must be global or we init it here if it was a module, but it is a script)
