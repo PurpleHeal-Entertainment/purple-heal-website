@@ -373,6 +373,13 @@ async function handleTourSubmit(e) {
     try {
         const datesDeepCopy = JSON.parse(JSON.stringify(currentTourDates));
 
+        // PROCESS IMAGE: Upload if it's new (Base64)
+        if (currentTourCover && currentTourCover.startsWith('data:image')) {
+            showFormMessage('Subiendo imagen del tour...', 'info');
+            const uploadedUrl = await window.ContentManager.uploadTourImage(title, currentTourCover);
+            currentTourCover = uploadedUrl;
+        }
+
         // Prepare Object
         const tourToSave = {
             title: title,
@@ -444,7 +451,7 @@ async function handleTourSubmit(e) {
     }
 }
 
-// FORCE EXPORT
+// FORCE EXPORT ALL FUNCTIONS
 window.handleTourSubmit = handleTourSubmit;
 
 // DEBUG TOOL
@@ -469,7 +476,7 @@ async function dumpAllData() {
 }
 window.dumpAllData = dumpAllData;
 
-console.log('✅ handleTourSubmit & dumpAllData EXPORTED to Global Scope');
+console.log('✅ All tour functions EXPORTED to Global Scope');
 
 // Render List (Home)
 async function renderToursList() {
@@ -521,3 +528,18 @@ async function deleteTour(id) {
         }
     }
 }
+
+// EXPORT ALL UI FUNCTIONS TO WINDOW
+window.navigateToEdit = navigateToEdit;
+window.navigateToCreate = navigateToCreate;
+window.navigateToList = navigateToList;
+window.previewTourCover = previewTourCover;
+window.toggleTicketLink = toggleTicketLink;
+window.addTourDate = addTourDate;
+window.editDateInList = editDateInList;
+window.cancelDateEdit = cancelDateEdit;
+window.removeTourDate = removeTourDate;
+window.deleteTour = deleteTour;
+window.initToursPage = initToursPage;
+window.renderToursList = renderToursList;
+

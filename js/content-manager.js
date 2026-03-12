@@ -124,6 +124,19 @@ const ContentManager = {
         return await window.GithubSync.uploadFile('data/artists.json', content, 'Update artists.json via CMS');
     },
 
+    uploadTourImage: async (tourTitle, fileData) => {
+        const safeTitle = tourTitle.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        const timestamp = Date.now();
+        const filename = `${safeTitle}-${timestamp}.jpg`;
+        const path = `assets/images/tours/${filename}`;
+
+        console.log(`CMS: Uploading tour image to ${path}...`);
+        await window.GithubSync.uploadFile(path, fileData, `Upload tour image for ${tourTitle}`, true);
+
+        const config = window.GithubSync.getConfig();
+        return `https://raw.githubusercontent.com/${config.OWNER}/${config.REPO}/${config.BRANCH}/${path}`;
+    },
+
     getTours: async () => {
         const data = await ContentManager._fetchInfo('data/tours.json');
         return data || [];
