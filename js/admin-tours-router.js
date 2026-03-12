@@ -190,7 +190,7 @@ function toggleTicketLink() {
 }
 
 // Add/Update Date
-function addTourDate() {
+async function addTourDate() {
     const dateInput = document.getElementById('dateInput');
     const venueInput = document.getElementById('venueInput');
     const cityInput = document.getElementById('cityInput');
@@ -246,6 +246,26 @@ function addTourDate() {
     statusInput.value = 'ticket';
     toggleTicketLink();
     if (errorMsg) errorMsg.style.display = 'none';
+
+    // AUTO-SAVE to GitHub if editing an existing tour
+    if (currentEditingTourId) {
+        try {
+            showFormMessage('Guardando fechas...', 'success');
+            let tours = await window.ContentManager.getTours();
+            if (!Array.isArray(tours)) tours = [];
+            const rawId = Number(currentEditingTourId);
+            const index = tours.findIndex(t => Number(t.id) === rawId);
+            if (index !== -1) {
+                tours[index].dates = JSON.parse(JSON.stringify(currentTourDates));
+                await window.ContentManager.saveTours(tours);
+                console.log('✅ Dates auto-saved to GitHub');
+                showFormMessage('✅ Fecha actualizada y guardada.', 'success');
+            }
+        } catch (err) {
+            console.error('Error auto-saving dates:', err);
+            showFormMessage('Error guardando fecha: ' + err.message, 'error');
+        }
+    }
 }
 
 function editDateInList(index) {
@@ -287,11 +307,30 @@ function cancelDateEdit() {
     if (cancelBtn) cancelBtn.style.display = 'none';
 }
 
-function removeTourDate(index) {
+async function removeTourDate(index) {
     console.log('📅 Removing date at index:', index);
     currentTourDates.splice(index, 1);
     if (editingDateIndex === index) cancelDateEdit();
     renderDatesList();
+
+    // AUTO-SAVE to GitHub if editing an existing tour
+    if (currentEditingTourId) {
+        try {
+            showFormMessage('Eliminando fecha...', 'success');
+            let tours = await window.ContentManager.getTours();
+            if (!Array.isArray(tours)) tours = [];
+            const rawId = Number(currentEditingTourId);
+            const idx = tours.findIndex(t => Number(t.id) === rawId);
+            if (idx !== -1) {
+                tours[idx].dates = JSON.parse(JSON.stringify(currentTourDates));
+                await window.ContentManager.saveTours(tours);
+                showFormMessage('✅ Fecha eliminada y guardada.', 'success');
+            }
+        } catch (err) {
+            console.error('Error auto-saving after date remove:', err);
+            showFormMessage('Error guardando: ' + err.message, 'error');
+        }
+    }
 }
 
 function renderDatesList() {
