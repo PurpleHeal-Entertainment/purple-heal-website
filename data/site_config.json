@@ -1,6 +1,6 @@
 {
   "showStats": true,
-  "showJoinSection": false,
+  "showJoinSection": true,
   "showContact": false,
   "showStore": false,
   "showOffers": false,
