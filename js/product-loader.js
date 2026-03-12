@@ -61,18 +61,18 @@ async function loadArtistProducts(artistId, injectedArtistData = null) {
                 }
 
                 return `
-                <div class="artist-card fade-in" style="cursor: default; min-width: 300px; margin-right: 20px;">
-                    <div style="position: relative; overflow: hidden; border-radius: 8px 8px 0 0;">
-                        <img src="${firstImage}" alt="${album.title}" class="artist-card__image" style="height: 300px; object-fit: cover; width: 100%;">
+                <div class="artist-card artist-card--product fade-in" style="cursor: default; min-width: 300px; margin-right: 20px;">
+                    <div style="position: relative; overflow: hidden; border-radius: 8px 8px 0 0; aspect-ratio: 1/1;">
+                        <img src="${firstImage}" alt="${album.title}" class="artist-card__image" style="width: 100%; height: 100%; object-fit: cover;">
                         ${showSaleBadge ? `<div style="position: absolute; top: 10px; right: 10px; background: var(--ph-blue-accent); color: white; padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 0.9em;">-${discount}%</div>` : ''}
                     </div>
-                    <div class="artist-card__overlay" style="background: rgba(20, 20, 23, 0.95); position: relative; transform: none; padding: 20px; border-radius: 0 0 8px 8px; border: 1px solid rgba(255,255,255,0.1); border-top: none;">
-                        <p class="artist-card__genre" style="color: var(--ph-purple-light); text-transform: uppercase; font-size: 0.8em; letter-spacing: 1px;">
+                    <div class="artist-card__content" style="background: rgba(20, 20, 23, 0.95); padding: 20px; border-radius: 0 0 8px 8px; border: 1px solid rgba(255,255,255,0.1); border-top: none;">
+                        <p style="color: var(--ph-purple-light); text-transform: uppercase; font-size: 0.8em; letter-spacing: 1px; margin-bottom: 5px;">
                             ${displayDate} • ALBUM
                         </p>
-                        <h3 class="artist-card__name" style="font-size: 1.2rem; margin: 5px 0 10px; font-family: var(--font-primary);">${album.title}</h3>
+                        <h3 style="font-size: 1.2rem; margin-bottom: 15px; font-family: var(--font-primary); color: white; min-height: 2.4em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${album.title}</h3>
 
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
                             <div style="font-family: 'Oxanium'; font-weight: bold;">
                                 ${originalPrice > 0 ? (showSaleBadge ?
                         `<span style="text-decoration: line-through; color: #666; font-size: 0.9em; margin-right: 8px;">$${originalPrice.toFixed(2)}</span>
@@ -115,18 +115,18 @@ async function loadArtistProducts(artistId, injectedArtistData = null) {
                 }
 
                 return `
-                <div class="artist-card fade-in" style="cursor: default; min-width: 300px; margin-right: 20px;">
-                    <div style="position: relative; overflow: hidden; border-radius: 8px 8px 0 0;">
-                        <img src="${firstImage}" alt="${product.name}" class="artist-card__image" style="height: 300px; object-fit: cover; width: 100%;">
+                <div class="artist-card artist-card--product fade-in" style="cursor: default; min-width: 300px; margin-right: 20px;">
+                    <div style="position: relative; overflow: hidden; border-radius: 8px 8px 0 0; aspect-ratio: 1/1;">
+                        <img src="${firstImage}" alt="${product.name}" class="artist-card__image" style="width: 100%; height: 100%; object-fit: cover;">
                         ${showSale ? `<div style="position: absolute; top: 10px; right: 10px; background: var(--ph-blue-accent); color: white; padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 0.9em;">-${discount}%</div>` : ''}
                     </div>
-                    <div class="artist-card__overlay" style="background: rgba(20, 20, 23, 0.95); position: relative; transform: none; padding: 20px; border-radius: 0 0 8px 8px; border: 1px solid rgba(255,255,255,0.1); border-top: none;">
-                        <p class="artist-card__genre" style="color: var(--ph-purple-light); text-transform: uppercase; font-size: 0.8em; letter-spacing: 1px;">
+                    <div class="artist-card__content" style="background: rgba(20, 20, 23, 0.95); padding: 20px; border-radius: 0 0 8px 8px; border: 1px solid rgba(255,255,255,0.1); border-top: none;">
+                        <p style="color: var(--ph-purple-light); text-transform: uppercase; font-size: 0.8em; letter-spacing: 1px; margin-bottom: 5px;">
                             ${product.category || 'MERCH'} • ${isSoldOut ? 'AGOTADO' : 'EN STOCK'}
                         </p>
-                        <h3 class="artist-card__name" style="font-size: 1.2rem; margin: 5px 0 10px; font-family: var(--font-primary);">${product.name}</h3>
+                        <h3 style="font-size: 1.2rem; margin-bottom: 15px; font-family: var(--font-primary); color: white; min-height: 2.4em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${product.name}</h3>
 
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
                             <div style="font-family: 'Oxanium'; font-weight: bold;">
                                 ${originalPrice > 0 ? (showSale ?
                         `<span style="text-decoration: line-through; color: #666; font-size: 0.9em; margin-right: 8px;">$${originalPrice.toFixed(2)}</span>
