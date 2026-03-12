@@ -2,7 +2,7 @@
   "showStats": true,
   "showJoinSection": true,
   "showContact": true,
-  "showStore": false,
+  "showStore": true,
   "showOffers": true,
   "promoTitle": "OFERTAS DE VERANO",
   "promoSubtitle": "OFERTA EN ÁLBUMES Y MERCH",
