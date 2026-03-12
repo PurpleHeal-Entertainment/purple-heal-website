@@ -1,7 +1,7 @@
 {
   "showStats": true,
   "showJoinSection": true,
-  "showContact": false,
+  "showContact": true,
   "showStore": false,
   "showOffers": true,
   "promoTitle": "OFERTAS DE VERANO",
