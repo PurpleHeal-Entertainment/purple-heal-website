@@ -12,20 +12,7 @@
       "tiktok": "https://www.tiktok.com/@r.nboi261?_r=1&_t=ZM-93E1C8dVkce"
     },
     "albums": [],
-    "merch": [
-      {
-        "name": "hehe2",
-        "category": "Accesorio",
-        "price": 10,
-        "description": "dfgfsdgsdfgfsdg",
-        "sizes": "",
-        "stock": "EN STOCK",
-        "link": "https://www.youtube.com/watch?v=FMD2pwx5L7Q",
-        "images": [
-          "https://raw.githubusercontent.com/PurpleHeal-Entertainment/purple-heal-website/master/assets/images/merch/r-n-boi-hehe2-0-1773237190285.jpg"
-        ]
-      }
-    ],
+    "merch": [],
     "latestVideoId": "s9hBQrB4nG8",
     "id": 1
   }
