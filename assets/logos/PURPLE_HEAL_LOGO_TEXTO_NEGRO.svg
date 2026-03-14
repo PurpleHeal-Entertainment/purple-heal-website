@@ -7,9 +7,14 @@
             <path d="M976.378,1259.843L944.882,1259.843L970.079,1007.874L1127.559,1007.874L1111.811,1165.354L1048.819,1165.354L1039.37,1259.843L1007.874,1259.843L1017.323,1165.354L985.827,1165.354L976.378,1259.843ZM998.425,1039.37L988.976,1133.858L1083.465,1133.858L1092.913,1039.37L1061.417,1039.37L1055.118,1102.362L1023.622,1102.362L1029.921,1039.37L998.425,1039.37Z" style="fill:rgb(97,57,124);"/>
         </g>
         <g transform="matrix(1,0,0,1,-302.880161,93.445188)">
-            <g transform="matrix(99.294197,0,0,99.294197,1892.601556,1259.84252)">
+            <g>
+                <g transform="matrix(1,0,0,1,944.882,1259.843)">
+                    <text x="0px" y="0px" style="font-family:'SquareOne-Bold', 'Square One';font-weight:700;font-size:99.294px;">P</text>
+                </g>
+                <g transform="matrix(1,0,0,1,1039.171,1259.843)">
+                    <text x="0px" y="0px" style="font-family:'SquareOne-Bold', 'Square One';font-weight:700;font-size:99.294px;">U<tspan x="94.289px 188.578px 282.867px 377.157px 471.446px 502.686px 596.975px 691.265px 785.554px " y="0px 0px 0px 0px 0px 0px 0px 0px 0px ">RPLE HEAL</tspan></text>
+                </g>
             </g>
-            <text x="944.882px" y="1259.843px" style="font-family:'SquareOne-Bold', 'Square One';font-weight:700;font-size:99.294px;">P<tspan x="1039.171px 1133.46px 1227.749px 1322.038px 1416.328px 1510.617px 1541.857px 1636.146px 1730.436px 1824.725px " y="1259.843px 1259.843px 1259.843px 1259.843px 1259.843px 1259.843px 1259.843px 1259.843px 1259.843px 1259.843px ">URPLE HEAL</tspan></text>
         </g>
     </g>
 </svg>
